@@ -71,9 +71,8 @@ and you see a list of files (README.md, setup.sh and others).
 
 ## Part 3. Connect Claude to GitHub (3 minutes)
 
-1. Go to **claude.ai/code** (type it into the address bar).
-2. You'll see a welcome screen asking you to connect GitHub. Click
-   **Connect GitHub** (it may say **Sign in with GitHub**).
+1. Go to **claude.ai** and click **Customise** (in the menu on the left).
+2. Click **Connectors**. Search for **GitHub**, click it, then click **Connect**.
 3. GitHub opens and asks "Authorize Claude?". Click the green **Authorize** button.
 4. GitHub may then show **Install Claude**. If it does:
    - Click your username.

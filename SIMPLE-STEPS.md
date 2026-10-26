@@ -17,9 +17,9 @@ Click **Private**.
 Click **Create repository**.
 
 **4. Link Claude to GitHub.**
-Go to claude.ai/code.
-Click **Connect GitHub**.
-Click **Authorize**.
+Go to claude.ai. Click **Customise**. Click **Connectors**.
+Search for **GitHub**. Click it, then click **Connect**.
+GitHub opens. Click **Authorize**.
 If it says **Install**: click **Only select repositories**, pick **reel-maker**, click **Install**.
 
 **5. Add the settings.**
