@@ -5,130 +5,204 @@ what the reel is for. Claude picks the best moments, cuts out the ums, adds
 captions with highlighted key words, titles, stickers and music, and gives you a
 vertical reel (30 to 45 seconds) ready for Instagram, TikTok or YouTube Shorts.
 You also get a short coaching report: what worked, what to fix, and which shots
-to film next time. It can also make a carousel, a story and three test reels from
-the same clips.
+to film next time.
 
-You don't need to know anything about video editing or code. Claude asks you
-at most three things: your clips, what the reel is for, and how you want it to
-look (or "you choose").
+You don't need to know anything about video editing or code.
 
 ---
 
-## What you need and what it costs
+## Before you start: what you need and what it costs
 
-| You need | Cost | Why |
-|---|---|---|
-| A **Claude Pro** plan (or Max) | US$20 a month, or US$17 a month paid yearly. Your local price shows in the app | The tool runs in "Claude Code", which isn't on the free plan |
-| A **GitHub** account | Free | Holds your own copy of the tool and your finished reels |
-| A **Google Drive** account | Free (15 GB) | Where you put your clips so Claude can fetch them |
-| A **computer** for the one-time setup (about 15 minutes) | | Some settings only show on a computer. After that, everything works from your phone |
+| You need | Cost |
+|---|---|
+| A **Claude Pro** plan (Max also works). The free plan can't run this tool | US$20 a month, or US$17 a month if you pay yearly. Your local price shows when you upgrade |
+| A **GitHub** account. Think of it as a free online folder that holds your copy of the tool | Free |
+| A **Google Drive** account, for your video clips | Free |
+| A **computer** (laptop or desktop) for the one-time setup. It takes about 20 minutes. After that you can make reels from your phone | |
 
-Everything inside the tool is free: the video tools, speech-to-text, the fonts and the music
-(the music just needs a credit line in your caption, which Claude gives you).
+Everything inside the tool is free: the video tools, the fonts and the music.
 
-**Usage limits:** one reel is a big job, so it uses a large share of your Pro
-plan's usage. If Claude says you've hit your limit, wait for it to reset (the
-message tells you when) and carry on in the same chat.
+> **Tip:** do the whole setup in one sitting, in the **Chrome** browser on your
+> computer. Keep this page open in one tab and do each step in another tab.
 
 ---
 
-## One-time setup
+## Part 1. Get your accounts ready (5 minutes)
 
-Do these steps once, in order, on a computer. Each step says what you should see
-when it's done.
+### 1A. Claude Pro
 
-### Step 1. Get the accounts
+1. Go to **claude.ai** and sign in (or sign up).
+2. Click your **name or initials** in the bottom-left corner.
+3. Click **Settings**, then **Billing**.
+4. Click **Upgrade** and choose **Pro**. Pay.
 
-1. Sign up for Claude Pro at [claude.ai](https://claude.ai) (Settings > Billing, or the upgrade button).
-2. Make a free GitHub account at [github.com/signup](https://github.com/signup) if you don't have one.
+✅ **Done when:** Settings > Billing says **Pro**.
 
-### Step 2. Make your own private copy of the tool
+### 1B. A free GitHub account
 
-1. Open **https://github.com/heytherejenae-afk/reel-maker** (the link you were given).
-2. Click the green **Use this template** button, then **Create a new repository**.
-3. Repository name: `reel-maker`. Choose **Private** (so your reels stay private).
-4. Click **Create repository**.
+1. Go to **github.com/signup**.
+2. Type your email, make a password and choose a username (anything, for example `sarahgardens`).
+3. Do the puzzle, then type the code GitHub emails you.
+4. If it asks questions about you, click **Skip personalization** (or **Continue for free**).
 
-Done when: you see `github.com/<your-name>/reel-maker` with a list of files.
-
-### Step 3. Connect Claude and set up the reel environment
-
-1. Go to [claude.ai/code](https://claude.ai/code) and sign in.
-2. When it asks, click **Connect GitHub** and approve. If it asks you to install
-   the **Claude GitHub App**, install it and pick **Only select repositories >
-   reel-maker**. (If you skipped this, do it at
-   [github.com/apps/claude](https://github.com/apps/claude/installations/new).)
-3. Under the message box, click the **environment** selector (it probably says
-   **Default**) and choose **New environment** at the bottom.
-4. Fill in the form:
-   - **Name:** `Reel maker`
-   - **Network access:** choose **Custom**. In **Allowed domains**, paste these
-     lines exactly:
-     ```
-     drive.google.com
-     drive.usercontent.google.com
-     huggingface.co
-     *.huggingface.co
-     *.hf.co
-     incompetech.com
-     ```
-     and **tick "Also include default list of common package managers"**.
-   - **Setup script:** open [setup.sh](setup.sh) in your copy on GitHub, copy
-     everything in it, and paste it into the box.
-5. Click **Add environment**. Make sure the selector now shows **Reel maker**.
-
-Done when: the environment selector under the message box says **Reel maker**.
-
-> Why: Claude works in a private computer in the cloud that can only reach
-> websites you allow. These ones let it download your clips from Google Drive,
-> the speech-to-text model, and the free music. The setup script installs the
-> video tools once, so later reels start quickly.
-
-### Step 4. Make a Google Drive folder for your clips
-
-1. In Google Drive, make a folder (for example "Reel 1").
-2. Put your video clips in it. You can also add your own font file (`.ttf` or
-   `.otf`), GIFs or a music track.
-3. Share it so Claude can open it. On a phone: open the folder > the three dots
-   > **Share** > **Manage access** > **General access** > **Anyone with the link**
-   (Viewer). On a computer: right-click the folder > **Share** > **General
-   access** > **Anyone with the link**.
-4. Tap **Copy link**.
-
-Done when: you have a link that starts with `https://drive.google.com/drive/folders/`.
+✅ **Done when:** you're on github.com and see your picture or initial in the top-right corner.
 
 ---
 
-## Making a reel (every time, works on your phone)
+## Part 2. Make your own copy of the tool (3 minutes)
 
-1. Open [claude.ai/code](https://claude.ai/code) (or the **Code** tab in the Claude app).
-2. Check the repository picker says **reel-maker** and the environment says **Reel maker**.
-3. Send **one message** with your Drive link and one sentence about the reel. For example:
+1. In the same browser (still signed in to GitHub), go to:
+   **https://github.com/heytherejenae-afk/reel-maker**
+2. Near the top-right, click the green **Use this template** button.
+   Then click **Create a new repository**.
+   (If you can't see the green button, make the window wider, or scroll right.)
+3. On the next page:
+   - **Owner:** leave it as your username.
+   - **Repository name:** type `reel-maker`
+   - Click **Private** (so only you can see your reels).
+4. Click the green **Create repository** button at the bottom.
 
-   > https://drive.google.com/drive/folders/abc123 — 30 second reel for beginner
-   > gardeners: what to plant in December. Fun and upbeat.
+✅ **Done when:** the address bar shows `github.com/YOUR-USERNAME/reel-maker`
+and you see a list of files (README.md, setup.sh and others).
 
-4. Claude sends you picture sheets of styles, colours and fonts. Reply with your
-   picks ("style 2, colour 5, font 3") or "you choose".
-5. Claude shows you a **storyboard** (the plan, shot by shot). Change anything you
-   like ("cut the word basically", "swap shots 2 and 3"), then say **build it**.
-6. Wait 10 to 20 minutes. You can close the app; Claude keeps working.
-7. You get the reel, the coaching report and posting tips. Say yes if Claude offers
-   a carousel, story and trial reels.
+---
 
-### Getting your reel onto your phone
+## Part 3. Connect Claude to GitHub (3 minutes)
 
-Claude gives you a link for each file. Open it in **Chrome**, signed in to
-GitHub, and the video downloads. Then post it from your phone's gallery or
-Downloads folder. If Claude also shows a preview page, you can watch and
-download it there.
+1. Go to **claude.ai/code** (type it into the address bar).
+2. You'll see a welcome screen asking you to connect GitHub. Click
+   **Connect GitHub** (it may say **Sign in with GitHub**).
+3. GitHub opens and asks "Authorize Claude?". Click the green **Authorize** button.
+4. GitHub may then show **Install Claude**. If it does:
+   - Click your username.
+   - Click **Only select repositories**.
+   - Click **Select repositories**, type `reel-maker` and click it.
+   - Click the green **Install** button.
+5. You're sent back to Claude.
 
-Your reels are saved in the `reels/` folder of your private copy. Delete old ones
-now and then to keep it tidy.
+**If step 4 didn't appear**, do it now: go to **github.com/apps/claude**, click
+**Install** (or **Configure**), then follow step 4 above.
 
-**Save your look:** when you're happy, say "save my look". Claude makes a
-`brand-kit.json` file. Put it in your Drive clips folder each time, and every
-reel matches. Say "turn on autopilot" and Claude will stop asking questions.
+> Your copy is private, so Claude can only open it once the Claude app is
+> installed on it. That's what step 4 does.
+
+✅ **Done when:** at claude.ai/code, you see a message box with a
+**repository** button under it, and when you click it, **reel-maker** is in the list.
+
+---
+
+## Part 4. Create the "Reel maker" environment (5 minutes)
+
+This tells Claude which websites it's allowed to use (Google Drive, the
+speech-to-text model and the free music), and installs the video tools once.
+
+1. Stay on **claude.ai/code**.
+2. Look under the message box. There's a small button that says **Default**
+   (it may have a cloud icon). Click it.
+3. At the bottom of the menu that opens, click **New environment**.
+4. A form opens. Fill it in like this:
+
+   **Name:** type `Reel maker`
+
+   **Network access:** click it and choose **Custom**. A box called
+   **Allowed domains** appears. Copy these six lines and paste them in:
+
+   ```
+   drive.google.com
+   drive.usercontent.google.com
+   huggingface.co
+   *.huggingface.co
+   *.hf.co
+   incompetech.com
+   ```
+
+   Under the box, **tick** "Also include default list of common package managers".
+   This one matters: without it, the setup fails.
+
+   **Setup script:** click it. Then, in a new tab, open this link:
+   **https://raw.githubusercontent.com/heytherejenae-afk/reel-maker/main/setup.sh**
+   You'll see a page of plain text. Press **Ctrl + A** then **Ctrl + C**
+   (on a Mac: **Cmd + A** then **Cmd + C**) to copy it all. Go back to the Claude
+   tab, click in the setup script box, and press **Ctrl + V** (Mac: **Cmd + V**)
+   to paste.
+
+5. Click **Add environment** at the bottom of the form.
+
+✅ **Done when:** the button under the message box says **Reel maker** instead of **Default**.
+
+> If you ever change these settings later, start a **new** chat afterwards.
+> Chats you already started keep the old settings.
+
+---
+
+## Part 5. Put your clips in Google Drive (do this for every reel)
+
+### On an Android phone or iPhone (Google Drive app)
+
+1. Open the **Google Drive** app.
+2. Tap the **+ New** button (bottom-right), then **Folder**. Name it, for example
+   `December reel`, and tap **Create**.
+3. Open the folder. Tap **+ New** > **Upload** and pick your video clips.
+   Wait until they finish uploading.
+4. Go back one screen so you can see the folder. Tap the **three dots ⋮** next to it.
+5. Tap **Share**. Then tap **Manage access** (or **General access**).
+6. Under **General access**, tap **Restricted** and change it to
+   **Anyone with the link**. Leave the role as **Viewer**.
+7. Tap the **link icon** (or **Copy link**). The link is now copied.
+
+### On a computer (drive.google.com)
+
+1. Click **+ New** > **New folder**, name it, click **Create**.
+2. Open the folder and drag your clips into it.
+3. Go back, **right-click** the folder > **Share** > **Share**.
+4. Under **General access**, change **Restricted** to **Anyone with the link**.
+5. Click **Copy link**, then **Done**.
+
+✅ **Done when:** you have a link that starts with `https://drive.google.com/drive/folders/`.
+
+**Optional extras for the same folder:** a font file you bought (`.ttf` or
+`.otf`), GIFs or PNG stickers, or your own music track.
+
+---
+
+## Part 6. Make a reel (works on your phone)
+
+1. Open **claude.ai/code** in Chrome, or open the **Claude app** and tap the
+   **Code** tab.
+2. Check the two buttons under the message box:
+   - The repository button says **reel-maker**. If not, tap it and choose **reel-maker**.
+   - The environment button says **Reel maker**. If not, tap it and choose **Reel maker**.
+3. In the message box, paste your Drive link and add one sentence about the reel.
+   Send it as **one message**. For example:
+
+   > https://drive.google.com/drive/folders/abc123 Make a 30 second reel for
+   > beginner gardeners about what to plant in December. Fun and upbeat.
+
+4. **Pick a look.** Claude sends picture sheets of styles, colours and fonts.
+   Reply with numbers, like `style 2, colour 5, font 3`, or just `you choose`.
+5. **Check the storyboard.** Claude shows the plan, shot by shot. Ask for changes
+   in plain words ("cut the word basically", "swap shots 2 and 3", "make it
+   shorter"), then reply **build it**.
+6. **Wait 10 to 20 minutes.** You can close the app. Claude keeps working.
+7. You get your reel, a coaching report and posting tips. If Claude offers a
+   carousel, a story and trial reels, say **yes** if you'd like them.
+
+### Getting the reel onto your phone
+
+1. Claude gives you a link for each file. Tap the link for the video.
+2. It opens in Chrome. If GitHub asks you to sign in, sign in.
+3. The video downloads. You'll see it in your phone's **Downloads** or **Files**
+   app, and usually in your **Gallery** or **Photos**.
+4. Post it from Instagram, TikTok or YouTube as normal. Add the music credit
+   line Claude gave you to your caption.
+
+### Next time
+
+- **Save your look:** when you love a reel, say `save my look`. Claude makes a
+  file called `brand-kit.json`. Put it in your Drive folder each time and every
+  reel will match.
+- **Autopilot:** say `turn on autopilot` and Claude stops asking questions and
+  just makes the reel.
 
 ---
 
@@ -136,43 +210,43 @@ reel matches. Say "turn on autopilot" and Claude will stop asking questions.
 
 | What you see | What to do |
 |---|---|
-| "Nothing downloaded" or "can't open the folder" | The Drive folder isn't shared publicly. Redo Step 4.3 and send the link again |
-| "Blocked" or "403" when downloading | A website isn't on the allowed list. Recheck Step 3.4, save, then **start a new chat** (old chats keep the old settings) |
-| No **Reel maker** environment to choose | Redo Step 3, on a computer |
-| Can't find **reel-maker** in the repository picker | Install the Claude GitHub App on it (Step 3.2) |
-| The **+** button on your phone only shows photos | Don't upload clips in the chat; use the Drive folder |
-| "You've hit your usage limit" | Wait until the time it shows, then say "carry on" |
+| "Nothing downloaded" or "can't open the folder" | The Drive folder isn't shared. Redo Part 5, steps 4 to 7, and send the link again |
+| "Blocked", "403" or "not allowed" when downloading | A website is missing from the list. Redo Part 4 (click **Reel maker** > the ⚙️ gear or **Edit**), check all six lines are there and the tick box is ticked, click **Save changes**, then start a **new chat** |
+| No **Reel maker** in the environment menu | Redo Part 4 on a computer |
+| **reel-maker** isn't in the repository list | Redo Part 3, step 4 (install the Claude app on your copy) |
+| The page only shows a "Sign in with GitHub" button | Redo Part 3 |
+| "You've hit your usage limit" | Wait until the time it shows, then type `carry on` in the same chat |
+| The phone's **+** button only shows photos | Don't upload videos into the chat. Use the Drive folder |
 
 ---
 
 ## Questions people ask
 
-- **Do I need Adobe, CapCut or any editing app?** No. Everything happens in Claude.
-  If you like, open the finished MP4 in CapCut or Instagram Edits for final touches.
-- **Can I upload clips straight into the chat?** Not reliably; videos are too big.
-  Use the Drive folder.
-- **Can I choose the fonts?** Yes. Claude shows a numbered font sheet. You can also
-  add a font you bought: put the `.ttf` or `.otf` file in the Drive folder. Check
-  its licence covers social media video. Adobe Fonts can't be used (Adobe doesn't
-  let you download the files).
-- **Can I see the plan before it's made?** Yes, the storyboard. Nothing is made until you say "build it".
-- **Are key words highlighted?** Yes, in yellow by default, or your brand colour.
-- **What overlays can it add?** Big titles (including 3D), number badges, do/don't cards,
-  "save this" cards, comment and DM pop-ups, a Follow button, emoji stickers (left,
-  centre or right), picture-in-picture and before/after cards.
-- **Is the music free?** Yes. It's by Kevin MacLeod (CC BY 4.0). Paste the credit line
-  Claude gives you into your caption. You can also swap in a trending sound in
+- **Do I need Adobe, CapCut or another editing app?** No. If you like, you can
+  open the finished video in CapCut or Instagram Edits for final touches.
+- **Can I upload clips straight into the chat?** No. Videos are too big. Use the Drive folder.
+- **Can I choose the fonts?** Yes, from a numbered sheet. You can add a font you
+  bought by putting the `.ttf` or `.otf` file in your Drive folder. Check its
+  licence covers social media video. Adobe Fonts can't be used, because Adobe
+  doesn't let you download the files.
+- **Can I see the plan first?** Yes, the storyboard. Nothing is made until you say `build it`.
+- **Are key words highlighted?** Yes, in yellow, or your brand colour.
+- **What can it add on screen?** Big titles (including 3D), number badges,
+  do/don't cards, "save this" cards, comment and DM pop-ups, a Follow button,
+  emoji stickers (left, centre or right) and before/after cards.
+- **Is the music free?** Yes. It's by Kevin MacLeod (CC BY 4.0). Paste the credit
+  line Claude gives you into your caption. You can also add a trending sound in
   Instagram or TikTok before posting.
-- **Can it hide my kids' faces?** Yes. Ask it to blur everyone except you, or pick
-  which faces to blur.
-- **How long are the reels?** Usually 30 to 45 seconds, or whatever length you ask for.
-- **Can I use it on my phone?** Yes, after the one-time setup on a computer.
+- **Can it hide my kids' faces?** Yes. Ask it to blur everyone except you, or pick which faces to blur.
+- **Is my video private?** Yes. Your copy of the tool is private, and so are the reels saved in it.
+- **Does it cost extra per reel?** No, it's included in Claude Pro. A reel is a
+  big job, though, so it uses a good share of your plan's usage limit.
 
 ---
 
 ## Credits
 
 Fonts are from Google Fonts (SIL Open Font License). Music is by Kevin MacLeod,
-incompetech.com, CC BY 4.0. Face detection uses OpenCV's YuNet and SFace models;
-the person cut-out uses Google's MediaPipe selfie segmenter. Speech-to-text uses
+incompetech.com, CC BY 4.0. Face detection uses OpenCV's YuNet and SFace models.
+The person cut-out uses Google's MediaPipe selfie segmenter. Speech-to-text uses
 faster-whisper.
