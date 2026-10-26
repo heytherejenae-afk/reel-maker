@@ -9,6 +9,8 @@ to film next time.
 
 You don't need to know anything about video editing or code.
 
+**New here? Start with [SIMPLE-STEPS.md](SIMPLE-STEPS.md): 10 short steps.** The rest of this page has more detail if you get stuck.
+
 ---
 
 ## Before you start: what you need and what it costs
