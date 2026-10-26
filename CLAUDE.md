@@ -15,7 +15,12 @@ domains (see README.md, step 3) and that they need to start a new session after.
 
 ## Showing pictures and giving them files
 
-The person can't open files on this machine, so:
+**Inside a Claude project** (the folder `/mnt/project-files/` exists): save every
+picture and deliverable under `/mnt/project-files/reels/<short-name>/` and attach
+them to your reply, so they appear in the project's Library. Don't commit reels to
+git. Skip the steps below.
+
+**Otherwise** the person can't open files on this machine, so:
 
 1. **Pictures to choose from** (style, colour and font sheets, storyboard frames)
    and **the finished reel**: if the Artifact tool is available, publish one simple
