@@ -9,7 +9,7 @@ to film next time.
 
 You don't need to know anything about video editing or code.
 
-**New here? Start with [SIMPLE-STEPS.md](SIMPLE-STEPS.md): 10 short steps.** The rest of this page has more detail if you get stuck.
+**👉 Setup guide: [SIMPLE-STEPS.md](SIMPLE-STEPS.md) (10 short steps, checked against the real screens on 26 Oct 2026).** The rest of this page is older background detail; if it disagrees with SIMPLE-STEPS, follow SIMPLE-STEPS.
 
 ---
 
