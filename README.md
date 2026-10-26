@@ -179,8 +179,10 @@ speech-to-text model and the free music), and installs the video tools once.
    > https://drive.google.com/drive/folders/abc123 Make a 30 second reel for
    > beginner gardeners about what to plant in December. Fun and upbeat.
 
-4. **Pick a look.** Claude sends picture sheets of styles, colours and fonts.
-   Reply with numbers, like `style 2, colour 5, font 3`, or just `you choose`.
+4. **Answer four quick questions.** Before making anything, Claude asks what feel
+   you want, which font combination (title font + caption font), which colours, and
+   whether you want music. It also shows each option on your own video. Reply with
+   numbers, like `2, 3, 1, yes happy`, or just `you choose`.
 5. **Check the storyboard.** Claude shows the plan, shot by shot. Ask for changes
    in plain words ("cut the word basically", "swap shots 2 and 3", "make it
    shorter"), then reply **build it**.

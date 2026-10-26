@@ -3,10 +3,11 @@
 
   look_samples.py VIDEO OUT_DIR [--time 5] [--title WORD]
 
-Writes OUT_DIR/styles.jpg (one tile per editing style: Clean, Editorial, Lo-fi, Bold,
-numbered) and OUT_DIR/colours.jpg (the colour themes as numbered swatches). Send both and
-let the person reply with a style, a colour theme (or their own brand colour), or
-"you choose". Fonts have their own sheet: font_samples.py.
+Writes OUT_DIR/styles.jpg (one tile per editing style, numbered), OUT_DIR/font-pairs.jpg
+(one tile per font combination: title font + caption font) and OUT_DIR/colours.png (the
+colour themes as numbered swatches). Send all three and let the person reply with a style,
+a font combination, a colour theme (or their own brand colour), or "you choose".
+Single caption fonts (and fonts they bought) have their own sheet: font_samples.py.
 """
 import argparse
 import os
@@ -54,6 +55,27 @@ def main():
     render.sh(["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex",
                f"hstack=inputs={len(tiles)}", "-q:v", "3", os.path.join(a.out_dir, "styles.jpg")])
 
+    tiles = []  # font combinations, shown in the Clean style so only the fonts change
+    for i, (key, fp) in enumerate(looks.FONT_PAIRS.items(), 1):
+        plan = {"look": {"style": "clean", "font_pair": key, "caption_case": "sentence"},
+                "highlight_words": ["captions"]}
+        look = looks.resolve(plan)
+        fonts = {"display": render.font_file(look["display_font"]), "body": render.font_file("Poppins")}
+        ov = graphics.build([{"type": "title", "text": a.title, "start": 0, "end": 5, "y": 0.1}], look, fonts, tmp)[0]
+        ass = os.path.join(tmp, f"fp_{key}.ass")
+        plan["hook"] = {"text": f"{i}. {fp['label']}", "duration": 5}
+        render.write_ass(ass, plan, [{"start": 0, "end": 5, "text": "This is how your captions look"}], 5, W, H, look)
+        _, fontdir = render.pick_font(look.get("font"))
+        tile = os.path.join(tmp, f"fp_{key}.png")
+        render.sh(["ffmpeg", "-y", "-loglevel", "error", "-i", bg, "-i", ov["_frames"][0], "-filter_complex",
+                   f"[0:v]format=rgba[b];[b][1:v]overlay=0:{ov['_y'] + 300}[o];"
+                   f"[o]ass={ass}:fontsdir={fontdir},scale=360:640", tile])
+        tiles.append(tile)
+    inputs = sum([["-i", t] for t in tiles], [])
+    render.sh(["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex",
+               f"xstack=inputs={len(tiles)}:layout=0_0|360_0|720_0|0_640|360_640|720_640", "-q:v", "3",
+               os.path.join(a.out_dir, "font-pairs.jpg")])
+
     sw = "".join(
         f"<div class=t><div class=b style='background:{c['primary']}'><span style='color:{c['light']}'>Aa</span>"
         f"<i style='background:{c['highlight']}'></i></div><div class=n>{i}. {name.title()}</div></div>"
@@ -71,6 +93,8 @@ def main():
     subprocess.run(["node", os.path.join(os.path.dirname(os.path.abspath(__file__)), "html2png.js"), jf], check=True)
     for i, (k, st) in enumerate(looks.STYLES.items(), 1):
         print(f"style {i}. {st['label']}  ->  \"look\": {{\"style\": \"{k}\"}}")
+    for i, (k, fp) in enumerate(looks.FONT_PAIRS.items(), 1):
+        print(f"fonts {i}. {fp['label']} ({fp['display_font']} + {fp['font']})  ->  \"look\": {{\"font_pair\": \"{k}\"}}")
     for i, k in enumerate(looks.THEMES, 1):
         print(f"colour {i}. {k.title()}  ->  \"look\": {{\"theme\": \"{k}\"}}")
 

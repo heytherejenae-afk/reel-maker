@@ -58,11 +58,16 @@ def frame_png(clip, t, out, width):
 
 # --- one builder per overlay type: returns (list of (html, w, h)), (x, y) placement ---
 
+WIDE_FONTS = {"Archivo Black": 0.8, "Luckiest Guy": 0.9, "Permanent Marker": 0.9}
+
+
 def title(o, look, F):
     c = look["colors"]
     text = o["text"]
     nlines = max(1, -(-len(text) // 14))  # long hooks wrap onto 2-3 lines
     size = int(o.get("size") or min(320 if nlines == 1 else 150, 1480 / max(3, len(text) / nlines)))
+    if not o.get("size"):  # wide fonts need a smaller size to fit the same word
+        size = int(size * WIDE_FONTS.get(look.get("display_font"), 1.0))
     if look.get("title_3d"):
         depth = max(14, size // 7)
         shadow = ",".join(f"{k * 0.55:.1f}px {k}px 0 {c['primary']}" for k in range(1, depth + 1))

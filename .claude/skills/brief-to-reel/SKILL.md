@@ -6,9 +6,12 @@ description: Turn raw video clips and a short brief into a finished vertical ree
 # Brief to reel
 
 The person is probably a beginner. Never ask them about codecs, frame rates or
-settings. Ask at most for (1) their clips, (2) one or two sentences about what
-the reel is for, and (3) once, how they want it to look (or "you choose").
-Everything else you decide.
+settings. Ask only for (1) their clips, (2) one or two sentences about what the
+reel is for, and (3) the four opening questions in step 1 (feel, fonts, colours,
+music), all of which can be answered with "you choose". Everything else you decide.
+
+**Always ask the opening questions before making anything.** Don't analyse,
+plan, storyboard or render until they've answered (or said "you choose").
 
 Scripts live in `scripts/` next to this file. Setup, once per session:
 `pip install faster-whisper gdown ai-edge-litert opencv-python-headless`.
@@ -17,7 +20,53 @@ Scripts live in `scripts/` next to this file. Setup, once per session:
 download on first use from storage.googleapis.com, huggingface.co,
 raw.githubusercontent.com and incompetech.com.
 
-## 1. Get the clips
+## 1. Ask about the look and music first (always, before anything else)
+
+As soon as they ask for a reel, send this in **one** message, before you download
+or analyse anything. Number everything so a one-line reply works:
+
+> Before I make your reel, four quick questions. Reply with numbers (e.g. "2, 3, 1, yes")
+> or just say "you choose" to any of them.
+>
+> **1. What feel do you want?**
+> 1 Clean: simple and easy to read · 2 Editorial: polished, magazine-like ·
+> 3 Lo-fi: raw, warm and cosy · 4 Creator: big bold words, talking-to-camera ·
+> 5 Bold: high energy, bright and punchy
+>
+> **2. Which font combination?** (title font + caption font)
+> 1 Classic · 2 Elegant · 3 Creator mix · 4 Playful · 5 Handmade · 6 Headline
+> (Or use your own font: put the .ttf/.otf file in your Drive folder.)
+>
+> **3. Which colours?** 1 Forest · 2 Sunshine · 3 Ocean · 4 Blush · 5 Terracotta ·
+> 6 Mono · 7 Pop · 8 Vintage · 9 Butter, or tell me your brand colour.
+>
+> **4. Do you want music?** Yes (tell me a mood: chill, happy, funny, inspiring,
+> energetic, or Christmas) or No (keep just your voice and the real sound).
+>
+> I'll show you all of these on your own video in a moment, so you can see them first.
+
+Then get the clips (below) and send the three picker sheets made on their own
+video (step 1b) in a second message, so they can see the options before they
+answer. **Wait for their answer.** Don't pick for them unless they say "you choose";
+if they only answer some questions, choose the rest yourself and say what you chose.
+Turn the answers into the plan's `look` (`style`, `font_pair`, `theme` or `colors`)
+and `music` (`{"track": "<a library track for that mood>"}`, or leave `music` out for
+"No"). For "you choose", pick what fits the brief: Clean for simple tips, Editorial
+for polished creator content, Lo-fi for cosy or behind-the-scenes, Creator for
+talking to camera, Bold for high energy; music on, in a mood that fits.
+
+**Brand kit:** if `work/clips/brand-kit.json` exists, they've saved their look
+before. Replace the four questions with one: "Use your saved look (<name>)
+and music setting again, or change something?" Use it with
+`"look": {"brand": "work/clips/brand-kit.json"}`. If the kit has several looks (a
+lookbook), list them by name and use the one they pick (`"lookbook": "Playful"`).
+
+**Autopilot:** if the brand kit has `"autopilot": true`, they've already said "don't
+ask me". Skip the questions and the storyboard: rough cut, plan in their default look
+and saved music setting (copy the kit's `"music"` into the plan; `false` means none), render, and deliver the reel with the coaching report. Only
+ask if there's no brief and the clips don't make the topic obvious.
+
+### Get the clips
 
 - **Google Drive link (preferred):** `python3 scripts/fetch_drive.py "<link>" work/clips`.
   If it fails, tell them in plain words: "Open the folder in Drive, tap Share,
@@ -27,35 +76,22 @@ raw.githubusercontent.com and incompetech.com.
   `asset_search` (entityScope CCAsset). Clips inside an Adobe *Express* project
   are not reachable; ask for Drive instead.
 
-If there is no brief, ask once: "What's this reel for, and who's watching? One
-sentence is plenty." If they don't answer, assume a fun, upbeat 20-second reel
-for Instagram.
+If there is no brief, ask for it in the same opening message: "What's this reel for,
+and who's watching? One sentence is plenty."
 
-**Brand kit:** if `work/clips/brand-kit.json` exists, they've saved their look
-before. Use it (`"look": {"brand": "work/clips/brand-kit.json"}`) and skip step 1b.
-If the kit has several looks (a lookbook), use its default unless they name one
-(`"lookbook": "Playful"`).
-
-**Autopilot:** if the brand kit has `"autopilot": true`, don't ask anything and
-skip the storyboard: rough cut, plan in their default look, render, and deliver the
-reel with the coaching report. Only ask if there's no brief and the clips don't make
-the topic obvious.
-
-## 1b. Customise the look (one message, while analysis runs)
+## 1b. Show the options on their own video
 
 Make the picker sheets from a frame where the person is in shot:
 
 ```
 python3 scripts/look_samples.py work/clips/<clip> work/looks --time <t> --title <a key word from the brief>
-python3 scripts/font_samples.py work/clips/<clip> work/fonts.jpg --time <t>
 ```
 
-Send `styles.jpg`, `colours.png` and `fonts.jpg` in one message:
-"Pick a style (1–4), a colour (1–8, or tell me your brand colour) and a caption
-font by number, or just say 'you choose'." Carry on while you wait. If they
-don't answer, pick the style that fits the brief (Clean for simple tips,
-Editorial for polished creator content, Lo-fi for cosy or behind-the-scenes,
-Bold for high energy) and keep its default colours and font.
+This writes `styles.jpg` (the 5 feels), `font-pairs.jpg` (the 6 font combinations)
+and `colours.png` (the 9 colour themes), numbered to match the opening questions.
+Send all three together. If they have their own font files, also run
+`python3 scripts/font_samples.py work/clips/<clip> work/fonts.jpg --time <t> --custom work/clips/<font file>`
+and send `fonts.jpg` (single caption fonts, theirs included).
 
 | Style | Feel | What it sets |
 |---|---|---|
@@ -65,29 +101,43 @@ Bold for high energy) and keep its default colours and font.
 | Creator | Talking-head creator look | One or two big words at a time, key words in a yellow italic serif, hand-written headlines |
 | Bold | High energy | Chunky captions, bright 3D titles, punch-in zoom on every other shot |
 
+| Font combination | Title font + caption font | Feel |
+|---|---|---|
+| Classic | Archivo Black + Poppins | Clean and confident |
+| Elegant | DM Serif Display + Instrument Serif | Polished, magazine-like |
+| Creator mix | Instrument Serif + Poppins | Modern with a hand-written touch |
+| Playful | Luckiest Guy + Lilita One | Fun and friendly |
+| Handmade | Permanent Marker + Permanent Marker | Cosy, like a notebook |
+| Headline | Anton + Bebas Neue | Loud and punchy |
+
+A style comes with its own fonts; `font_pair` swaps them for the chosen
+combination (hand-written headlines always use Caveat Brush). A single `font`
+still overrides just the caption font.
+
 Caption modes (any style): `"caption_mode": "words"` (default, a few words at a
 time), `"karaoke"` (a highlight box jumps from word to word as it's said) or
 `"punch"` (one or two big words, key words in italic serif).
 
-**3 versions, pick your favourite:** when they can't decide, or the brief is open,
-render three short openings in different looks or hooks and let them choose:
+**3 versions, pick your favourite:** when they can't decide, or say "you choose" to
+everything with an open brief, render three short openings in different looks or
+hooks and let them choose:
 `python3 scripts/versions.py work/plan.json work/versions --analysis work/analysis/analysis.json --looks creator,editorial,bold --hooks "..." "..." "..."`
 Send `versions.mp4` (all three side by side, numbered) and ask "1, 2 or 3?".
 
-In the plan: `"look": {"style": "editorial", "theme": "ocean", "font": "Poppins"}`.
+In the plan: `"look": {"style": "editorial", "font_pair": "elegant", "theme": "ocean"}`.
 Single colours can be overridden with `"colors": {"primary": "#...", "light": "#...",
 "highlight": "#..."}` (primary = boxes and title depth, light = text on boxes and
 title faces, highlight = key words). Any style key in `scripts/looks.py` can be
 overridden too (for example `"caption_box": true`).
 
 **Their own fonts (free or bought):** any `.ttf` or `.otf` file in their Drive
-folder downloads with the clips. Add it with `--custom work/clips/<font file>`
-so it appears on the font sheet, and set `look.font` to the file's path if
-chosen. Remind them to check the font licence covers social media video. Adobe
-Fonts can't be used this way, because Adobe doesn't let you download the font files.
+folder downloads with the clips. Set `look.font` (captions) and/or
+`look.display_font` (titles) to the file's path. Remind them to check the font
+licence covers social media video. Adobe Fonts can't be used this way, because
+Adobe doesn't let you download the font files.
 
 **Save it for next time:** after they're happy with a reel, offer to save their
-look: `python3 scripts/brand.py work/plan.json work/brand-kit.json --name <a name they like, e.g. Butter> --handle <their handle>`.
+look and music choice: `python3 scripts/brand.py work/plan.json work/brand-kit.json --name <a name they like, e.g. Butter> --handle <their handle>`.
 Each saved name becomes a look in their **lookbook**; run it again with another
 name to add more (`--default` picks the one used automatically). Then offer
 autopilot ("Want me to edit your next reels in this style without asking
@@ -169,8 +219,9 @@ To blur only certain people, make the face sheet first
 see children in the contact sheets.
 
 **Sound:** set `"sfx": true` for pops, whooshes, typing clicks and a ding synced to
-the overlays (made on the fly, no licence needed). For music, use their own track
-(`"path"`), or pick from the library in `scripts/audio.py`
+the overlays (made on the fly, no licence needed). Music only if they said yes in
+step 1 (or "you choose"). For music, use their own track (an mp3 in their Drive folder,
+`"path"`), or pick a track in the mood they asked for from the library in `scripts/audio.py`
 (`"music": {"track": "Carefree", "volume": 0.12}`; moods: chill, happy, funny,
 inspiring, energetic, Christmas). Library tracks are Kevin MacLeod, CC BY 4.0: put
 the credit line `render.py` prints into the posting tips so they add it to the

@@ -4,6 +4,7 @@ A plan picks a look with:
   "look": {"style": "editorial",          # clean | editorial | lofi | creator | bold
            "theme": "forest",             # optional colour theme (THEMES below)
            "colors": {"primary": "#1F4D3A"},  # optional single-colour overrides
+           "font_pair": "elegant",        # optional font combination (FONT_PAIRS below)
            "font": "Lilita One",          # optional caption font (render.FONTS name or .ttf path)
            "caption_box": true,           # optional: any STYLES key can be overridden
            "caption_mode": "karaoke"}     # words (default) | karaoke | punch
@@ -30,6 +31,23 @@ THEMES = {
     "pop":      {"primary": "#E63946", "light": "#FFFFFF", "highlight": "#FFD60A"},
     "vintage":  {"primary": "#3B2F2F", "light": "#FFF6E9", "highlight": "#FFB4A2"},
     "butter":   {"primary": "#B3261E", "light": "#FFFFFF", "highlight": "#F6E27A"},
+}
+
+# Font combinations: title font + caption font (+ hand-written accent font for headlines).
+# Shown to the person as a numbered sheet (look_samples.py -> font-pairs.jpg).
+FONT_PAIRS = {
+    "classic":  {"label": "Classic", "feel": "clean and confident",
+                 "display_font": "Archivo Black", "font": "Poppins", "script_font": "Caveat Brush"},
+    "elegant":  {"label": "Elegant", "feel": "polished, magazine-like",
+                 "display_font": "DM Serif Display", "font": "Instrument Serif", "script_font": "Caveat Brush"},
+    "creator":  {"label": "Creator mix", "feel": "modern with a hand-written touch",
+                 "display_font": "Instrument Serif", "font": "Poppins", "script_font": "Caveat Brush"},
+    "playful":  {"label": "Playful", "feel": "fun and friendly",
+                 "display_font": "Luckiest Guy", "font": "Lilita One", "script_font": "Caveat Brush"},
+    "handmade": {"label": "Handmade", "feel": "cosy, like a notebook",
+                 "display_font": "Permanent Marker", "font": "Permanent Marker", "script_font": "Caveat Brush"},
+    "headline": {"label": "Headline", "feel": "loud and punchy",
+                 "display_font": "Anton", "font": "Bebas Neue", "script_font": "Caveat Brush"},
 }
 
 STYLES = {
@@ -88,8 +106,11 @@ def resolve(plan):
         req["font"] = old["font"]
     look = dict(STYLES.get(req.get("style", "clean"), STYLES["clean"]))
     look["style"] = req.get("style", "clean") if req.get("style") in STYLES else "clean"
+    pair = FONT_PAIRS.get(str(req.get("font_pair", "")).lower())
+    if pair:  # a font combination sets all three fonts; a single "font" etc. below still wins
+        look.update({k: pair[k] for k in ("display_font", "font", "script_font")})
     for k, v in req.items():
-        if (k in look or k in ("handle", "avatar", "script_font", "caption_mode")) and k != "style":
+        if (k in look or k in ("handle", "avatar", "script_font", "caption_mode", "font_pair")) and k != "style":
             look[k] = v
     colors = dict(THEMES.get(req.get("theme") or look["theme"], THEMES["sunshine"]))
     if old.get("highlight_color"):

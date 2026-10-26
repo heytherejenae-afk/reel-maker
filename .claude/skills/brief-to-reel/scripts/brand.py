@@ -7,7 +7,8 @@ Usage: brand.py PLAN.json OUT/brand-kit.json [--name Butter] [--default] [--hand
 --name adds the look to the kit's lookbook under that name (use it for each look they
 love: "Butter", "Playful"...); --default makes it the one used when none is picked.
 --autopilot on means future reels skip the questions and storyboard and go straight to
-the finished reel in the default look.
+the finished reel in the default look. The kit also keeps their music choice
+("music": {...} or false) so autopilot reels match.
 
 Put brand-kit.json in the person's Drive clips folder (Google Drive connector
 create_file, or give them the file to add). fetch_drive.py downloads it with the clips,
@@ -30,12 +31,13 @@ ap.add_argument("--handle")
 ap.add_argument("--avatar")
 ap.add_argument("--autopilot", choices=["on", "off"])
 a = ap.parse_args()
-req = dict(json.load(open(a.plan)).get("look") or {})
+plan = json.load(open(a.plan))
+req = dict(plan.get("look") or {})
 if a.handle:
     req["handle"] = a.handle
 if a.avatar:
     req["avatar"] = a.avatar
-extra = {}
+extra = {"music": plan.get("music") or False}  # their music choice: a track setting, or False for none
 if a.default and a.name:
     extra["default"] = a.name
 if a.autopilot:
