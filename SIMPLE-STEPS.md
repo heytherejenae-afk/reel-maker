@@ -23,7 +23,9 @@ GitHub opens. Click **Authorize**.
 If it says **Install**: click **Only select repositories**, pick **reel-maker**, click **Install**.
 
 **5. Add the settings.**
-Still on claude.ai/code. Under the typing box, click **Default**.
+Go to claude.ai/code (type it in the address bar at the top of the browser).
+In the middle of the page there is a big box where you type a message to Claude. That's the typing box.
+Just below it is a row of small buttons. One of them says **Default**. Click it.
 Click **New environment**.
 Name: type `Reel maker`
 Network access: pick **Custom**. Paste these 6 lines in the box:
