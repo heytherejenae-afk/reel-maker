@@ -4,8 +4,9 @@
   look_samples.py VIDEO OUT_DIR [--time 5] [--title WORD]
 
 Writes OUT_DIR/styles.jpg (one tile per editing style, numbered), OUT_DIR/font-pairs.jpg
-(one tile per font combination: title font + caption font) and OUT_DIR/colours.png (the
-colour themes as numbered swatches). Send all three and let the person reply with a style,
+(one tile per font combination: title font + caption font), OUT_DIR/colours.png (the
+colour themes as numbered swatches) and OUT_DIR/highlights.jpg (key-word highlight
+colours, numbered). Send all three and let the person reply with a style,
 a font combination, a colour theme (or their own brand colour), or "you choose".
 Single caption fonts (and fonts they bought) have their own sheet: font_samples.py.
 """
@@ -21,6 +22,11 @@ import looks  # noqa: E402
 import render  # noqa: E402
 
 W, H = 1080, 1920
+
+
+def grid(n, cols=3):
+    """xstack layout for n 360x640 tiles, cols per row."""
+    return "|".join(f"{(i % cols) * 360}_{(i // cols) * 640}" for i in range(n))
 
 
 def main():
@@ -44,7 +50,7 @@ def main():
         ass = os.path.join(tmp, f"{key}.ass")
         plan["hook"] = {"text": f"{i}. {st['label']}", "duration": 5}
         render.write_ass(ass, plan, [{"start": 0, "end": 5, "text": "This is how your captions look"}], 5, W, H, look)
-        _, fontdir = render.pick_font(look.get("font"))
+        fontdir = render.fonts_dir(look)
         grade = (look["grade"] + ",") if look.get("grade") else ""
         tile = os.path.join(tmp, f"{key}.png")
         render.sh(["ffmpeg", "-y", "-loglevel", "error", "-i", bg, "-i", ov["_frames"][0], "-filter_complex",
@@ -65,7 +71,7 @@ def main():
         ass = os.path.join(tmp, f"fp_{key}.ass")
         plan["hook"] = {"text": f"{i}. {fp['label']}", "duration": 5}
         render.write_ass(ass, plan, [{"start": 0, "end": 5, "text": "This is how your captions look"}], 5, W, H, look)
-        _, fontdir = render.pick_font(look.get("font"))
+        fontdir = render.fonts_dir(look)
         tile = os.path.join(tmp, f"fp_{key}.png")
         render.sh(["ffmpeg", "-y", "-loglevel", "error", "-i", bg, "-i", ov["_frames"][0], "-filter_complex",
                    f"[0:v]format=rgba[b];[b][1:v]overlay=0:{ov['_y'] + 300}[o];"
@@ -73,8 +79,25 @@ def main():
         tiles.append(tile)
     inputs = sum([["-i", t] for t in tiles], [])
     render.sh(["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex",
-               f"xstack=inputs={len(tiles)}:layout=0_0|360_0|720_0|0_640|360_640|720_640", "-q:v", "3",
+               f"xstack=inputs={len(tiles)}:layout={grid(len(tiles))}:fill=black", "-q:v", "3",
                os.path.join(a.out_dir, "font-pairs.jpg")])
+
+    tiles = []  # highlight colours: same caption, only the key-word colour changes
+    for i, (name, hx) in enumerate(looks.HIGHLIGHTS.items(), 1):
+        plan = {"look": {"style": "clean", "caption_case": "sentence", "colors": {"highlight": hx}},
+                "highlight_words": ["captions"], "hook": {"text": f"{i}. {name.title()}", "duration": 5}}
+        look = looks.resolve(plan)
+        ass = os.path.join(tmp, f"hl_{i}.ass")
+        render.write_ass(ass, plan, [{"start": 0, "end": 5, "text": f"{i}. your captions"}], 5, W, H, look)
+        tile = os.path.join(tmp, f"hl_{i}.png")
+        render.sh(["ffmpeg", "-y", "-loglevel", "error", "-i", bg, "-vf",
+                   f"ass={ass}:fontsdir={render.fonts_dir(look)},crop=900:800:90:{H - 1040},scale=360:320", tile])
+        tiles.append(tile)
+    inputs = sum([["-i", t] for t in tiles], [])
+    lay = "|".join(f"{(k % 4) * 360}_{(k // 4) * 320}" for k in range(len(tiles)))
+    render.sh(["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex",
+               f"xstack=inputs={len(tiles)}:layout={lay}:fill=black", "-q:v", "3",
+               os.path.join(a.out_dir, "highlights.jpg")])
 
     sw = "".join(
         f"<div class=t><div class=b style='background:{c['primary']}'><span style='color:{c['light']}'>Aa</span>"
@@ -97,6 +120,8 @@ def main():
         print(f"fonts {i}. {fp['label']} ({fp['display_font']} + {fp['font']})  ->  \"look\": {{\"font_pair\": \"{k}\"}}")
     for i, k in enumerate(looks.THEMES, 1):
         print(f"colour {i}. {k.title()}  ->  \"look\": {{\"theme\": \"{k}\"}}")
+    for i, (k, hx) in enumerate(looks.HIGHLIGHTS.items(), 1):
+        print(f"highlight {i}. {k.title()}  ->  \"look\": {{\"colors\": {{\"highlight\": \"{hx}\"}}}}")
 
 
 if __name__ == "__main__":

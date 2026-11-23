@@ -1,0 +1,448 @@
+<title>Reel Brand Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Anton&family=Archivo+Black&family=Bangers&family=Bebas+Neue&family=Caveat+Brush&family=DM+Serif+Display:ital@0;1&family=Gloock&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;800&family=Lilita+One&family=Luckiest+Guy&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Poppins:wght@800&family=Young+Serif&display=swap">
+<style>
+/* Layout: brand-handbook spread. Sticky chapter rail on the left, editable chapters in the middle, live phone preview pinned on the right (stacks on phones). */
+:root {
+  --paper: #F7F3EC;
+  --sheet: #FFFDF9;
+  --ink: #1E1C1A;
+  --muted: #6F675E;
+  --rule: #E4DCD0;
+  --rail: #EFE9DF;
+  --red: #A3192B;
+  --focus: #A3192B;
+  --display: "Instrument Serif", "Times New Roman", serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --label: "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #171513; --sheet: #211E1B; --ink: #F2ECE3; --muted: #A99F93; --rule: #3A342E;
+    --rail: #1C1A17; --red: #E0566A; --focus: #E0566A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #171513; --sheet: #211E1B; --ink: #F2ECE3; --muted: #A99F93; --rule: #3A342E;
+  --rail: #1C1A17; --red: #E0566A; --focus: #E0566A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.55 var(--body); }
+.wrap {
+  display: grid; grid-template-columns: 200px minmax(0, 1fr) 360px; gap: 28px;
+  max-width: 1320px; margin: 0 auto;
+  padding-block: 28px 60px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; }
+.rail .brand { font: 22px/1.1 var(--display); }
+.rail .sub { font: 500 11px var(--label); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+.rail nav { display: grid; gap: 2px; margin-top: 22px; }
+.rail a { display: flex; gap: 10px; align-items: baseline; padding: 7px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 13.5px; }
+.rail a span { font: 600 10px var(--label); color: var(--muted); font-variant-numeric: tabular-nums; }
+.rail a:hover, .rail a.on { background: var(--sheet); }
+main { display: grid; gap: 22px; min-width: 0; }
+section { background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px; padding: 28px clamp(18px, 3vw, 36px); scroll-margin-top: 20px; min-width: 0; }
+section.cover { border-top: 4px solid var(--red); }
+.eyebrow { font: 600 10.5px var(--label); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.chap { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.chap .num { font: 500 11px var(--label); color: var(--muted); font-variant-numeric: tabular-nums; }
+h2 { font: 400 30px/1.15 var(--display); margin: 2px 0 6px; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 62ch; margin: 0 0 20px; }
+.bigname { font: 400 clamp(40px, 6vw, 64px)/1 var(--display); margin: 10px 0 8px; overflow-wrap: anywhere; }
+.trade { color: var(--red); font-style: italic; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 22px; }
+label.f { display: grid; gap: 6px; font: 600 10.5px var(--label); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+input[type=text], select, textarea {
+  font: 15px var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 9px; padding: 10px 12px; width: 100%; min-width: 0;
+}
+textarea { resize: vertical; min-height: 44px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 13px var(--body); padding: 7px 12px; border-radius: 99px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.principles { display: grid; gap: 0; counter-reset: p; }
+.principles .row { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 8px; align-items: center; border-top: 1px solid var(--rule); padding: 8px 0; }
+.principles .row:last-child { border-bottom: 1px solid var(--rule); }
+.principles .row::before { counter-increment: p; content: "0" counter(p); font: 600 11px var(--label); color: var(--muted); }
+.principles textarea { background: transparent; border-color: transparent; font: 16px/1.35 var(--display); padding: 6px 8px; min-height: 0; resize: none; }
+.principles textarea:hover, #north:hover { border-color: var(--rule); }
+.northstar { font: 400 24px/1.25 var(--display); }
+.swatches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.sw { border-radius: 12px; padding: 14px; min-height: 120px; display: grid; align-content: space-between; gap: 8px; border: 1px solid rgba(0,0,0,.08); position: relative; }
+.sw b { font: 600 14px var(--body); }
+.sw small { font: 500 11px var(--label); opacity: .8; font-variant-numeric: tabular-nums; }
+.sw p { margin: 0; font-size: 11.5px; line-height: 1.35; opacity: .85; }
+.sw .ctl { display: flex; gap: 6px; align-items: center; }
+.sw input[type=color] { width: 34px; height: 30px; padding: 0; border: 0; background: none; cursor: pointer; }
+.sw input.hex { font: 500 12px var(--label); padding: 5px 7px; background: rgba(255,255,255,.55); color: #1E1C1A; border: 0; width: 86px; }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.preset { display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; border: 1px solid var(--rule); border-radius: 99px; background: var(--paper); color: var(--ink); cursor: pointer; font: 500 12.5px var(--body); }
+.preset i { display: flex; }
+.preset i em { width: 14px; height: 14px; border-radius: 50%; margin-right: -4px; border: 1.5px solid var(--paper); }
+.type { display: grid; gap: 0; }
+.trow { display: grid; grid-template-columns: 110px minmax(0, 1fr) 220px; gap: 18px; align-items: center; border-top: 1px solid var(--rule); padding: 16px 0; }
+.trow:last-child { border-bottom: 1px solid var(--rule); }
+.trow .aa { font-size: 64px; line-height: 1; }
+.trow .meta { font: 600 10.5px var(--label); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.trow .fname { font: 400 20px var(--display); margin: 2px 0; }
+.trow .use { color: var(--muted); font-size: 13px; }
+.trow .ctrls { display: grid; gap: 8px; }
+.toggle { display: flex; gap: 10px; align-items: center; font-size: 14px; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--red); }
+.preview { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; display: grid; gap: 12px; }
+.phone { position: relative; aspect-ratio: 9 / 16; max-width: 100%; border-radius: 26px; overflow: hidden; background: #6E8A6A center/cover no-repeat; box-shadow: 0 18px 40px rgba(30,20,10,.18); }
+.phone::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,0) 35%, rgba(0,0,0,0) 60%, rgba(0,0,0,.35)); pointer-events: none; }
+.phone .scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+.phone .ttl { position: absolute; z-index: 2; left: 8%; right: 8%; top: 9%; text-align: center; font-size: 34px; line-height: 1.02; }
+.phone .cap { position: absolute; z-index: 2; left: 6%; right: 6%; bottom: 27%; text-align: center; font-size: 22px; line-height: 1.15; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.55), 0 0 10px rgba(0,0,0,.35); }
+.phone .centre { position: absolute; z-index: 2; left: 6%; right: 6%; top: 50%; transform: translateY(-50%); text-align: center; font-size: 40px; line-height: 1.05; color: #fff; text-shadow: 0 3px 0 rgba(0,0,0,.5), 0 0 14px rgba(0,0,0,.35); }
+.phone .card { position: absolute; z-index: 2; left: 7%; bottom: 8%; display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 12px; font: 600 12px var(--body); }
+.phone .card i { width: 22px; height: 22px; border-radius: 50%; }
+.phone .ui { position: absolute; z-index: 2; right: 4%; bottom: 14%; display: grid; gap: 14px; }
+.phone .ui span { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,.9); border-radius: 50%; }
+.pv-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { font: 600 13.5px var(--body); padding: 10px 14px; border-radius: 10px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); cursor: pointer; }
+.btn.primary { background: var(--red); border-color: var(--red); color: #fff; }
+.filebtn { position: relative; overflow: hidden; }
+.filebtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.hint { font-size: 12.5px; color: var(--muted); }
+pre.kit { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 14px; font: 12px/1.5 ui-monospace, "SFMono-Regular", Menlo, monospace; max-height: 240px; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+.steps { display: grid; gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; }
+.steps li::before { counter-increment: s; content: counter(s); width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--sheet); font: 700 12px/24px var(--label); text-align: center; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--ink); color: var(--sheet); padding: 10px 16px; border-radius: 99px; font: 600 13px var(--body); }
+@media (max-width: 1100px) {
+  .wrap { grid-template-columns: minmax(0, 1fr) 320px; }
+  .rail { display: none; }
+}
+@media (max-width: 780px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); }
+  .preview { position: static; order: -1; grid-template-columns: minmax(0, 170px) minmax(0, 1fr); align-items: end; }
+  .phone .ttl { font-size: 17px; } .phone .cap { font-size: 11px; } .phone .centre { font-size: 20px; }
+  .phone .card { font-size: 8px; padding: 5px 7px; } .phone .ui { display: none; }
+  .grid2, .swatches { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .trow { grid-template-columns: 70px minmax(0, 1fr); }
+  .trow .ctrls { grid-column: 1 / -1; }
+  .trow .aa { font-size: 44px; }
+}
+@media (max-width: 460px) {
+  .grid2 { grid-template-columns: minmax(0, 1fr); }
+  .preview { grid-template-columns: minmax(0, 1fr); }
+  .phone { width: 62%; justify-self: center; }
+  .phone .ttl { font-size: 20px; } .phone .cap { font-size: 13px; } .phone .centre { font-size: 24px; }
+}
+@media (prefers-reduced-motion: no-preference) { .phone .centre { transition: opacity .25s; } }
+</style>
+
+<div class="wrap">
+  <aside class="rail" aria-label="Chapters">
+    <div class="brand" id="railName">Your brand</div>
+    <div class="sub">Reel brand kit</div>
+    <nav>
+      <a href="#cover" class="on"><span>01</span>Cover</a>
+      <a href="#principles"><span>02</span>Principles</a>
+      <a href="#colour"><span>03</span>Colour</a>
+      <a href="#type"><span>04</span>Typography</a>
+      <a href="#captions"><span>05</span>Captions</a>
+      <a href="#save"><span>06</span>Save your kit</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section class="cover" id="cover">
+      <div class="chap"><div class="eyebrow">Brand handbook</div><div class="num">01 / 06</div></div>
+      <div class="bigname" id="bigName">Grow with Jenae<span class="trade">.</span></div>
+      <p class="lede" id="bigLine">Gardening for total beginners: warm, practical, and always in season.</p>
+      <div class="grid2">
+        <label class="f">Brand name<input type="text" id="name" value="Grow with Jenae" maxlength="40"></label>
+        <label class="f">Instagram handle<input type="text" id="handle" value="@heytherejenae" maxlength="40"></label>
+        <label class="f" style="grid-column:1/-1">One line about you<input type="text" id="line" value="Gardening for total beginners: warm, practical, and always in season." maxlength="120"></label>
+      </div>
+      <p class="eyebrow" style="margin:22px 0 10px">Mood</p>
+      <div class="chips" id="moods"></div>
+    </section>
+
+    <section id="principles">
+      <div class="chap"><h2>Principles</h2><div class="num">02 / 06</div></div>
+      <p class="eyebrow">North star</p>
+      <textarea id="north" rows="2" style="font:400 24px/1.25 var(--display);background:transparent;border-color:transparent;padding:4px 0" aria-label="North star"></textarea>
+      <p class="lede" style="margin-top:6px">Three rules every reel follows. Tap a line to change it.</p>
+      <div class="principles">
+        <div class="row"><textarea id="p1" rows="2" aria-label="Principle 1"></textarea></div>
+        <div class="row"><textarea id="p2" rows="2" aria-label="Principle 2"></textarea></div>
+        <div class="row"><textarea id="p3" rows="2" aria-label="Principle 3"></textarea></div>
+      </div>
+    </section>
+
+    <section id="colour">
+      <div class="chap"><h2>Colour</h2><div class="num">03 / 06</div></div>
+      <p class="lede">The only colours your reels use. Start from a palette, then tap any colour to change it.</p>
+      <div class="presets" id="presets"></div>
+      <div class="swatches" id="swatches"></div>
+    </section>
+
+    <section id="type">
+      <div class="chap"><h2>Typography</h2><div class="num">04 / 06</div></div>
+      <p class="lede">Three fonts, one job each. The same ones in every reel. Mix any fonts you like.</p>
+      <div class="type" id="typeRows"></div>
+    </section>
+
+    <section id="captions">
+      <div class="chap"><h2>Captions</h2><div class="num">05 / 06</div></div>
+      <p class="lede">How the words you say look on screen.</p>
+      <div class="grid2">
+        <label class="f">Letters<select id="case">
+          <option value="lower">all lowercase</option>
+          <option value="sentence">Sentence case</option>
+          <option value="upper">ALL CAPS</option>
+        </select></label>
+        <label class="f">Words at a time<select id="words">
+          <option value="1">1 big word</option>
+          <option value="2">2 words</option>
+          <option value="3" selected>3 words</option>
+          <option value="4">4 words</option>
+        </select></label>
+        <label class="f" style="grid-column:1/-1">Try a line (key word in *stars*)<input type="text" id="sample" value="this is your *harvest* weekend"></label>
+        <label class="f" style="grid-column:1/-1">Big centre line<input type="text" id="centreText" value="every seedling *counts*"></label>
+      </div>
+      <div class="toggle" style="margin-top:16px"><input type="checkbox" id="showCentre" checked><label for="showCentre">Show a big centre line in the preview (for hooks and punchlines)</label></div>
+    </section>
+
+    <section id="save">
+      <div class="chap"><h2>Save your kit</h2><div class="num">06 / 06</div></div>
+      <p class="lede">Your reel tool reads this kit, so every reel comes out in your colours and fonts without the questions.</p>
+      <div class="pv-actions"><button class="btn primary" id="copy" type="button">Copy my brand kit</button></div>
+      <ol class="steps">
+        <li><span>Tap <b>Copy my brand kit</b>.</span></li>
+        <li><span>Open Claude and start your reel as usual: paste your Google Drive folder link and your one-line brief.</span></li>
+        <li><span>Long-press the message box, tap <b>Paste</b>, and send. Claude saves the kit to your folder and uses it for every reel.</span></li>
+      </ol>
+      <p class="eyebrow" style="margin:22px 0 8px">What gets copied</p>
+      <pre class="kit" id="kitText"></pre>
+    </section>
+  </main>
+
+  <aside class="preview" aria-label="Live preview">
+    <div class="phone" id="phone">
+      <canvas class="scene" id="scene" width="360" height="640" aria-hidden="true"></canvas>
+      <div class="ttl" id="pvTitle">harvest weekend</div>
+      <div class="centre" id="pvCentre"></div>
+      <div class="cap" id="pvCap"></div>
+      <div class="card" id="pvCard"><i id="pvAvatar"></i><span id="pvHandle">@heytherejenae</span></div>
+      <div class="ui"><span></span><span></span><span></span></div>
+    </div>
+    <div>
+      <div class="pv-actions">
+        <span class="btn filebtn">Use my photo<input type="file" id="photo" accept="image/*" aria-label="Use my photo as the preview background"></span>
+        <button class="btn" id="reset" type="button">Start again</button>
+      </div>
+      <p class="hint">Preview only. Your photo stays on your phone.</p>
+    </div>
+  </aside>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// Fonts the reel tool can use: name -> CSS for the preview.
+const FONTS = {
+  "Inter Display": ["Inter", 800, "normal"],
+  "Poppins": ["Poppins", 800, "normal"],
+  "Anton": ["Anton", 400, "normal"],
+  "Bebas Neue": ["Bebas Neue", 400, "normal"],
+  "Archivo Black": ["Archivo Black", 400, "normal"],
+  "Luckiest Guy": ["Luckiest Guy", 400, "normal"],
+  "Bangers": ["Bangers", 400, "normal"],
+  "Permanent Marker": ["Permanent Marker", 400, "normal"],
+  "Lilita One": ["Lilita One", 400, "normal"],
+  "DM Serif Display": ["DM Serif Display", 400, "normal"],
+  "DM Serif Display Italic": ["DM Serif Display", 400, "italic"],
+  "Instrument Serif": ["Instrument Serif", 400, "normal"],
+  "Instrument Serif Italic": ["Instrument Serif", 400, "italic"],
+  "Caveat Brush": ["Caveat Brush", 400, "normal"],
+  "Abril Fatface": ["Abril Fatface", 400, "normal"],
+  "Gloock": ["Gloock", 400, "normal"],
+  "Young Serif": ["Young Serif", 400, "normal"],
+  "Playfair Display": ["Playfair Display", 700, "normal"],
+  "Playfair Display Italic": ["Playfair Display", 400, "italic"],
+};
+const ROLES = [
+  ["light", "Background", "Grounds, cards, quiet space"],
+  ["primary", "Ink", "Words on cards, boxes, lines"],
+  ["highlight", "Pop", "The one key word, the highlight"],
+  ["soft", "Soft", "Quieter words, second marks"],
+  ["second", "Second pop", "Used sparingly"],
+  ["accent", "Accent", "A rare warm detail"],
+];
+const PALETTES = {
+  "Kitchen table": { light: "#F8F6EE", primary: "#1E1E1E", highlight: "#B81E2B", soft: "#395B46", second: "#EEE38A", accent: "#9C7C4D" },
+  "Garden": { light: "#F4EDE1", primary: "#1F4D3A", highlight: "#E8B04B", soft: "#A9C9A4", second: "#F28C6B", accent: "#7A5C3E" },
+  "Sunshine": { light: "#FFFFFF", primary: "#111111", highlight: "#FFD60A", soft: "#D9D9D9", second: "#FF8A00", accent: "#5CC8FF" },
+  "Ocean": { light: "#F2F7FA", primary: "#0B3C5D", highlight: "#7FD1F5", soft: "#C5DCE8", second: "#F2C14E", accent: "#2E7D8C" },
+  "Blush": { light: "#FFF1F3", primary: "#8E3B5B", highlight: "#FFB3C6", soft: "#E8C4CF", second: "#F9D56E", accent: "#5E2A3E" },
+  "Terracotta": { light: "#FBF1E6", primary: "#9C4A2F", highlight: "#F4B183", soft: "#D9B99B", second: "#5E8C61", accent: "#3B2A20" },
+  "Pop": { light: "#FFFFFF", primary: "#2B2BFF", highlight: "#FF4FA3", soft: "#C9A7FF", second: "#B6F23A", accent: "#111111" },
+};
+const MOODS = ["warm", "calm", "playful", "bold", "editorial", "cosy", "high energy", "minimal"];
+const DEFAULT = {
+  name: "Grow with Jenae", handle: "@heytherejenae", line: "Gardening for total beginners: warm, practical, and always in season.",
+  moods: ["warm", "editorial"], north: "A friend over the garden fence: warm, sure, and calm.",
+  p1: "One idea on screen at a time.", p2: "A serif for the big words, with one italic word that carries the feeling.",
+  p3: "The pop colour is the spice: the key word, never a wash.",
+  colors: { ...PALETTES["Kitchen table"] },
+  display_font: "Instrument Serif", font: "Inter Display", key_font: "Instrument Serif Italic",
+  caption_case: "lower", caption_words: 3, sample: "this is your *harvest* weekend", centreText: "every seedling *counts*", showCentre: true,
+};
+let S = load() || structuredClone(DEFAULT);
+let photo = null;
+
+function load() { try { const v = localStorage.getItem("reel-brand-kit"); return v ? { ...structuredClone(DEFAULT), ...JSON.parse(v) } : null; } catch (e) { return null; } }
+function save() { try { localStorage.setItem("reel-brand-kit", JSON.stringify(S)); } catch (e) {} }
+const $ = (id) => document.getElementById(id);
+const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function fontCss(name) { const f = FONTS[name] || FONTS["Inter Display"]; return `font-family:'${f[0]}',serif;font-weight:${f[1]};font-style:${f[2]}`; }
+function applyFont(el, name) { const f = FONTS[name] || FONTS["Inter Display"]; el.style.fontFamily = `"${f[0]}", serif`; el.style.fontWeight = f[1]; el.style.fontStyle = f[2]; }
+function lum(hex) { const n = parseInt(hex.slice(1), 16); const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]; }
+const onColour = (hex) => (lum(hex) > .45 ? "#1E1C1A" : "#FFFFFF");
+function casify(t) { return S.caption_case === "upper" ? t.toUpperCase() : S.caption_case === "lower" ? t.toLowerCase() : t.charAt(0).toUpperCase() + t.slice(1); }
+function richLine(text) {
+  return esc(casify(text)).replace(/\*([^*]+)\*/g, (_, w) => `<span style="${fontCss(S.key_font)};color:${S.colors.highlight};font-size:1.12em">${w}</span>`);
+}
+
+function buildStatic() {
+  $("moods").innerHTML = MOODS.map((m) => `<button type="button" class="chip" data-mood="${m}" aria-pressed="false">${m}</button>`).join("");
+  $("presets").innerHTML = Object.entries(PALETTES).map(([n, p]) =>
+    `<button type="button" class="preset" data-pal="${n}"><i>${["light", "primary", "highlight", "soft"].map((k) => `<em style="background:${p[k]}"></em>`).join("")}</i>${n}</button>`).join("");
+  $("swatches").innerHTML = ROLES.map(([k, label, use]) =>
+    `<div class="sw" id="sw-${k}"><div><b>${label}</b><br><small id="hx-${k}"></small></div><p>${use}</p>
+     <div class="ctl"><input type="color" id="c-${k}" aria-label="${label} colour"><input type="text" class="hex" id="t-${k}" aria-label="${label} hex code" maxlength="7"></div></div>`).join("");
+  const opts = Object.keys(FONTS).map((n) => `<option value="${n}">${n}</option>`).join("");
+  const rows = [
+    ["display_font", "Headline", "Titles, hooks and cards. The loud one, used big.", "this is a headline"],
+    ["font", "Captions", "Every word you say, read in half a second.", "this is a caption"],
+    ["key_font", "Key words", "The one word per line that carries the feeling.", "harvest"],
+  ];
+  $("typeRows").innerHTML = rows.map(([k, label, use, ex]) =>
+    `<div class="trow"><div class="aa" id="aa-${k}">Aa</div>
+      <div><div class="meta">${label}</div><div class="fname" id="fn-${k}"></div><div class="use">${use}</div><div id="ex-${k}" style="font-size:20px;margin-top:4px">${ex}</div></div>
+      <div class="ctrls"><label class="f">${label} font<select id="sel-${k}">${opts}</select></label></div></div>`).join("");
+}
+
+function render() {
+  const c = S.colors;
+  $("name").value !== S.name && ($("name").value = S.name);
+  $("bigName").innerHTML = `${esc(S.name || "Your brand")}<span class="trade">.</span>`;
+  applyFont($("bigName"), S.display_font);
+  $("bigName").querySelector(".trade").style.color = c.highlight;
+  $("railName").textContent = S.name || "Your brand";
+  $("bigLine").textContent = S.line;
+  document.querySelectorAll("[data-mood]").forEach((b) => b.setAttribute("aria-pressed", S.moods.includes(b.dataset.mood)));
+  ROLES.forEach(([k]) => {
+    const sw = $("sw-" + k); sw.style.background = c[k]; sw.style.color = onColour(c[k]);
+    $("hx-" + k).textContent = c[k].toUpperCase(); $("c-" + k).value = c[k];
+    if (document.activeElement !== $("t-" + k)) $("t-" + k).value = c[k].toUpperCase();
+  });
+  ["display_font", "font", "key_font"].forEach((k) => {
+    $("sel-" + k).value = S[k]; $("fn-" + k).textContent = S[k];
+    applyFont($("aa-" + k), S[k]); applyFont($("ex-" + k), S[k]);
+  });
+  $("ex-key_font").style.color = c.highlight;
+  $("case").value = S.caption_case; $("words").value = String(S.caption_words);
+  // phone preview
+  const t = $("pvTitle"); applyFont(t, S.display_font);
+  t.textContent = casify(S.sample.replace(/\*/g, "").split(" ").slice(-2).join(" ") || "harvest weekend");
+  t.style.color = c.light; t.style.textShadow = `0 3px 0 ${c.primary}, 0 0 18px rgba(0,0,0,.25)`;
+  const words = S.sample.split(/\s+/).filter(Boolean);
+  const card = words.slice(0, Math.max(S.caption_words, words.findIndex((w) => w.includes("*")) + 1)).join(" ");
+  const cap = $("pvCap"); applyFont(cap, S.font); cap.innerHTML = richLine(card);
+  const ce = $("pvCentre"); applyFont(ce, S.font); ce.innerHTML = richLine(S.centreText);
+  ce.style.opacity = S.showCentre ? 1 : 0; cap.style.opacity = S.showCentre ? .0 : 1;
+  const pc = $("pvCard"); pc.style.background = c.light; pc.style.color = c.primary;
+  $("pvAvatar").style.background = c.soft; $("pvHandle").textContent = S.handle || "@you";
+  $("showCentre").checked = S.showCentre;
+  drawScene();
+  $("kitText").textContent = kitText();
+  save();
+}
+
+function kit() {
+  return {
+    brand_name: S.name, handle: S.handle, about: S.line, mood: S.moods, north_star: S.north,
+    principles: [S.p1, S.p2, S.p3].filter(Boolean),
+    colors: { ...S.colors },
+    display_font: S.display_font, font: S.font === "Inter Display" ? null : S.font, key_font: S.key_font,
+    caption_case: S.caption_case, caption_words: Number(S.caption_words),
+  };
+}
+function kitText() { return "BRAND KIT (save as brand-kit.json)\n" + JSON.stringify(kit(), null, 1); }
+
+function drawScene() {
+  const cv = $("scene"), x = cv.getContext("2d"), W = cv.width, H = cv.height;
+  if (photo) {
+    const r = Math.max(W / photo.width, H / photo.height), w = photo.width * r, h = photo.height * r;
+    x.drawImage(photo, (W - w) / 2, (H - h) / 2, w, h); return;
+  }
+  // simple garden scene: sky, fence, beds, a figure
+  let g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#7FB2E5"); g.addColorStop(.45, "#CFE3F2"); g.addColorStop(.46, "#86A86A"); g.addColorStop(1, "#4F7A3E");
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = "#E9E4DA"; x.fillRect(0, H * .32, W, H * .14);
+  x.fillStyle = "#CFC8BB"; x.fillRect(0, H * .3, W, H * .03);
+  for (let i = 0; i < 9; i++) { x.fillStyle = i % 2 ? "#5F8C47" : "#6E9C54"; x.beginPath(); x.ellipse(20 + i * 42, H * .5, 30, 22, 0, 0, 7); x.fill(); }
+  x.fillStyle = "#8A5A3A"; x.fillRect(0, H * .55, W, 16);
+  x.fillStyle = "#2F4F45"; x.beginPath(); x.ellipse(W * .52, H * .64, 74, 96, 0, 0, 7); x.fill();
+  x.fillStyle = "#E8C4A8"; x.beginPath(); x.arc(W * .52, H * .44, 34, 0, 7); x.fill();
+  x.fillStyle = "#C9B79A"; x.beginPath(); x.arc(W * .52, H * .415, 36, Math.PI, 0); x.fill();
+}
+
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => (t.hidden = true), 2200); }
+
+function wire() {
+  ["name", "handle", "line", "north", "p1", "p2", "p3", "sample", "centreText"].forEach((k) =>
+    $(k).addEventListener("input", (e) => { S[k] = e.target.value; render(); }));
+  $("moods").addEventListener("click", (e) => {
+    const m = e.target.closest("[data-mood]")?.dataset.mood; if (!m) return;
+    S.moods = S.moods.includes(m) ? S.moods.filter((x) => x !== m) : [...S.moods, m]; render();
+  });
+  $("presets").addEventListener("click", (e) => {
+    const n = e.target.closest("[data-pal]")?.dataset.pal; if (!n) return;
+    S.colors = { ...PALETTES[n] }; render(); toast(`${n} colours applied`);
+  });
+  ROLES.forEach(([k]) => {
+    $("c-" + k).addEventListener("input", (e) => { S.colors[k] = e.target.value; render(); });
+    $("t-" + k).addEventListener("input", (e) => {
+      let v = e.target.value.trim(); if (!v.startsWith("#")) v = "#" + v;
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) { S.colors[k] = v; render(); }
+    });
+  });
+  ["display_font", "font", "key_font"].forEach((k) => $("sel-" + k).addEventListener("change", (e) => { S[k] = e.target.value; render(); }));
+  $("case").addEventListener("change", (e) => { S.caption_case = e.target.value; render(); });
+  $("words").addEventListener("change", (e) => { S.caption_words = Number(e.target.value); render(); });
+  $("showCentre").addEventListener("change", (e) => { S.showCentre = e.target.checked; render(); });
+  $("photo").addEventListener("change", (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const img = new Image(); img.onload = () => { photo = img; drawScene(); }; img.src = URL.createObjectURL(f);
+  });
+  $("reset").addEventListener("click", () => { S = structuredClone(DEFAULT); photo = null; render(); toast("Back to the example kit"); });
+  $("copy").addEventListener("click", () => {
+    const text = kitText();
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents($("kitText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Text selected: tap Copy"); };
+    try { navigator.clipboard.writeText(text).then(() => toast("Brand kit copied"), fallback); } catch (e) { fallback(); }
+  });
+  // highlight current chapter in the rail
+  const links = [...document.querySelectorAll(".rail a")];
+  const io = new IntersectionObserver((es) => es.forEach((en) => {
+    if (en.isIntersecting) links.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id));
+  }), { rootMargin: "-40% 0px -55% 0px" });
+  document.querySelectorAll("main section").forEach((s) => io.observe(s));
+}
+
+buildStatic();
+["name", "handle", "line", "north", "p1", "p2", "p3", "sample", "centreText"].forEach((k) => ($(k).value = S[k]));
+wire();
+render();
+document.fonts && document.fonts.ready.then(render);
+</script>

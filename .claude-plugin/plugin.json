@@ -1,0 +1,7 @@
+{
+  "name": "reel-creator",
+  "version": "0.1.0",
+  "description": "Make Instagram reels end to end: outlier research and hooks (vidIQ), transcribing winning reels (Eden, Get Transcript backup), your script page, brand kit, Canva or built-in overlays, the first edit from your Google Drive clips, and hand-off to CapCut or Instagram Edits.",
+  "author": { "name": "Jenae" },
+  "keywords": ["reels", "instagram", "tiktok", "video editing", "content creation"]
+}

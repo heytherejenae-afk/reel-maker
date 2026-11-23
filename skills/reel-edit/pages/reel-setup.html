@@ -1,0 +1,402 @@
+<title>Reel Setup</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Anton&family=Archivo+Black&family=Bebas+Neue&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Caveat+Brush&family=DM+Serif+Display:ital@0;1&family=Figtree:wght@400;500;600;700&family=Gloock&family=Instrument+Serif:ital@0;1&family=Lilita+One&family=Luckiest+Guy&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@800&family=Young+Serif&display=swap">
+<style>
+/* Layout: one question per screen, like a phone quiz. Progress bar on top, big tap cards, Back/Next pinned to the bottom. */
+:root {
+  --bg: #F6F7F2;
+  --card: #FFFFFF;
+  --ink: #18221C;
+  --muted: #5E6B62;
+  --line: #DCE2DA;
+  --berry: #B4235A;
+  --berry-soft: #FBE7EF;
+  --leaf: #2F6B45;
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33;
+    --berry: #F06A9C; --berry-soft: #3A1D29; --leaf: #7CC795; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33;
+  --berry: #F06A9C; --berry-soft: #3A1D29; --leaf: #7CC795; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); }
+.wrap {
+  max-width: 640px; margin: 0 auto;
+  padding-block: 18px 120px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.top { display: grid; gap: 8px; }
+.brand { font: 800 15px var(--display); letter-spacing: .02em; color: var(--berry); }
+.count { font: 600 13px var(--body); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--berry); border-radius: 99px; transition: width .25s; }
+h1 { font: 800 clamp(26px, 6vw, 34px)/1.12 var(--display); margin: 22px 0 6px; text-wrap: balance; }
+.help { color: var(--muted); margin: 0 0 18px; }
+.opts { display: grid; gap: 10px; }
+.opts.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.opt {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; align-items: start;
+  width: 100%; text-align: left; font: inherit; color: var(--ink);
+  background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: 14px; cursor: pointer;
+}
+.opt:hover { border-color: var(--muted); }
+.opt[aria-checked="true"] { border-color: var(--berry); background: var(--berry-soft); }
+.tick { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--muted); display: grid; place-items: center; font: 700 15px var(--body); color: transparent; }
+.opt.box .tick { border-radius: 7px; }
+.opt[aria-checked="true"] .tick { background: var(--berry); border-color: var(--berry); color: #fff; }
+.opt b { display: block; font-weight: 700; }
+.opt small { display: block; color: var(--muted); font-size: 14px; line-height: 1.35; margin-top: 2px; }
+.opt .num { color: var(--muted); font-weight: 600; margin-right: 4px; font-variant-numeric: tabular-nums; }
+.sample { margin-top: 10px; border-radius: 10px; padding: 12px; background: #2B3A31; color: #fff; overflow: hidden; }
+.sample .t { font-size: 24px; line-height: 1.1; }
+.sample .c { font-size: 16px; margin-top: 6px; }
+.swatch { display: flex; gap: 6px; margin-top: 8px; }
+.swatch i { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(0,0,0,.15); }
+.dots { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.dot { font: 600 13px var(--body); color: var(--ink); background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 8px; cursor: pointer; display: grid; gap: 6px; justify-items: center; }
+.dot i { width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(0,0,0,.2); }
+.dot[aria-checked="true"] { border-color: var(--berry); background: var(--berry-soft); }
+label.f { display: grid; gap: 6px; font-weight: 600; margin-top: 14px; }
+input[type=text], input[type=url], textarea, select {
+  font: 16px var(--body); color: var(--ink); background: var(--card); border: 2px solid var(--line);
+  border-radius: 12px; padding: 12px; width: 100%; min-width: 0;
+}
+textarea { min-height: 110px; resize: vertical; }
+input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--berry); outline-offset: 2px; }
+.sub { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); }
+.sub h2 { font: 800 19px var(--display); margin: 0 0 4px; }
+details { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-top: 14px; }
+summary { font-weight: 600; cursor: pointer; }
+ol.steps { margin: 10px 0 0; padding-left: 22px; display: grid; gap: 6px; }
+.linkbtn { display: inline-block; margin-top: 10px; font-weight: 700; color: var(--berry); }
+.note { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.warn { color: var(--berry); font-weight: 600; font-size: 14px; margin-top: 8px; }
+.review { display: grid; gap: 0; background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.review .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 12px 14px; border-top: 1px solid var(--line); align-items: start; }
+.review .row:first-child { border-top: 0; }
+.review .k { font-size: 13px; color: var(--muted); font-weight: 600; }
+.review .v { overflow-wrap: anywhere; }
+.review button { font: 600 14px var(--body); color: var(--berry); background: none; border: 0; cursor: pointer; padding: 4px; }
+.copybox { margin-top: 16px; display: grid; gap: 10px; }
+.done { display: none; background: var(--berry-soft); border-radius: 14px; padding: 14px; }
+.done.show { display: block; }
+pre#out { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; max-height: 180px; overflow: auto; margin: 0; }
+.nav {
+  position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px solid var(--line);
+  padding-top: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.nav .in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
+.btn { font: 700 17px var(--body); border-radius: 14px; padding: 14px 18px; cursor: pointer; border: 2px solid var(--line); background: var(--card); color: var(--ink); }
+.btn.primary { background: var(--berry); border-color: var(--berry); color: #fff; }
+.btn:disabled { opacity: .45; cursor: default; }
+@media (max-width: 420px) { .opts.two { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">REEL SETUP</div>
+    <div class="count" id="count">Question 1</div>
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+  <main id="screen" aria-live="polite"></main>
+</div>
+<div class="nav"><div class="in">
+  <button class="btn" id="back" type="button">Back</button>
+  <button class="btn primary" id="next" type="button">Next</button>
+</div></div>
+
+<script>
+const BRAND_KIT_PAGE = "https://claude.ai/artifact/MX9eeexJmLrPg2Suhj4Rfs";
+const FEELS = [
+  ["clean", "Clean", "Simple and easy to read. White captions, key words in colour."],
+  ["editorial", "Editorial", "Polished and magazine-like. Captions in a coloured box, big 3D titles."],
+  ["lofi", "Lo-fi", "Raw, warm and cosy. Hand-written captions, film grain."],
+  ["creator", "Creator", "Big bold words, one or two at a time. Great for talking to camera."],
+  ["bold", "Bold", "High energy. Chunky bright captions and quick zooms."]
+];
+const PAIRS = [
+  ["classic", "Classic", "Archivo Black", "Poppins", null],
+  ["elegant", "Elegant", "DM Serif Display", "Instrument Serif", null],
+  ["creator", "Creator mix", "Instrument Serif", "Poppins", null],
+  ["playful", "Playful", "Luckiest Guy", "Lilita One", null],
+  ["handmade", "Handmade", "Permanent Marker", "Permanent Marker", null],
+  ["headline", "Headline", "Anton", "Bebas Neue", null],
+  ["serif-mix", "Serif mix", "Abril Fatface", "Poppins", "Playfair Display Italic"],
+  ["classic-serif", "Classic serif", "Gloock", "Young Serif", "DM Serif Display Italic"],
+  ["magazine", "Magazine", "Playfair Display", "Archivo Black", "Instrument Serif Italic"]
+];
+const FONTS = ["Poppins", "Archivo Black", "Anton", "Bebas Neue", "Luckiest Guy", "Lilita One", "Permanent Marker",
+  "Caveat Brush", "Instrument Serif", "Instrument Serif Italic", "DM Serif Display", "DM Serif Display Italic",
+  "Playfair Display", "Playfair Display Italic", "Abril Fatface", "Gloock", "Young Serif"];
+const THEMES = [
+  ["forest", "Forest", ["#1F4D3A", "#F4EDE1", "#A9C9A4"]], ["sunshine", "Sunshine", ["#111111", "#FFFFFF", "#FFD60A"]],
+  ["ocean", "Ocean", ["#0B3C5D", "#F2F7FA", "#7FD1F5"]], ["blush", "Blush", ["#8E3B5B", "#FFF1F3", "#FFB3C6"]],
+  ["terracotta", "Terracotta", ["#9C4A2F", "#FBF1E6", "#F4B183"]], ["mono", "Mono", ["#000000", "#FFFFFF", "#BDBDBD"]],
+  ["pop", "Pop", ["#E63946", "#FFFFFF", "#FFD60A"]], ["vintage", "Vintage", ["#3B2F2F", "#FFF6E9", "#FFB4A2"]],
+  ["butter", "Butter", ["#B3261E", "#FFFFFF", "#F6E27A"]]
+];
+const HIGHLIGHTS = [["yellow", "#FFD60A"], ["orange", "#FF8A00"], ["coral", "#FF6B6B"], ["hot pink", "#FF4FA3"],
+  ["lilac", "#C9A7FF"], ["sky blue", "#5CC8FF"], ["mint", "#5EF2B5"], ["lime", "#B6F23A"], ["sage", "#A9C9A4"],
+  ["peach", "#FFB38A"], ["gold", "#E8B04B"], ["white", "#FFFFFF"]];
+const MOODS = [["chill", "Chill"], ["happy", "Happy"], ["funny", "Funny"], ["inspiring", "Inspiring"], ["energetic", "Energetic"], ["christmas", "Christmas"]];
+const FAMILY = n => n.replace(" Italic", "");
+const ITAL = n => n.includes("Italic") ? "italic" : "normal";
+
+let A = {
+  brand: null, kit: "", link: "", brief: "", length: "30-45", feel: null,
+  fonts: null, title_font: "Abril Fatface", caption_font: "Poppins", key_font: "Playfair Display Italic",
+  theme: null, highlight: "theme", music: null, mood: "happy",
+  extras: { storyboard: true, sfx: true, hide_faces: false, repurpose: false }
+};
+try { const s = JSON.parse(localStorage.getItem("reel-setup") || "null"); if (s) A = Object.assign(A, s); } catch (e) {}
+const save = () => { try { localStorage.setItem("reel-setup", JSON.stringify(A)); } catch (e) {} };
+
+const kitGiven = () => A.brand === "keep" || ((A.brand === "update" || A.brand === "none") && A.kit.trim().length > 20);
+const STEPS = [
+  { id: "brand", show: () => true },
+  { id: "clips", show: () => true },
+  { id: "brief", show: () => true },
+  { id: "feel", show: () => true },
+  { id: "fonts", show: () => !kitGiven() },
+  { id: "colours", show: () => !kitGiven() },
+  { id: "music", show: () => true },
+  { id: "extras", show: () => true },
+  { id: "review", show: () => true }
+];
+let i = 0;
+const visible = () => STEPS.filter(s => s.show());
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function opt(group, val, title, small, extra, isBox, n) {
+  const on = isBox ? !!A.extras[val] : A[group] === val;
+  return `<button type="button" class="opt${isBox ? " box" : ""}" role="${isBox ? "checkbox" : "radio"}" aria-checked="${on}" data-g="${group}" data-v="${val}">
+    <span class="tick">✓</span><span>${n ? `<span class="num">${n}.</span>` : ""}<b style="display:inline">${title}</b>${small ? `<small>${small}</small>` : ""}${extra || ""}</span></button>`;
+}
+const YOU = (g, what) => opt(g, "you choose", "You choose for me", `Claude picks the ${what} that suits your video best.`);
+
+const R = {
+  brand: () => `
+    <h1>Do you need to update your brand information?</h1>
+    <p class="help">Your brand kit is your saved colours, fonts and name. Claude uses it so every reel looks like you.</p>
+    <div class="opts" role="radiogroup">
+      ${opt("brand", "keep", "No, use my saved brand kit", "Nothing has changed. Use my colours and fonts from last time.")}
+      ${opt("brand", "update", "Yes, I want to change something", "New colours, fonts, name or handle.")}
+      ${opt("brand", "none", "I don't have a brand kit yet", "I'll make one now, or pick a look on the next screens.")}
+    </div>
+    ${A.brand === "update" || A.brand === "none" ? `<div class="sub">
+      <h2>${A.brand === "update" ? "Update your brand kit" : "Make a brand kit (optional)"}</h2>
+      <ol class="steps">
+        <li>Tap <b>Open the Brand Kit page</b> below. It opens in a new tab.</li>
+        <li>Change your colours, fonts and name. The phone picture shows how it will look.</li>
+        <li>Scroll to the bottom and tap <b>Copy my brand kit</b>.</li>
+        <li>Come back to this tab. Press and hold in the box below, then tap <b>Paste</b>.</li>
+      </ol>
+      <a class="linkbtn" href="${BRAND_KIT_PAGE}" target="_blank" rel="noopener">Open the Brand Kit page ↗</a>
+      <label class="f" for="kit">Paste your brand kit here${A.brand === "none" ? " (or leave it empty and tap Next)" : ""}
+        <textarea id="kit" placeholder="BRAND KIT (save as brand-kit.json) ...">${esc(A.kit)}</textarea></label>
+      <p class="note">With a brand kit, you won't need to choose fonts and colours on this page.</p>
+    </div>` : ""}
+    ${A.brand === "keep" ? `<p class="note">Claude will use the brand-kit.json file in your Google Drive folder. If it can't find one, it will ask you.</p>` : ""}`,
+
+  clips: () => `
+    <h1>Where are your clips?</h1>
+    <p class="help">Paste the link to the Google Drive folder that has your videos in it.</p>
+    <label class="f" for="link">Google Drive folder link
+      <input type="url" id="link" inputmode="url" placeholder="https://drive.google.com/drive/folders/..." value="${esc(A.link)}"></label>
+    <p class="warn" id="linkwarn" hidden>That doesn't look like a Google Drive link. It should start with https://drive.google.com</p>
+    <details><summary>How do I get the link? (Android phone)</summary>
+      <ol class="steps">
+        <li>Open the <b>Drive</b> app.</li>
+        <li>Find your folder of clips. Tap the <b>three dots ⋮</b> next to its name.</li>
+        <li>Tap <b>Share</b>, then tap <b>Manage access</b> (or <b>General access</b>).</li>
+        <li>Tap <b>Restricted</b> and change it to <b>Anyone with the link</b>. Leave it on <b>Viewer</b>.</li>
+        <li>Tap the <b>back arrow</b>, then tap <b>Copy link</b>.</li>
+        <li>Come back here, press and hold in the box above, and tap <b>Paste</b>.</li>
+      </ol></details>
+    <p class="note">You can leave this empty if you've already sent Claude the link in the chat.</p>`,
+
+  brief: () => `
+    <h1>What's this reel about?</h1>
+    <p class="help">One or two sentences is plenty. Say who it's for if you can.</p>
+    <label class="f" for="brief">About the reel
+      <textarea id="brief" placeholder="Example: How to plant raspberries in a pot, for beginners who've never grown fruit.">${esc(A.brief)}</textarea></label>
+    <div class="sub"><h2>How long?</h2>
+      <div class="opts" role="radiogroup">
+        ${opt("length", "15-30", "Short: 15 to 30 seconds", "Best for a quick tip or a show-off.")}
+        ${opt("length", "30-45", "Medium: 30 to 45 seconds", "Recommended. Room for a hook, the steps and a payoff.")}
+        ${opt("length", "45-60", "Long: 45 to 60 seconds", "For a full how-to with a few steps.")}
+      </div></div>`,
+
+  feel: () => `
+    <h1>What feel do you want?</h1>
+    <p class="help">Tap one. You'll see it on your own video before anything is made.</p>
+    <div class="opts" role="radiogroup">
+      ${FEELS.map((f, n) => opt("feel", f[0], f[1], f[2], "", false, n + 1)).join("")}
+      ${YOU("feel", "feel")}
+    </div>`,
+
+  fonts: () => `
+    <h1>Which fonts?</h1>
+    <p class="help">The big font is for titles. The smaller line shows the captions, with a <b>key word</b> picked out.</p>
+    <div class="opts" role="radiogroup">
+      ${PAIRS.map((p, n) => opt("fonts", p[0], p[1], "", `<div class="sample">
+        <div class="t" style="font-family:'${FAMILY(p[2])}',serif;font-weight:${p[2] === "Playfair Display" ? 700 : 400}">Grow raspberries</div>
+        <div class="c" style="font-family:'${FAMILY(p[3])}',sans-serif;font-weight:${p[3] === "Poppins" ? 800 : 400}">in a pot on your <span style="color:#FFD60A;font-family:'${FAMILY(p[4] || p[3])}',serif;font-style:${ITAL(p[4] || "")};font-weight:${(p[4] || p[3]) === "Poppins" ? 800 : 400}">balcony</span></div></div>`, false, n + 1)).join("")}
+      ${opt("fonts", "custom", "Make my own mix", "Pick a font for the title, the captions and the key words.")}
+      ${YOU("fonts", "fonts")}
+    </div>
+    ${A.fonts === "custom" ? `<div class="sub"><h2>Your own mix</h2>
+      ${["title_font", "caption_font", "key_font"].map(k => `<label class="f" for="${k}">${{ title_font: "Title font", caption_font: "Caption font", key_font: "Key word font" }[k]}
+        <select id="${k}">${FONTS.map(f => `<option${A[k] === f ? " selected" : ""}>${f}</option>`).join("")}</select></label>`).join("")}
+      <div class="sample" id="mix"></div>
+      <p class="note">Got your own font? Put the .ttf or .otf file in your Drive folder and tell Claude its name.</p></div>` : ""}`,
+
+  colours: () => `
+    <h1>Which colours?</h1>
+    <p class="help">Each set has a box colour, a text colour and a key-word colour.</p>
+    <div class="opts two" role="radiogroup">
+      ${THEMES.map((t, n) => opt("theme", t[0], t[1], "", `<div class="swatch">${t[2].map(c => `<i style="background:${c}"></i>`).join("")}</div>`, false, n + 1)).join("")}
+    </div>
+    <div class="opts" style="margin-top:10px">${YOU("theme", "colours")}</div>
+    <div class="sub"><h2>Key-word colour</h2>
+      <p class="help" style="margin:0 0 10px">The colour that makes important words pop.</p>
+      <div class="dots" role="radiogroup">
+        <button type="button" class="dot" role="radio" aria-checked="${A.highlight === "theme"}" data-g="highlight" data-v="theme"><i style="background:conic-gradient(#FFD60A 0 33%,#A9C9A4 0 66%,#FFB3C6 0)"></i>Match colours</button>
+        ${HIGHLIGHTS.map(h => `<button type="button" class="dot" role="radio" aria-checked="${A.highlight === h[0]}" data-g="highlight" data-v="${h[0]}"><i style="background:${h[1]}"></i>${h[0][0].toUpperCase() + h[0].slice(1)}</button>`).join("")}
+      </div></div>`,
+
+  music: () => `
+    <h1>Do you want music?</h1>
+    <p class="help">Music is free to use. Claude gives you one credit line to paste in your caption.</p>
+    <div class="opts" role="radiogroup">
+      ${opt("music", "yes", "Yes, add music", "Quiet music under your voice.")}
+      ${opt("music", "no", "No music", "Keep just my voice and the real sound.")}
+      ${YOU("music", "music")}
+    </div>
+    ${A.music === "yes" ? `<div class="sub"><h2>What mood?</h2><div class="opts two" role="radiogroup">
+      ${MOODS.map(m => opt("mood", m[0], m[1], "")).join("")}</div>
+      <p class="note">Tip: on Instagram or TikTok you can swap in a trending sound before posting.</p></div>` : ""}`,
+
+  extras: () => `
+    <h1>Anything else?</h1>
+    <p class="help">Tick as many as you like.</p>
+    <div class="opts">
+      ${opt("extras", "storyboard", "Show me the plan before you make it", "A storyboard with every shot and its words, so I can change things first.", "", true)}
+      ${opt("extras", "sfx", "Add sound effects", "Little pops, whooshes and dings when words appear.", "", true)}
+      ${opt("extras", "hide_faces", "Hide other people's faces", "Blur kids or anyone else in the background. Your face stays.", "", true)}
+      ${opt("extras", "repurpose", "Also make a carousel, a story and 3 trial reels", "Made from the same video after the reel is done.", "", true)}
+    </div>`,
+
+  review: () => {
+    const rows = [
+      ["brand", "Brand info", { keep: "Use my saved brand kit", update: kitGiven() ? "Updated brand kit pasted" : "Update it (no kit pasted yet)", none: kitGiven() ? "New brand kit pasted" : "No brand kit" }[A.brand] || "Not answered"],
+      ["clips", "Clips", A.link || "Link already in the chat"],
+      ["brief", "About the reel", (A.brief || "Not written") + ` · ${A.length} seconds`],
+      ["feel", "Feel", label(FEELS, A.feel)],
+      ...(kitGiven() ? [] : [
+        ["fonts", "Fonts", A.fonts === "custom" ? `Title ${A.title_font}, captions ${A.caption_font}, key words ${A.key_font}` : label(PAIRS, A.fonts)],
+        ["colours", "Colours", label(THEMES, A.theme) + ` · key words: ${A.highlight === "theme" ? "match colours" : A.highlight}`]]),
+      ["music", "Music", A.music === "yes" ? `Yes, ${A.mood}` : A.music === "no" ? "No music" : A.music === "you choose" ? "You choose" : "Not answered"],
+      ["extras", "Extras", Object.entries(A.extras).filter(e => e[1]).map(e => ({ storyboard: "plan first", sfx: "sound effects", hide_faces: "hide faces", repurpose: "carousel + story + trials" }[e[0]])).join(", ") || "None"]
+    ];
+    return `<h1>All done! Check your answers</h1>
+      <p class="help">Tap <b>Change</b> to fix anything.</p>
+      <div class="review">${rows.map(r => `<div class="row"><div><div class="k">${r[1]}</div><div class="v">${esc(r[2])}</div></div><button type="button" data-go="${r[0]}">Change</button></div>`).join("")}</div>
+      <div class="copybox">
+        <button class="btn primary" id="copy" type="button">Copy my answers</button>
+        <div class="done" id="done"><b>Copied!</b>
+          <ol class="steps">
+            <li>Go back to your Claude chat.</li>
+            <li>Press and hold in the message box at the bottom.</li>
+            <li>Tap <b>Paste</b>, then tap the <b>send arrow</b>.</li>
+          </ol></div>
+        <p class="note">If the Copy button doesn't work: press and hold on the text below, tap <b>Select all</b>, then <b>Copy</b>.</p>
+        <pre id="out">${esc(answerText())}</pre>
+      </div>`;
+  }
+};
+function label(list, v) { if (v === "you choose") return "You choose"; const f = list.find(x => x[0] === v); return f ? f[1] : "Not answered"; }
+
+function answers() {
+  const o = { brand: A.brand || "not answered" };
+  if (kitGiven() && A.brand !== "keep") {
+    const raw = A.kit.replace(/^[\s\S]*?BRAND KIT \(save as brand-kit\.json\)\s*/, "");
+    try { o.brand_kit = JSON.parse(raw); } catch (e) { o.brand_kit_text = A.kit.trim(); }
+  }
+  if (A.link) o.drive_link = A.link.trim();
+  if (A.brief) o.brief = A.brief.trim();
+  o.length = A.length;
+  o.feel = A.feel || "you choose";
+  if (!kitGiven()) {
+    o.fonts = A.fonts === "custom" ? { title: A.title_font, captions: A.caption_font, key_words: A.key_font } : (A.fonts || "you choose");
+    o.colours = A.theme || "you choose";
+    o.highlight = A.highlight === "theme" ? "match colours" : A.highlight;
+  }
+  o.music = A.music === "yes" ? A.mood : A.music === "no" ? "none" : "you choose";
+  o.extras = A.extras;
+  return o;
+}
+function answerText() { return "REEL SETUP (answers for Claude)\n" + JSON.stringify(answers(), null, 1); }
+
+function render() {
+  const v = visible();
+  if (i >= v.length) i = v.length - 1;
+  const step = v[i];
+  $("screen").innerHTML = R[step.id]();
+  $("count").textContent = step.id === "review" ? "Last step" : `Question ${i + 1} of ${v.length - 1}`;
+  $("bar").style.width = `${Math.round((i + 1) / v.length * 100)}%`;
+  $("back").disabled = i === 0;
+  $("next").hidden = step.id === "review";
+  $("next").textContent = i === v.length - 2 ? "See my answers" : "Next";
+  wire(step.id);
+  save();
+}
+function wire(id) {
+  document.querySelectorAll("[data-g]").forEach(b => b.addEventListener("click", () => {
+    const g = b.dataset.g, val = b.dataset.v;
+    if (g === "extras") A.extras[val] = !A.extras[val]; else A[g] = val;
+    const y = window.scrollY; render(); window.scrollTo(0, y);
+  }));
+  document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => {
+    i = visible().findIndex(s => s.id === b.dataset.go); render(); window.scrollTo(0, 0);
+  }));
+  const bind = (k, ev) => { const el = $(k); if (el) el.addEventListener(ev || "input", () => { A[k] = el.value; save(); if (k === "kit") toggleNext(); if (k === "link") checkLink(); mix(); }); };
+  ["kit", "link", "brief"].forEach(k => bind(k));
+  ["title_font", "caption_font", "key_font"].forEach(k => bind(k, "change"));
+  mix(); checkLink();
+  if (id === "review") {
+    $("copy").addEventListener("click", () => {
+      const t = answerText();
+      const ok = () => $("done").classList.add("show");
+      try {
+        navigator.clipboard.writeText(t).then(ok, () => { selectOut(); ok(); });
+      } catch (e) { selectOut(); ok(); }
+    });
+  }
+}
+function selectOut() { const r = document.createRange(); r.selectNodeContents($("out")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+function checkLink() { const el = $("link"), w = $("linkwarn"); if (el && w) w.hidden = !el.value || /drive\.google\.com/.test(el.value); }
+function toggleNext() {}
+function mix() {
+  const m = $("mix"); if (!m) return;
+  m.innerHTML = `<div class="t" style="font-family:'${FAMILY(A.title_font)}',serif;font-style:${ITAL(A.title_font)}">Grow raspberries</div>
+    <div class="c" style="font-family:'${FAMILY(A.caption_font)}',sans-serif;font-style:${ITAL(A.caption_font)};font-weight:${A.caption_font === "Poppins" ? 800 : 400}">in a pot on your <span style="color:#FFD60A;font-family:'${FAMILY(A.key_font)}',serif;font-style:${ITAL(A.key_font)}">balcony</span></div>`;
+}
+$("next").addEventListener("click", () => { i = Math.min(i + 1, visible().length - 1); render(); window.scrollTo(0, 0); });
+$("back").addEventListener("click", () => { i = Math.max(i - 1, 0); render(); window.scrollTo(0, 0); });
+render();
+</script>

@@ -1,0 +1,18 @@
+{
+ "title": "Apple trees in pots",
+ "eyebrow": "Reel script · Grow your own fruit · CTA: comment PLANT",
+ "lede": "A 45 to 50 second reel from your planting footage. Record the script once as a talking take and lay the planting clips over it.",
+ "glance": [["45-50 s", "reel length, about 140 words"], ["~10 min", "to film the talking take"], ["Comment", "PLANT for the weekly email"], ["The pair", "Pink Lady needs a partner"]],
+ "fill_in": ["[pot size] The size of the pots you used, e.g. 50 litre."],
+ "research": [{"label": "Example outlier · 1.2M views · 9x the creator's usual", "hook": "Stop buying apples. Grow them in a pot instead.", "url": "https://www.instagram.com/"}],
+ "beats": [
+  {"name": "Hook", "time": "0-3 s", "say": "Apples are $1.40 each right now. So I'm growing my own. In pots.", "on_screen": ["Apples $1.40 each?", "Growing my own, in pots"], "kind": "hook"},
+  {"name": "Tip 1", "time": "18-24 s", "say": "Go dwarf, and go big on the pot. These are [pot size], with plenty of drainage holes.", "on_screen": ["#1 Dwarf tree, big pot", "Drainage holes"]},
+  {"name": "Soft sell", "time": "43-49 s", "say": "If you want a weekly email with what to plant, comment PLANT and I'll send it to you.", "on_screen": ["Weekly garden email", "Comment PLANT"], "kind": "cta"}
+ ],
+ "shots": [{"what": "Talking take of the whole script, one go.", "note": "Phone close, somewhere quiet."}, {"what": "Both trees side by side, labels showing."}],
+ "caption": "Apples are $1.40 each right now. So I'm growing my own 🍎\n\n#australiangarden #fruittrees",
+ "template": [["Hook", "Shop price, then 'so I'm growing my own'."], ["Soft sell", "Comment PLANT for the weekly email."]],
+ "next_ideas": ["Lemons in pots", "Blueberries in pots"],
+ "footer": "Sowing Log · @heytherejenae"
+}
