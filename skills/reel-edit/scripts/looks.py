@@ -6,6 +6,7 @@ A plan picks a look with:
            "colors": {"primary": "#1F4D3A"},  # optional single-colour overrides
            "font_pair": "elegant",        # optional font combination (FONT_PAIRS below)
            "font": "Lilita One",          # optional caption font (render.FONTS name or .ttf path)
+           "key_font": "Playfair Display Italic",  # optional second font for key words
            "caption_box": true,           # optional: any STYLES key can be overridden
            "caption_mode": "karaoke"}     # words (default) | karaoke | punch
 Older plans with "style": {"font", "highlight_color"} still work.
@@ -18,6 +19,14 @@ Lookbook: a brand kit can hold several named looks ("looks": {"Butter": {...}, .
 """
 import json
 import os
+
+# Highlight colours for key words, shown numbered on highlights.jpg. Any colour name or
+# hex code works too: "colors": {"highlight": "#FF5A36"}.
+HIGHLIGHTS = {
+    "yellow": "#FFD60A", "orange": "#FF8A00", "coral": "#FF6B6B", "hot pink": "#FF4FA3",
+    "lilac": "#C9A7FF", "sky blue": "#5CC8FF", "mint": "#5EF2B5", "lime": "#B6F23A",
+    "sage": "#A9C9A4", "peach": "#FFB38A", "gold": "#E8B04B", "white": "#FFFFFF",
+}
 
 # Colour roles: primary = boxes, 3D title depth, buttons; light = text on primary and
 # title faces; highlight = key words in captions.
@@ -48,6 +57,16 @@ FONT_PAIRS = {
                  "display_font": "Permanent Marker", "font": "Permanent Marker", "script_font": "Caveat Brush"},
     "headline": {"label": "Headline", "feel": "loud and punchy",
                  "display_font": "Anton", "font": "Bebas Neue", "script_font": "Caveat Brush"},
+    # two-font captions: plain caption words, key words in a serif (key_font)
+    "serif-mix": {"label": "Serif mix", "feel": "clean words, fancy key words",
+                  "display_font": "Abril Fatface", "font": "Poppins", "key_font": "Playfair Display Italic",
+                  "script_font": "Caveat Brush"},
+    "classic-serif": {"label": "Classic serif", "feel": "warm, bookish, timeless",
+                      "display_font": "Gloock", "font": "Young Serif", "key_font": "DM Serif Display Italic",
+                      "script_font": "Caveat Brush"},
+    "magazine": {"label": "Magazine", "feel": "bold serif headlines, elegant italics",
+                 "display_font": "Playfair Display", "font": "Archivo Black", "key_font": "Instrument Serif Italic",
+                 "script_font": "Caveat Brush"},
 }
 
 STYLES = {
@@ -108,9 +127,9 @@ def resolve(plan):
     look["style"] = req.get("style", "clean") if req.get("style") in STYLES else "clean"
     pair = FONT_PAIRS.get(str(req.get("font_pair", "")).lower())
     if pair:  # a font combination sets all three fonts; a single "font" etc. below still wins
-        look.update({k: pair[k] for k in ("display_font", "font", "script_font")})
+        look.update({k: pair[k] for k in ("display_font", "font", "script_font", "key_font") if k in pair})
     for k, v in req.items():
-        if (k in look or k in ("handle", "avatar", "script_font", "caption_mode", "font_pair")) and k != "style":
+        if (k in look or k in ("handle", "avatar", "script_font", "caption_mode", "font_pair", "key_font")) and k != "style":
             look[k] = v
     colors = dict(THEMES.get(req.get("theme") or look["theme"], THEMES["sunshine"]))
     if old.get("highlight_color"):

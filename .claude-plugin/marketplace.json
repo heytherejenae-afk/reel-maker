@@ -1,0 +1,11 @@
+{
+  "name": "reel-creator",
+  "owner": { "name": "Jenae" },
+  "plugins": [
+    {
+      "name": "reel-creator",
+      "source": "./",
+      "description": "Make Instagram reels end to end, from idea to CapCut or Edits."
+    }
+  ]
+}

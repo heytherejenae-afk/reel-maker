@@ -1,0 +1,182 @@
+<title>{{NAME}} reel editor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one phone-width column; the reel on top, then one card per script beat, then fixes and the copy button pinned at the bottom */
+:root {
+  --bg: #F3EFE4; --card: #FFFDF7; --ink: #1F2A22; --muted: #5F6A60; --line: #DDD5C2;
+  --forest: #2F4A35; --key: #C2582D; --sel: #2F4A35; --on: #FFFDF7; --chip: #ECE6D6;
+  --display: "DM Serif Display", Georgia, serif; --body: "Inter", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #161C17; --card: #1F2720; --ink: #ECE7DA; --muted: #A3AEA2; --line: #34413A;
+  --forest: #A9C79B; --key: #EE8E62; --sel: #A9C79B; --on: #161C17; --chip: #2A342C; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #161C17; --card: #1F2720; --ink: #ECE7DA; --muted: #A3AEA2; --line: #34413A;
+  --forest: #A9C79B; --key: #EE8E62; --sel: #A9C79B; --on: #161C17; --chip: #2A342C; color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); }
+.wrap { max-width: 640px; margin: 0 auto; padding-block: 20px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+h1 { font: 400 30px/1.1 var(--display); color: var(--forest); margin: 0; text-wrap: balance; }
+h2 { font: 400 22px/1.2 var(--display); margin: 0; color: var(--forest); }
+h3 { font: 600 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0; }
+p { margin: 0; }
+.lede { color: var(--muted); }
+video { width: 100%; max-width: 320px; aspect-ratio: 9/16; border-radius: 14px; background: #000; align-self: center; }
+.beat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.beat.off { opacity: .45; }
+.bhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.bhead span { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.words { display: flex; flex-wrap: wrap; gap: 6px; }
+.w { border: 0; background: var(--chip); color: var(--ink); border-radius: 999px; padding: 5px 10px; font: 500 14px var(--body); cursor: pointer; }
+.w.key { background: transparent; color: var(--key); font: italic 400 17px var(--display); outline: 1.5px solid var(--key); }
+.row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.ov { border: 2px solid transparent; border-radius: 10px; padding: 0; background: none; cursor: pointer; flex: none; }
+.ov img { width: 54px; height: 96px; border-radius: 8px; display: block; object-fit: cover; }
+.ov.none { width: 58px; height: 100px; background: var(--chip); color: var(--muted); font-size: 12px; }
+.ov.on { border-color: var(--sel); }
+.shot { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 10px; align-items: start; border-top: 1px solid var(--line); padding-top: 10px; }
+.shot img { width: 54px; height: 96px; object-fit: cover; border-radius: 8px; }
+.shot .ctl { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.shot b { font-weight: 600; }
+.inline { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
+input[type=number], select, input[type=text], textarea { font: 15px var(--body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+input[type=number] { width: 76px; }
+input[type=text], textarea { width: 100%; }
+button.small { border: 1.5px solid var(--forest); color: var(--forest); background: transparent; border-radius: 999px; padding: 6px 12px; font: 500 13px var(--body); cursor: pointer; }
+.picker { background: var(--bg); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs button.on { background: var(--forest); color: var(--on); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 6px; max-height: 330px; overflow-y: auto; }
+.grid button { border: 2px solid transparent; padding: 0; background: none; border-radius: 8px; cursor: pointer; position: relative; }
+.grid button img { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 6px; display: block; }
+.grid button span { position: absolute; left: 3px; bottom: 3px; font-size: 10px; background: rgba(0,0,0,.6); color: #fff; padding: 0 4px; border-radius: 4px; }
+.grid button.on { border-color: var(--key); }
+label.chk { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line); padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.bar button { background: var(--forest); color: var(--on); border: 0; border-radius: 999px; padding: 13px 26px; font: 600 16px var(--body); cursor: pointer; }
+.bar .msg { font-size: 13px; color: var(--forest); }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--key); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h3>Reel editor</h3>
+    <h1 id="name"></h1>
+    <p class="lede">Change anything below, then tap <b>Copy my changes</b> and paste it into the chat. Tap a word to make it a key word (orange italic) or a plain word.</p>
+  </header>
+  <video id="vid" controls playsinline hidden></video>
+  <div class="box" id="titlebox">
+    <h2>Title behind your head</h2>
+    <p class="lede">Shown during the first part. Leave both lines empty for no title.</p>
+    <input type="text" id="t1" aria-label="Title line 1">
+    <input type="text" id="t2" aria-label="Title line 2 (key-word style)">
+  </div>
+  <div id="beats" style="display:flex;flex-direction:column;gap:18px"></div>
+  <div class="box">
+    <h2>Fix caption words</h2>
+    <p class="lede">One per line, like <b>500ml = 50L</b>. The words you said stay the same; only the caption changes.</p>
+    <textarea id="fixes" rows="3" aria-label="Caption fixes"></textarea>
+  </div>
+  <div class="box">
+    <h2>Anything else?</h2>
+    <textarea id="note" rows="3" aria-label="Anything else" placeholder="e.g. make the end longer, swap the music"></textarea>
+    <textarea id="out" rows="4" hidden readonly aria-label="Your changes to copy"></textarea>
+  </div>
+</div>
+<div class="bar"><button type="button" id="copy">Copy my changes</button><span class="msg" id="msg" role="status"></span></div>
+
+<script>
+const D = /*DATA*/null;
+const S = JSON.parse(JSON.stringify(D));
+const keyset = new Set(S.key_words.map(k => k.toLowerCase()));
+const clean = w => w.trim().replace(/^[.,?!]+|[.,?!]+$/g, '').toLowerCase();
+const fmt = t => { t = Math.max(0, t); const m = Math.floor(t / 60); return m + ':' + String(Math.floor(t % 60)).padStart(2, '0'); };
+const thumbFor = sh => { if (sh.show === 'talk') return D.talk; const st = D.strips[sh.show] || []; let best = st[0]; for (const x of st) if (Math.abs(x.t - sh.at) < Math.abs(best.t - sh.at)) best = x; return best ? best.src : D.talk; };
+const label = sh => sh.show === 'talk' ? 'Me talking' : `${sh.show} from ${fmt(sh.at)}`;
+document.getElementById('name').textContent = D.name;
+if (D.video) { const v = document.getElementById('vid'); v.src = D.video; v.hidden = false; }
+const tl = (S.title && S.title.lines) || [];
+document.getElementById('t1').value = tl[0] ? tl[0][0] : '';
+document.getElementById('t2').value = tl[1] ? tl[1][0] : '';
+document.getElementById('fixes').value = Object.entries(S.fixes || {}).map(([a, b]) => `${a} = ${b}`).join('\n');
+let openPicker = null;  // [beatIndex, shotIndex]
+
+function render() {
+  const host = document.getElementById('beats'); host.innerHTML = '';
+  S.beats.forEach((b, bi) => {
+    const len = b.say[1] - b.say[0];
+    const el = document.createElement('section'); el.className = 'beat' + (b.remove ? ' off' : '');
+    el.innerHTML = `<div class="bhead"><h2>${bi + 1}. ${b.name || 'Beat'}</h2><span>${len.toFixed(1)} s</span></div>
+      <div><h3>Words (tap for key word)</h3></div><div class="words"></div>
+      <div><h3>Overlay</h3></div><div class="row ovs"></div>
+      <div class="inline">Overlay appears after <input type="number" step="0.1" min="0" value="${b.overlay_at ?? 0.2}" class="ovat" aria-label="Overlay delay"> s</div>
+      <div><h3>On screen, in order</h3></div><div class="shots" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div class="inline"><button class="small add" type="button">+ Add a shot</button>
+      <label class="chk"><input type="checkbox" class="rm" ${b.remove ? 'checked' : ''}> Remove this part</label></div>`;
+    const ws = el.querySelector('.words');
+    b.words.forEach(w => { const c = clean(w); const btn = document.createElement('button'); btn.type = 'button';
+      btn.className = 'w' + (keyset.has(c) ? ' key' : ''); btn.textContent = w;
+      btn.onclick = () => { keyset.has(c) ? keyset.delete(c) : keyset.add(c); render(); }; ws.appendChild(btn); });
+    const ovs = el.querySelector('.ovs');
+    const none = document.createElement('button'); none.type = 'button'; none.className = 'ov none' + (!b.overlay ? ' on' : ''); none.textContent = 'None';
+    none.onclick = () => { b.overlay = null; render(); }; ovs.appendChild(none);
+    D.overlays.forEach((src, i) => { const o = document.createElement('button'); o.type = 'button'; o.className = 'ov' + (b.overlay === i + 1 ? ' on' : '');
+      o.setAttribute('aria-label', 'Overlay page ' + (i + 1)); o.innerHTML = `<img src="${src}" alt="">`; o.onclick = () => { b.overlay = i + 1; render(); }; ovs.appendChild(o); });
+    el.querySelector('.ovat').onchange = e => { b.overlay_at = +e.target.value; };
+    const shots = el.querySelector('.shots');
+    const used = b.shots.slice(0, -1).reduce((a, s) => a + s.dur, 0);
+    b.shots.forEach((sh, si) => {
+      const last = si === b.shots.length - 1;
+      const d = document.createElement('div'); d.className = 'shot';
+      d.innerHTML = `<img src="${thumbFor(sh)}" alt="">
+        <div class="ctl"><b>${label(sh)}</b>
+        <div class="inline">${last ? `fills the rest (${(len - used).toFixed(1)} s)` : `for <input type="number" step="0.1" min="0.3" value="${sh.dur}" class="dur" aria-label="Seconds"> s`}
+        ${sh.show !== 'talk' ? `<select class="sp" aria-label="Speed"><option value="1">normal speed</option><option value="1.5">1.5x faster</option><option value="2">2x faster</option><option value="3">3x faster</option></select>` : ''}</div>
+        <div class="inline"><button class="small pick" type="button">Change picture</button>${b.shots.length > 1 ? '<button class="small del" type="button">Remove</button>' : ''}</div></div>`;
+      if (!last) d.querySelector('.dur').onchange = e => { sh.dur = +e.target.value; render(); };
+      const sp = d.querySelector('.sp'); if (sp) { sp.value = String(sh.speed || 1); sp.onchange = e => { sh.speed = +e.target.value; }; }
+      d.querySelector('.pick').onclick = () => { openPicker = (openPicker && openPicker[0] === bi && openPicker[1] === si) ? null : [bi, si, sh.show === 'talk' ? Object.keys(D.strips)[0] : sh.show]; render(); };
+      const del = d.querySelector('.del'); if (del) del.onclick = () => { b.shots.splice(si, 1); openPicker = null; render(); };
+      shots.appendChild(d);
+      if (openPicker && openPicker[0] === bi && openPicker[1] === si) shots.appendChild(picker(b, sh));
+    });
+    el.querySelector('.add').onclick = () => { const lastS = b.shots[b.shots.length - 1]; lastS.dur = Math.max(0.8, (lastS.dur || 2) / 2);
+      b.shots.push({ show: 'talk', dur: 1 }); render(); };
+    el.querySelector('.rm').onchange = e => { b.remove = e.target.checked; render(); };
+    host.appendChild(el);
+  });
+}
+function picker(b, sh) {
+  const p = document.createElement('div'); p.className = 'picker';
+  const tabs = document.createElement('div'); tabs.className = 'tabs';
+  const tab = openPicker[2];
+  const mk = (name, txt) => { const t = document.createElement('button'); t.type = 'button'; t.className = 'small' + (tab === name ? ' on' : ''); t.textContent = txt;
+    t.onclick = () => { if (name === 'talk') { sh.show = 'talk'; delete sh.at; delete sh.speed; openPicker = null; } else openPicker[2] = name; render(); }; tabs.appendChild(t); };
+  mk('talk', 'Me talking'); Object.keys(D.strips).forEach(n => mk(n, n));
+  p.appendChild(tabs);
+  if (tab !== 'talk' && D.strips[tab]) {
+    const hint = document.createElement('p'); hint.className = 'lede'; hint.style.fontSize = '13px'; hint.textContent = 'Tap the moment the shot should start.'; p.appendChild(hint);
+    const g = document.createElement('div'); g.className = 'grid';
+    D.strips[tab].forEach(x => { const btn = document.createElement('button'); btn.type = 'button'; btn.className = (sh.show === tab && Math.abs((sh.at || 0) - x.t) < 2) ? 'on' : '';
+      btn.innerHTML = `<img src="${x.src}" alt=""><span>${fmt(x.t)}</span>`; btn.setAttribute('aria-label', `${tab} at ${fmt(x.t)}`);
+      btn.onclick = () => { sh.show = tab; sh.at = x.t; sh.speed = sh.speed || 1; openPicker = null; render(); }; g.appendChild(btn); });
+    p.appendChild(g);
+  }
+  return p;
+}
+render();
+document.getElementById('copy').onclick = () => {
+  const fixes = {}; document.getElementById('fixes').value.split('\n').forEach(l => { const m = l.split('='); if (m.length === 2 && m[0].trim()) fixes[m[0].trim()] = m[1].trim(); });
+  const t1 = document.getElementById('t1').value.trim(), t2 = document.getElementById('t2').value.trim();
+  let title = S.title ? JSON.parse(JSON.stringify(S.title)) : { beat: 0, lines: [['', 'word', 104, '#FFFFFF', 175], ['', 'key', 170, 'key', 330]] };
+  if (!title.lines || title.lines.length < 2) title.lines = [['', 'word', 104, '#FFFFFF', 175], ['', 'key', 170, 'key', 330]];
+  title.lines[0][0] = t1; title.lines[1][0] = t2; title.lines = title.lines.filter(l => l[0]);
+  const beats = S.beats.map(b => { const c = JSON.parse(JSON.stringify(b)); delete c.words; return c; });
+  const out = 'REEL CHANGES (for Claude)\n' + JSON.stringify({ beats, key_words: [...keyset], fixes, title, note: document.getElementById('note').value.trim() });
+  const msg = document.getElementById('msg'), box = document.getElementById('out');
+  const fallback = () => { box.hidden = false; box.value = out; box.focus(); box.select(); msg.textContent = 'Select all the text in the box above and copy it.'; };
+  try { navigator.clipboard.writeText(out).then(() => { msg.textContent = 'Copied. Paste it into the chat.'; box.hidden = true; }, fallback); } catch (e) { fallback(); }
+};
+</script>

@@ -1,0 +1,238 @@
+<title>__TITLE__ Reel Editor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the reel on top like a phone screen, then a timeline of shot cards you tap to change, then titles and look. Copy bar pinned to the bottom. */
+:root {
+  --bg: #F6F7F2; --card: #FFFFFF; --ink: #18221C; --muted: #5E6B62; --line: #DCE2DA;
+  --berry: #B4235A; --berry-soft: #FBE7EF; --gone: #EEF0EC;
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33; --berry: #F06A9C; --berry-soft: #3A1D29; --gone: #171C18; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33; --berry: #F06A9C; --berry-soft: #3A1D29; --gone: #171C18; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); }
+.wrap { max-width: 680px; margin: 0 auto; padding-block: 18px 150px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 22px; }
+.eyebrow { font: 800 14px var(--display); letter-spacing: .04em; color: var(--berry); }
+h1 { font: 800 clamp(26px, 6vw, 34px)/1.1 var(--display); margin: 4px 0 6px; text-wrap: balance; }
+h2 { font: 800 21px var(--display); margin: 0 0 4px; }
+.help { color: var(--muted); margin: 0; }
+.player { display: grid; justify-items: center; gap: 8px; }
+video { width: min(100%, 300px); aspect-ratio: 9 / 16; border-radius: 18px; background: #000; max-width: 100%; }
+.how { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.how ol { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+.list { display: grid; gap: 12px; }
+.shot { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 12px; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; }
+.shot.removed { background: var(--gone); opacity: .7; }
+.shot.removed img { filter: grayscale(1); }
+.shot.changed { border-color: var(--berry); }
+.shot img { width: 84px; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 10px; }
+.meta { font: 600 13px var(--body); color: var(--muted); font-variant-numeric: tabular-nums; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+textarea, input[type=text], select { font: 16px var(--body); color: var(--ink); background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 9px 10px; width: 100%; min-width: 0; }
+textarea { min-height: 70px; resize: vertical; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.tog { font: 600 14px var(--body); display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 99px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+.tog .b { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--muted); display: grid; place-items: center; font-size: 13px; color: transparent; }
+.tog[aria-pressed="true"] { border-color: var(--berry); background: var(--berry-soft); }
+.tog[aria-pressed="true"] .b { background: var(--berry); border-color: var(--berry); color: #fff; }
+.mv { font: 700 15px var(--body); width: 42px; height: 38px; border-radius: 10px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+.mv:disabled { opacity: .35; }
+label.f { display: grid; gap: 5px; font: 600 14px var(--body); margin-top: 8px; }
+.ov { background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+.ov.removed { background: var(--gone); opacity: .7; }
+.ov.changed { border-color: var(--berry); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 440px) { .grid2 { grid-template-columns: 1fr; } }
+.out { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; max-height: 160px; overflow: auto; margin: 0; }
+.done { display: none; background: var(--berry-soft); border-radius: 14px; padding: 14px; }
+.done.show { display: block; }
+.done ol { margin: 6px 0 0; padding-left: 20px; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px solid var(--line); padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.bar .in { max-width: 680px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.btn { font: 700 16px var(--body); border-radius: 14px; padding: 13px 12px; cursor: pointer; border: 2px solid var(--line); background: var(--card); color: var(--ink); }
+.btn.primary { background: var(--berry); border-color: var(--berry); color: #fff; }
+.count { font: 600 13px var(--body); color: var(--muted); text-align: center; grid-column: 1 / -1; }
+button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--berry); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow" id="eyebrow">REEL EDITOR</div>
+    <h1 id="h1">Your reel</h1>
+    <p class="help" id="sub"></p>
+  </header>
+  <div class="player" id="player"></div>
+  <div class="how" id="how"><b>How to change it</b>
+    <ol>
+      <li>Watch your reel above.</li>
+      <li>Change anything below: fix words, tick <b>Remove this shot</b>, move shots with the arrows, or change titles.</li>
+      <li>Tap <b>Copy my changes</b> at the bottom, go back to Claude, press and hold in the message box, tap <b>Paste</b>, then send.</li>
+      <li>Happy with it? Tap <b>No changes</b> instead.</li>
+    </ol></div>
+  <section><h2>Shots</h2><p class="help">In the order they play. Fix any wrong words right in the box.</p><div class="list" id="shots" style="margin-top:12px"></div></section>
+  <section id="ovsec"><h2>Titles and pop-ups</h2><p class="help">The words that appear on top of your video.</p><div class="list" id="ovs" style="margin-top:12px"></div></section>
+  <section><h2>Look and music</h2>
+    <div class="grid2" style="margin-top:8px">
+      <label class="f" for="style">Feel<select id="style"></select></label>
+      <label class="f" for="font_pair">Fonts<select id="font_pair"></select></label>
+      <label class="f" for="theme">Colours<select id="theme"></select></label>
+      <label class="f" for="music">Music<select id="music"></select></label>
+    </div>
+    <label class="f" for="hl">Key words to highlight (separate with commas)<input type="text" id="hl"></label>
+  </section>
+  <section><h2>Anything else?</h2>
+    <label class="f" for="notes">Tell Claude in your own words<textarea id="notes" placeholder="Example: make it shorter, start with the raspberry close-up, bigger captions..."></textarea></label>
+  </section>
+  <section>
+    <div class="done" id="done"><b>Copied!</b><ol><li>Go back to your Claude chat.</li><li>Press and hold in the message box, tap <b>Paste</b>.</li><li>Tap the send arrow. Claude will remake your reel.</li></ol></div>
+    <p class="help" style="margin:10px 0 6px">If Copy doesn't work: press and hold the text below, tap <b>Select all</b>, then <b>Copy</b>.</p>
+    <pre class="out" id="out"></pre>
+  </section>
+</div>
+<div class="bar"><div class="in">
+  <div class="count" id="count">No changes yet</div>
+  <button class="btn" id="nochange" type="button">No changes</button>
+  <button class="btn primary" id="copy" type="button">Copy my changes</button>
+</div></div>
+
+<script>
+const D = __DATA__;
+const OPTS = {
+  style: [["", "Keep as is"], ["clean", "Clean"], ["editorial", "Editorial"], ["lofi", "Lo-fi"], ["creator", "Creator"], ["bold", "Bold"]],
+  font_pair: [["", "Keep as is"], ["classic", "Classic"], ["elegant", "Elegant"], ["creator", "Creator mix"], ["playful", "Playful"], ["handmade", "Handmade"], ["headline", "Headline"], ["serif-mix", "Serif mix"], ["classic-serif", "Classic serif"], ["magazine", "Magazine"]],
+  theme: [["", "Keep as is"], ["forest", "Forest"], ["sunshine", "Sunshine"], ["ocean", "Ocean"], ["blush", "Blush"], ["terracotta", "Terracotta"], ["mono", "Mono"], ["pop", "Pop"], ["vintage", "Vintage"], ["butter", "Butter"]],
+  music: [["", "Keep as is"], ["none", "No music"], ["chill", "Chill"], ["happy", "Happy"], ["funny", "Funny"], ["inspiring", "Inspiring"], ["energetic", "Energetic"], ["christmas", "Christmas"]]
+};
+const NAMES = { title: "Big title", headline: "Headline", badge: "Label", card: "Tip card", sticker: "Emoji sticker", comments: "Comments", comment_box: "Comment box", dm_reply: "Message reply", follow: "Follow button", pip: "Video in a box", fan: "Photo fan", styles: "Compare cards" };
+const FIELD = { text: "Words", sub: "Small line", title: "Title", reply: "Reply", comment: "Comment", lines: "Lines (one per line)", emoji: "Emoji" };
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const mmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+
+const S = { order: D.shots.map(s => s.n), shots: {}, ovs: {}, look: {}, hl: D.highlight_words.join(", "), notes: "" };
+D.shots.forEach(s => S.shots[s.n] = { words: s.words, remove: false, centre: s.centre });
+D.overlays.forEach(o => S.ovs[o.n] = { fields: { ...o.fields }, remove: false });
+try { const k = "reel-editor-" + D.name; const s = JSON.parse(localStorage.getItem(k) || "null"); if (s && s.order && s.order.length === S.order.length) Object.assign(S, s); } catch (e) {}
+const save = () => { try { localStorage.setItem("reel-editor-" + D.name, JSON.stringify(S)); } catch (e) {} };
+
+const SB = D.stage === "storyboard";
+const OK_TEXT = SB ? "Looks good, build my reel!" : "No changes, the reel is perfect!";
+$("h1").textContent = D.name;
+$("eyebrow").textContent = SB ? "STORYBOARD" : "REEL EDITOR";
+$("nochange").textContent = SB ? "Build it as is" : "No changes";
+if (SB) {
+  $("how").innerHTML = `<b>This is the plan for your reel</b><ol>
+    <li>Read through the shots below, in the order they'll play.</li>
+    <li>Change anything: fix words, tick <b>Remove this shot</b>, move shots with the arrows, tick <b>Show words big in the middle</b>, or change titles.</li>
+    <li>Tap <b>Copy my changes</b>, go back to Claude, press and hold in the message box, tap <b>Paste</b>, then send.</li>
+    <li>Happy with the plan? Tap <b>Build it as is</b>, paste and send.</li></ol>`;
+}
+$("sub").textContent = `${D.shots.length} shots · about ${Math.round(D.length)} seconds`;
+$("player").innerHTML = D.video ? `<video controls playsinline preload="metadata" src="${D.video}"></video><p class="help">Tap play to watch your reel. The full-quality file is in the Claude chat to save to your phone.</p>` : (D.stage === "storyboard" ? "" : `<p class="help">Your reel is in the Claude chat. Open it there to watch.</p>`);
+
+function shotChanged(s) { const o = D.shots.find(x => x.n === s); const v = S.shots[s]; return v.remove || v.words !== o.words || v.centre !== o.centre || S.order.indexOf(s) !== D.shots.indexOf(o); }
+function ovChanged(n) { const o = D.overlays.find(x => x.n === n); const v = S.ovs[n]; return v.remove || Object.keys(o.fields).some(k => v.fields[k] !== o.fields[k]); }
+
+function renderShots() {
+  let t = 0;
+  $("shots").innerHTML = S.order.map((n, idx) => {
+    const s = D.shots.find(x => x.n === n), v = S.shots[n];
+    const at = t; if (!v.remove) t += s.len;
+    return `<div class="shot${v.remove ? " removed" : ""}${shotChanged(n) ? " changed" : ""}">
+      <img src="${s.pic}" alt="Shot ${n}">
+      <div style="min-width:0">
+        <div class="meta"><span>Shot ${n}${v.remove ? " · removed" : ` · plays at ${mmss(at)}`}</span><span>${s.len.toFixed(1)} s</span></div>
+        ${s.words ? `<label class="f" for="w${n}">What you say<textarea id="w${n}" data-w="${n}">${esc(v.words)}</textarea></label>` : `<p class="help">No talking in this shot.</p>`}
+        <div class="row">
+          <button type="button" class="tog" aria-pressed="${v.remove}" data-rm="${n}"><span class="b">✓</span>Remove this shot</button>
+          ${s.words ? `<button type="button" class="tog" aria-pressed="${v.centre}" data-ce="${n}"><span class="b">✓</span>Show words big in the middle</button>` : ""}
+          <button type="button" class="mv" data-up="${idx}" aria-label="Move shot ${n} earlier" ${idx === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" class="mv" data-dn="${idx}" aria-label="Move shot ${n} later" ${idx === S.order.length - 1 ? "disabled" : ""}>↓</button>
+        </div></div></div>`;
+  }).join("");
+}
+function renderOvs() {
+  if (!D.overlays.length) { $("ovsec").hidden = true; return; }
+  $("ovs").innerHTML = D.overlays.map(o => {
+    const v = S.ovs[o.n];
+    return `<div class="ov${v.remove ? " removed" : ""}${ovChanged(o.n) ? " changed" : ""}">
+      <div class="meta"><span>${NAMES[o.type] || o.type} · at ${mmss(o.at)}</span></div>
+      ${Object.keys(o.fields).map(k => `<label class="f" for="o${o.n}${k}">${FIELD[k] || k}${k === "lines" ? `<textarea id="o${o.n}${k}" data-o="${o.n}" data-k="${k}">${esc(v.fields[k])}</textarea>` : `<input type="text" id="o${o.n}${k}" data-o="${o.n}" data-k="${k}" value="${esc(v.fields[k])}">`}</label>`).join("")}
+      <div class="row"><button type="button" class="tog" aria-pressed="${v.remove}" data-orm="${o.n}"><span class="b">✓</span>Remove this</button></div></div>`;
+  }).join("");
+}
+function changes() {
+  const c = {};
+  const order = S.order.filter(n => !S.shots[n].remove);
+  if (S.order.join() !== D.shots.map(s => s.n).join()) c.new_order = order;
+  const sh = [];
+  D.shots.forEach(s => { const v = S.shots[s.n]; const e = { shot: s.n };
+    if (v.remove) e.remove = true;
+    if (v.words !== s.words) { e.words_were = s.words; e.words_now = v.words; }
+    if (v.centre !== s.centre) e.big_in_middle = v.centre;
+    if (Object.keys(e).length > 1) sh.push(e); });
+  if (sh.length) c.shots = sh;
+  const ov = [];
+  D.overlays.forEach(o => { const v = S.ovs[o.n]; const e = { overlay: o.n, type: o.type };
+    if (v.remove) e.remove = true;
+    Object.keys(o.fields).forEach(k => { if (v.fields[k] !== o.fields[k]) e[k] = v.fields[k]; });
+    if (Object.keys(e).length > 2) ov.push(e); });
+  if (ov.length) c.overlays = ov;
+  Object.keys(S.look).forEach(k => { if (S.look[k]) (c.look = c.look || {})[k] = S.look[k]; });
+  if (S.hl !== D.highlight_words.join(", ")) c.highlight_words = S.hl.split(",").map(x => x.trim()).filter(Boolean);
+  if (S.notes.trim()) c.notes = S.notes.trim();
+  return c;
+}
+function changeText() { const c = changes(); return Object.keys(c).length ? "REEL CHANGES (" + D.name + ")\n" + JSON.stringify(c, null, 1) : OK_TEXT; }
+function refresh() {
+  const c = changes();
+  const count = (c.shots || []).length + (c.overlays || []).length + (c.new_order ? 1 : 0) + Object.keys(c.look || {}).length + (c.highlight_words ? 1 : 0) + (c.notes ? 1 : 0);
+  $("count").textContent = count ? `${count} change${count > 1 ? "s" : ""} so far` : "No changes yet";
+  $("out").textContent = changeText();
+  save();
+}
+function all() { renderShots(); renderOvs(); refresh(); }
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset;
+  if (d.rm) S.shots[d.rm].remove = !S.shots[d.rm].remove;
+  else if (d.ce) S.shots[d.ce].centre = !S.shots[d.ce].centre;
+  else if (d.orm) S.ovs[d.orm].remove = !S.ovs[d.orm].remove;
+  else if (d.up) { const i = +d.up; [S.order[i - 1], S.order[i]] = [S.order[i], S.order[i - 1]]; }
+  else if (d.dn) { const i = +d.dn; [S.order[i + 1], S.order[i]] = [S.order[i], S.order[i + 1]]; }
+  else return;
+  const y = window.scrollY; all(); window.scrollTo(0, y);
+});
+document.addEventListener("input", e => {
+  const el = e.target, d = el.dataset;
+  if (d.w) S.shots[d.w].words = el.value;
+  else if (d.o) S.ovs[d.o].fields[d.k] = el.value;
+  else if (el.id === "hl") S.hl = el.value;
+  else if (el.id === "notes") S.notes = el.value;
+  else return;
+  el.closest(".shot, .ov")?.classList.toggle("changed", d.w ? shotChanged(+d.w) : d.o ? ovChanged(+d.o) : false);
+  refresh();
+});
+Object.keys(OPTS).forEach(k => {
+  const cur = k === "music" ? D.music : D.look[k];
+  $(k).innerHTML = OPTS[k].map(o => `<option value="${o[0]}"${(S.look[k] || "") === o[0] ? " selected" : ""}>${o[1]}${o[0] && o[0] === cur ? " (now)" : ""}</option>`).join("");
+  $(k).addEventListener("change", () => { S.look[k] = $(k).value === cur ? "" : $(k).value; refresh(); });
+});
+$("hl").value = S.hl; $("notes").value = S.notes;
+function copy(text) {
+  $("out").textContent = text;
+  const ok = () => $("done").classList.add("show");
+  const sel = () => { const r = document.createRange(); r.selectNodeContents($("out")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText(text).then(ok, () => { sel(); ok(); }); } catch (e) { sel(); ok(); }
+  $("done").scrollIntoView({ block: "center" });
+}
+$("copy").addEventListener("click", () => copy(changeText()));
+$("nochange").addEventListener("click", () => copy(OK_TEXT));
+all();
+</script>

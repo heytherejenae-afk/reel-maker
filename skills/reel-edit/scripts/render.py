@@ -17,7 +17,9 @@ Plan format (times in seconds, relative to each source clip):
   "hook":    {"text": "You won't believe this", "duration": 2.0},   # optional
   "end_text": {"text": "Follow for part 2", "duration": 1.8},       # optional
   "captions": {"enabled": true},       # word-by-word, from analysis transcripts
-  "captions_manual": [{"start": 0, "end": 1.5, "text": "..."}],     # optional, reel time
+  "captions_manual": [{"start": 0, "end": 1.5, "text": "...", "center": true}],  # optional, reel time
+  "center_lines": ["every upgrade free"],  # optional: these spoken phrases show big in the
+                                           # middle of the screen instead of the caption spot
   "music": {"path": "/path/song.mp3", "volume": 0.35, "duck": true, "start": 0},  # optional
             # or {"track": "Carefree"} from the music library in audio.py (credit it!)
   "sfx": true,                            # optional: pops/whooshes/clicks synced to overlays
@@ -25,6 +27,8 @@ Plan format (times in seconds, relative to each source clip):
   "style": {"font": "Poppins",            # optional, a name in FONTS below, or a path to
                                           # the person's own .ttf/.otf font file
             "highlight_color": "#FFD60A"}, # optional, colour for key words
+  # Two-font captions: "look": {"key_font": "Playfair Display Italic"} shows key words
+  # in a second font (any FONTS name or a .ttf/.otf path); see looks.py.
   "cut_words": ["you know"],              # optional: words to cut everywhere (or "cut" per segment)
   "blur_faces": "all" | "others",         # optional privacy blur (others = keep the speaker)
   "highlight_words": ["zucchini", "50"]   # optional; key words to pop in colour.
@@ -39,6 +43,7 @@ import re
 import shutil
 import subprocess
 import sys
+from urllib.parse import unquote
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import looks  # noqa: E402
@@ -61,8 +66,16 @@ FONTS = {
     "Instrument Serif": ("Instrument Serif", GF + "instrumentserif/InstrumentSerif-Regular.ttf"),
     "Caveat Brush": ("Caveat Brush", GF + "caveatbrush/CaveatBrush-Regular.ttf"),
     "Instrument Serif Italic": ("Instrument Serif", GF + "instrumentserif/InstrumentSerif-Italic.ttf"),
+    # more serifs
+    "Abril Fatface": ("Abril Fatface", GF + "abrilfatface/AbrilFatface-Regular.ttf"),
+    "Gloock": ("Gloock", GF + "gloock/Gloock-Regular.ttf"),
+    "Young Serif": ("Young Serif", GF + "youngserif/YoungSerif-Regular.ttf"),
+    "DM Serif Display Italic": ("DM Serif Display", GF + "dmserifdisplay/DMSerifDisplay-Italic.ttf"),
+    "Playfair Display": ("Playfair Display", GF + "playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf"),
+    "Playfair Display Italic": ("Playfair Display", GF + "playfairdisplay/PlayfairDisplay-Italic%5Bwght%5D.ttf"),
 }
-FONT_SCALE = {"Poppins": 1.3, "Anton": 1.45, "Bebas Neue": 1.5, "Bangers": 1.6, "Instrument Serif": 1.35}
+FONT_SCALE = {"Poppins": 1.3, "Anton": 1.45, "Bebas Neue": 1.5, "Bangers": 1.6, "Instrument Serif": 1.35,
+              "Abril Fatface": 1.2, "Gloock": 1.15, "Young Serif": 1.15, "Playfair Display": 1.2}
 STOPWORDS = set("""a an the and or but so to of in on at for from with by is are was were be been it its
 it's this that these those you you're your i i'm i've i'll we they they're he she my me our their
 there here what when where which who how not just only also very really going gonna get got
@@ -90,7 +103,7 @@ def pick_font(name=None):
     if name in FONTS:
         family, url = FONTS[name]
         os.makedirs(FONT_CACHE, exist_ok=True)
-        dest = os.path.join(FONT_CACHE, os.path.basename(url))
+        dest = os.path.join(FONT_CACHE, unquote(os.path.basename(url)))
         if not os.path.exists(dest):
             r = subprocess.run(["curl", "-sSfL", "-m", "30", "-o", dest, url], capture_output=True)
             if r.returncode != 0:
@@ -112,11 +125,30 @@ def font_file(name):
         return os.path.abspath(name)
     if name in FONTS:
         pick_font(name)
-        p = os.path.join(FONT_CACHE, os.path.basename(FONTS[name][1]))
+        p = os.path.join(FONT_CACHE, unquote(os.path.basename(FONTS[name][1])))
         if os.path.exists(p):
             return os.path.abspath(p)
     return "/usr/share/fonts/opentype/inter/InterDisplay-Black.otf"
 
+
+
+def is_italic(name):
+    return "italic" in str(name or "").lower()
+
+
+def fonts_dir(look):
+    """One folder holding every caption font the look uses (main + key-word font)."""
+    family, d = pick_font(look.get("font"))
+    second = look.get("key_font") or ("Instrument Serif Italic" if look.get("caption_mode") == "punch" else None)
+    if not second:
+        return d
+    pick_font(second)
+    cache = os.path.abspath(FONT_CACHE)
+    if os.path.abspath(d) != cache:  # main font lives elsewhere (the built-in default): copy it in
+        src = font_file(look.get("font"))
+        if not os.path.exists(os.path.join(cache, os.path.basename(src))):
+            shutil.copy(src, cache)
+    return cache
 
 def sh(cmd):
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -206,6 +238,23 @@ def ass_escape(text):
     return text.replace("\\", "").replace("{", "(").replace("}", ")").replace("\n", "\\N")
 
 
+def norm(w):
+    return re.sub(r"[^\w']", "", w.lower())
+
+
+def center_marks(words, phrases):
+    """For each word, the number (1, 2...) of the centre phrase it belongs to, else 0."""
+    marks, n = [0] * len(words), 0
+    toks = [norm(w["word"]) for w in words]
+    for ph in phrases:
+        p = [norm(x) for x in ph.split() if norm(x)]
+        for i in range(len(toks) - len(p) + 1):
+            if p and toks[i:i + len(p)] == p and not any(marks[i:i + len(p)]):
+                n += 1
+                marks[i:i + len(p)] = [n] * len(p)
+    return marks
+
+
 def build_captions(plan, analysis, offsets, per_card=3):
     """Word-timed caption events in reel time, a few words per card."""
     by_path = {}
@@ -217,20 +266,28 @@ def build_captions(plan, analysis, offsets, per_card=3):
         speed = float(seg.get("speed", 1.0))
         s0, s1 = float(seg["start"]), float(seg["end"])
         inside = [w for w in words if w["start"] >= s0 - 0.05 and w["end"] <= s1 + 0.05]
+        centre = center_marks(inside, plan.get("center_lines", []))
         chunks, chunk = [], []
-        for w in inside:
+        for i, w in enumerate(inside):
+            if chunk and centre[i] != centre[i - 1]:  # a centre phrase is always its own card
+                chunks.append(chunk); chunk = []
             chunk.append(w)
-            if len(chunk) == per_card or w["word"].endswith((".", ",", "!", "?")):
+            if centre[i]:
+                if i + 1 == len(inside) or centre[i + 1] != centre[i]:
+                    chunks.append(chunk); chunk = []
+            elif len(chunk) == per_card or w["word"].endswith((".", ",", "!", "?")):
                 chunks.append(chunk); chunk = []
         if chunk:
             chunks.append(chunk)
+        idx = {id(w): i for i, w in enumerate(inside)}
         for ch in chunks:  # source time -> reel time
             a = off + (ch[0]["start"] - s0) / speed
             b = off + (ch[-1]["end"] - s0) / speed
             events.append({"start": max(off, a), "end": min(off + out_dur, b),
                            "text": " ".join(x["word"] for x in ch),
                            "words": [(x["word"], off + (x["start"] - s0) / speed, off + (x["end"] - s0) / speed)
-                                     for x in ch]})
+                                     for x in ch],
+                           "center": bool(centre[idx[id(ch[0])]])})
     events.sort(key=lambda e: e["start"])
     # hold each card until the next one (max 0.6s gap) so text doesn't flicker
     for a, b in zip(events, events[1:]):
@@ -245,12 +302,13 @@ def ass_colour(hexstr):
 
 
 def is_key(word, wanted):
-    w = word.strip(".,!?\"'").lower()
+    w = word.strip().strip(".,!?\"'").lower()
     return any(ch.isdigit() for ch in w) or w in wanted
 
 
-def caption_text(words, wanted, colour, case="upper", base="&H00FFFFFF&"):
-    """Upper-case card text with key words in the highlight colour."""
+def caption_text(words, wanted, colour, case="upper", base="&H00FFFFFF&", key_font=None, font=None, kscale=115):
+    """Upper-case card text with key words in the highlight colour (and the key-word
+    font, when the look has one)."""
     keys = [is_key(w, wanted) for w in words]
     if not wanted and not any(keys):  # auto mode: pop the longest meaningful word
         cands = [(len(w), i) for i, w in enumerate(words)
@@ -260,7 +318,12 @@ def caption_text(words, wanted, colour, case="upper", base="&H00FFFFFF&"):
     out = []
     for w, k in zip(words, keys):
         t = ass_escape(w.upper() if case == "upper" else w.lower() if case == "lower" else w)
-        out.append(f"{{\\c{colour}}}{t}{{\\c{base}}}" if k else t)
+        if k and key_font:
+            fam, ital = key_font
+            out.append(f"{{\\fn{fam}\\i{int(ital)}\\b0\\c{colour}\\fscx{kscale}\\fscy{kscale}}}{t}"
+                       f"{{\\fn{font}\\i0\\b1\\c{base}\\fscx100\\fscy100}}")
+        else:
+            out.append(f"{{\\c{colour}}}{t}{{\\c{base}}}" if k else t)
     return " ".join(out)
 
 
@@ -271,6 +334,10 @@ def write_ass(path, plan, events, total, W, H, look=None):
     colour = ass_colour(c["highlight"])
     wanted = {w.lower() for w in plan.get("highlight_words", [])}
     scale = FONT_SCALE.get(look.get("font"), 1.0) if font != pick_font()[0] else 1.0
+    kf = look.get("key_font")
+    key_font = (pick_font(kf)[0], is_italic(kf)) if kf else None
+    # size key words to match the main font (fonts look different sizes at the same point size)
+    kscale = int(min(140, max(100, 115 * FONT_SCALE.get(str(kf).replace(" Italic", ""), 1.0) / scale)))
     st = lambda hx: ass_colour(hx).rstrip("&")  # style lines take &HAABBGGRR without the closing &
     if look.get("caption_box"):
         # solid box in the theme colour, light text (BorderStyle 3 = box in OutlineColour)
@@ -299,6 +366,11 @@ def write_ass(path, plan, events, total, W, H, look=None):
         "", "[Events]",
         "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text",
     ]
+    # Centre cards: big words in the middle of the screen, just below the face
+    # (center_lines / "center": true)
+    csize = int(H * 0.075 * scale)
+    lines.insert(-3, f"Style: Center,{font},{csize},&H00FFFFFF,&H0000FFFF,&H00000000,&H50000000,"
+                     f"-1,0,0,0,100,100,0,0,1,{max(3, csize // 14)},3,5,80,80,0,1")
     mode = look.get("caption_mode", "words")
     case = look.get("caption_case", "upper")
     fix = lambda w: ass_escape(w.upper() if case == "upper" else w.lower() if case == "lower" else w)
@@ -313,13 +385,24 @@ def write_ass(path, plan, events, total, W, H, look=None):
         kfont = ImageFont.truetype(ff, max(1, int(em)))
         bottom = H - int(H * 0.30)
     if mode == "punch":
-        # one or two big words at a time; key words switch to an italic serif in the highlight colour
-        pick_font("Instrument Serif Italic")
+        # one or two big words at a time; key words switch to an italic serif (or the
+        # look's key_font) in the highlight colour
+        pfam, pital = key_font or (pick_font("Instrument Serif Italic")[0], True)
         size = int(H * 0.068 * scale)
         lines.insert(-3, f"Style: Punch,{font},{size},&H00FFFFFF,&H0000FFFF,&H00000000,&H50000000,"
                          f"-1,0,0,0,100,100,0,0,1,{max(3, size // 14)},3,2,70,70,{int(H * 0.40)},1")
     for e in events:
-        txt = caption_text(e["text"].split(), wanted, colour, case, base)
+        if e.get("center"):
+            words = e["text"].split()
+            if len(words) > 2:  # stack long phrases: two or three short lines
+                per = -(-len(words) // (2 if len(words) <= 4 else 3))
+                words = [w + ("\n" if (k + 1) % per == 0 and k + 1 < len(words) else "") for k, w in enumerate(words)]
+            ctxt = caption_text(words, wanted, colour, case, "&H00FFFFFF&", key_font, font, kscale)
+            ctxt = ctxt.replace("\\N ", "\\N")
+            lines.append(f"Dialogue: 2,{ass_time(e['start'])},{ass_time(e['end'])},Center,,0,0,0,,"
+                         f"{{\\an5\\pos({W // 2},{int(H * 0.56)})\\fad(60,60)\\fscx130\\fscy130\\t(0,120,\\fscx100\\fscy100)}}{ctxt}")
+            continue
+        txt = caption_text(e["text"].split(), wanted, colour, case, base, key_font, font, kscale)
         if mode == "karaoke" and e.get("words"):
             ws = e["words"]
             texts = [fix(x) for x, _, _ in ws]
@@ -358,7 +441,7 @@ def write_ass(path, plan, events, total, W, H, look=None):
             out = []
             for w, k in zip(words, keys):
                 t = ass_escape(w.strip(".,") if k else w.strip(".,").lower())
-                out.append(f"{{\\fnInstrument Serif\\i1\\b0\\c{colour}\\fscx118\\fscy118}}{t}"
+                out.append(f"{{\\fn{pfam}\\i{int(pital)}\\b0\\c{colour}\\fscx118\\fscy118}}{t}"
                            f"{{\\fn{font}\\i0\\b1\\c&H00FFFFFF&\\fscx100\\fscy100}}" if k else t)
             lines.append(f"Dialogue: 0,{ass_time(e['start'])},{ass_time(e['end'])},Punch,,0,0,0,,"
                          f"{{\\fad(40,0)\\fscx125\\fscy125\\t(0,90,\\fscx100\\fscy100)}}{' '.join(out)}")
@@ -428,7 +511,7 @@ def main():
     events += plan.get("captions_manual", [])
     ass = os.path.join(workdir, "overlay.ass")
     write_ass(ass, plan, events, total, W, H, look)
-    _, fontdir = pick_font(look.get("font"))
+    fontdir = fonts_dir(look)
 
     out = plan.get("output", "reel.mp4")
     if not os.path.isabs(out):

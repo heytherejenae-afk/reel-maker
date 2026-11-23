@@ -1,0 +1,319 @@
+{
+ "name": "Apple trees in pots",
+ "work": "/tmp/claude-0/apple",
+ "out": "/mnt/project-files/reels/apples",
+ "talk": "clips/talk.mp4",
+ "broll": {
+  "b1": "clips/b1.mp4",
+  "b2": "clips/b2.mp4",
+  "b3": "clips/b3.mp4"
+ },
+ "overlays": [
+  "ov/p1.png",
+  "ov/p2.png",
+  "ov/p3.png",
+  "ov/p4.png",
+  "ov/p5.png",
+  "ov/p6.png",
+  "ov/p7.png",
+  "ov/p8.png"
+ ],
+ "brand": {
+  "text": "#FFFFFF",
+  "key": "#E8875A",
+  "card": "#F6EFDF",
+  "card_label": "#2F4A35",
+  "note": "#FFFFFF"
+ },
+ "fonts": {
+  "word": "/mnt/project-files/reel-skill/fonts/InterDisplay-SemiBold.ttf",
+  "key": "/mnt/project-files/reel-skill/fonts/DMSerifDisplay-Italic.ttf",
+  "hand": "/mnt/project-files/reel-skill/fonts/CaveatBrush-Regular.ttf"
+ },
+ "captions": {
+  "size": 122,
+  "key_size": 146,
+  "y": 0.5
+ },
+ "overlay_place": {
+  "scale": 0.85,
+  "y": 0.735
+ },
+ "key_words": [
+  "apples",
+  "$1.40",
+  "growing",
+  "apple",
+  "finally",
+  "pink",
+  "lady",
+  "granny",
+  "smith",
+  "smith's",
+  "partner",
+  "bees",
+  "winter",
+  "potted",
+  "summer",
+  "watering",
+  "dwarf",
+  "big",
+  "drainage",
+  "premium",
+  "soil",
+  "graft",
+  "trunk",
+  "deep",
+  "mulch",
+  "hot",
+  "every",
+  "patience",
+  "fruit",
+  "roots",
+  "plant",
+  "comment",
+  "email",
+  "happening"
+ ],
+ "fixes": {},
+ "title": {
+  "beat": 0,
+  "lines": [
+   [
+    "Fruit I won't Buy Again",
+    "word",
+    104,
+    "#FFFFFF",
+    175
+   ],
+   [
+    "as an Aussie Gardener",
+    "key",
+    170,
+    "key",
+    330
+   ]
+  ]
+ },
+ "beats": [
+  {
+   "name": "Hook",
+   "say": [
+    7.3,
+    11.68
+   ],
+   "overlay": 1,
+   "overlay_at": 0,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 4.38
+    }
+   ]
+  },
+  {
+   "name": "Why these two",
+   "say": [
+    13.8,
+    18.56
+   ],
+   "overlay": null,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 1.9
+    },
+    {
+     "show": "b1",
+     "at": 357,
+     "dur": 2.86,
+     "speed": 1.5
+    }
+   ]
+  },
+  {
+   "name": "Pink Lady + Granny Smith",
+   "say": [
+    18.98,
+    33.72
+   ],
+   "overlay": 2,
+   "overlay_at": 3.05,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 3.05
+    },
+    {
+     "show": "b1",
+     "at": 370.3,
+     "dur": 3.2,
+     "speed": 1.6
+    },
+    {
+     "show": "talk",
+     "dur": 2.6
+    },
+    {
+     "show": "b1",
+     "at": 24,
+     "dur": 2.7,
+     "speed": 1.5
+    },
+    {
+     "show": "talk",
+     "dur": 3.19
+    }
+   ]
+  },
+  {
+   "name": "Timing",
+   "say": [
+    35.42,
+    42.26
+   ],
+   "overlay": 3,
+   "overlay_at": 0.2,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 1.6
+    },
+    {
+     "show": "b3",
+     "at": 158,
+     "dur": 5.24,
+     "speed": 2
+    }
+   ]
+  },
+  {
+   "name": "Tip 1",
+   "say": [
+    47.56,
+    54.44
+   ],
+   "overlay": 4,
+   "overlay_at": 0.2,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 1.6
+    },
+    {
+     "show": "b1",
+     "at": 365.8,
+     "dur": 2,
+     "speed": 1
+    },
+    {
+     "show": "b3",
+     "at": 18,
+     "dur": 3.28,
+     "speed": 2
+    }
+   ]
+  },
+  {
+   "name": "Tip 2",
+   "say": [
+    57.7,
+    65.02
+   ],
+   "overlay": 5,
+   "overlay_at": 0.2,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 1.4
+    },
+    {
+     "show": "b3",
+     "at": 32,
+     "dur": 3,
+     "speed": 2
+    },
+    {
+     "show": "b2",
+     "at": 207,
+     "dur": 2.92,
+     "speed": 1.5
+    }
+   ]
+  },
+  {
+   "name": "Tip 3",
+   "say": [
+    67.4,
+    74.42
+   ],
+   "overlay": 6,
+   "overlay_at": 0.2,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 1.2
+    },
+    {
+     "show": "b1",
+     "at": 280,
+     "dur": 2.9,
+     "speed": 2
+    },
+    {
+     "show": "b1",
+     "at": 92,
+     "dur": 2.92,
+     "speed": 1.5
+    }
+   ]
+  },
+  {
+   "name": "The hard part",
+   "say": [
+    77.58,
+    89.52
+   ],
+   "overlay": 7,
+   "overlay_at": 0.3,
+   "backing": "#2F4A35",
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 2.6
+    },
+    {
+     "show": "b2",
+     "at": 158,
+     "dur": 3.6,
+     "speed": 2
+    },
+    {
+     "show": "talk",
+     "dur": 2.6
+    },
+    {
+     "show": "b1",
+     "at": 360.5,
+     "dur": 3.14,
+     "speed": 1
+    }
+   ]
+  },
+  {
+   "name": "Comment PLANT",
+   "say": [
+    91.14,
+    98.9
+   ],
+   "overlay": 8,
+   "overlay_at": 0.2,
+   "shots": [
+    {
+     "show": "talk",
+     "dur": 7.76
+    }
+   ]
+  }
+ ]
+}

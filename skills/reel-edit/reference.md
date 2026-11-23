@@ -1,0 +1,512 @@
+---
+name: brief-to-reel
+description: Turn raw video clips and a short brief into a finished vertical reel (9:16, captions, styled titles and overlays, music) plus a coaching report, a carousel, a story and trial reels. Use when someone shares clips (Google Drive link or uploads) and wants a Reel, TikTok or Short made from them.
+---
+
+# Brief to reel
+
+The person is probably a beginner. Never ask them about codecs, frame rates or
+settings. Ask only for (1) their clips, (2) one or two sentences about what the
+reel is for, and (3) the setup questions in step 1 (brand info, feel, fonts,
+colours, music, extras), all of which can be answered with "you choose".
+Everything else you decide.
+
+**Every run follows the same three touch points:**
+1. **Brand check + setup questions, one at a time, by tapping** (step 1). The first
+   question is always "Do you need to update your brand information?", even when
+   they have a saved brand kit or autopilot is on.
+2. **Editable storyboard page** before rendering, unless they unticked it (step 3).
+3. **The finished reel, playable inside Claude**, on the same page, now the Reel
+   Editor: ask "Do you want to change anything?" (step 5b). Repeat until they say
+   no changes.
+
+**Always ask the setup questions before making anything.** Don't plan, storyboard
+or render until they've answered (or said "you choose"). Downloading and analysing
+the clips while you wait is fine; it only saves time.
+
+Scripts live in `scripts/` next to this file. Setup, once per session:
+`pip install faster-whisper gdown ai-edge-litert opencv-python-headless`.
+`ffmpeg`, Node and Playwright Chromium are pre-installed. Small model files
+(person cut-out, face detector and matcher), Google Fonts and music-library tracks
+download on first use from storage.googleapis.com, huggingface.co,
+raw.githubusercontent.com and incompetech.com.
+
+## 0. Script mode (preferred when they have a script): script + overlays + clips
+
+Use this when the Drive folder has a **script** (Google Doc, Claude script page, or a
+photo of a page) and/or **overlay pages** (Canva PNGs, 1080x1920, transparent), plus a
+talking-head clip and b-roll clips. This is the approved Jenae workflow (2026-11-23):
+follow the script exactly, never guess. Brand question first (step 1) still applies.
+
+1. Put clips in `work/clips/`, overlays in `work/ov/p1.png...` (Canva: `export-design`
+   PNG with `transparent_background: true`, 1080x1920; a canva.com/d/ link that won't
+   resolve: find it with `search-designs`). Videos with no sound are b-roll.
+2. Write `reel.json` (schema at the top of `scripts/script_reel.py`; copy
+   `/mnt/project-files/reels/apples/reel.json` as the example).
+3. `script_reel.py transcribe reel.json` then `script_reel.py sheets reel.json` and LOOK at
+   every contact sheet. Map each script beat to the talking-head seconds that say it
+   (`say`, trim pauses and retakes; use the last good take), then pick the b-roll that
+   shows exactly what that beat says (the script's shot list). Check finer sheets around
+   a chosen moment (labels, close-ups). Long planting footage: speed 1.5-2x.
+   **Never use the same b-roll moment twice.** Talk on screen for the first 1-2 s of a beat.
+4. Overlay page N goes on the beat it belongs to. Overlays sit in front, below the face
+   (`overlay_place` y 0.735, scale 0.85); a page with no box of its own gets `"backing"`.
+   Title behind the head only in clear sky above the head (check one frame with LIMIT=5).
+5. `script_reel.py build reel.json` (about 6 min for 70 s). Check a contact sheet of the
+   result (`fps=1/1.5`) for: words readable, overlays not over the face, right b-roll.
+6. `script_reel.py editor reel.json` and publish `out/editor.html` as an Artifact (same
+   file each round keeps the same link). Send the reel MP4 + editor link + layers +
+   `how-to-stack-layers-in-capcut.md`. Flag any word that looks misheard (e.g. "500ml").
+7. They paste `REEL CHANGES`: save it to a file, `script_reel.py apply reel.json FILE`,
+   build again, republish the editor. Their "note" field is free text: act on it.
+
+**Overnight:** a nightly scheduled task wakes the thread; it checks the Drive "Reels to
+edit" folder for subfolders without "DONE" in the name, makes each reel this way, renames
+nothing in Drive, records done folder ids in `reels/overnight-done.json`, and posts results.
+
+## 1. Ask the setup questions first (always, before anything else)
+
+### 1a. The Reel Setup page (preferred)
+
+Questions go **one at a time, with tap-to-choose boxes**, never as one long
+message. The Reel Setup page (`pages/reel-setup.html`) does this: one question per
+screen with big tick boxes and Back/Next buttons, in this order:
+
+1. **Do you need to update your brand information?** Keep my saved brand kit /
+   Yes, change something / I don't have one yet. The last two show steps and a link
+   to the Brand Kit page (`pages/brand-kit-builder.html`) and a box to paste the kit.
+2. Google Drive folder link (with tap-by-tap Android steps for sharing it).
+3. What the reel is about + length (15-30 / 30-45 / 45-60 s).
+4. Feel (5 + "You choose"). 5. Fonts (9 pairs drawn in the real fonts, "Make my
+   own mix", "You choose"). 6. Colours + key-word colour. Fonts and colours are
+   skipped when they keep or paste a brand kit.
+7. Music (yes + mood / no / you choose). 8. Extras tick boxes: storyboard first
+   (on), sound effects (on), hide other faces, carousel + story + trial reels.
+9. Review screen with **Copy my answers**.
+
+Publishing the pages: publish `pages/brand-kit-builder.html` and
+`pages/reel-setup.html` with the Artifact tool once per account (set the
+`BRAND_KIT_PAGE` constant at the top of the setup page's script to the brand kit
+page's URL first) and note both URLs in project memory or CLAUDE.md so later runs
+reuse them. In Jenae's project they are
+https://claude.ai/artifact/3gZkBKJuVYqf1mPc3vmKAq (Reel Setup) and
+https://claude.ai/artifact/MX9eeexJmLrPg2Suhj4Rfs (Brand Kit). An Artifact is
+private until its owner shares it, so each person publishes their own copy.
+
+As soon as they ask for a reel, send the Reel Setup link with these steps
+(adjust to their phone; say "skip the clips box" if they already sent the link):
+
+> 1. Tap the link. It opens the Reel Setup page.
+> 2. Tap a box to answer each question, then tap the pink **Next** button.
+> 3. On the last screen, tap **Copy my answers**.
+> 4. Come back here, press and hold in the message box, tap **Paste**, then send.
+
+Then get the clips (below) and send the picker sheets made on their own video
+(step 1b), so they can see the options on their own face.
+
+**Reading the answers:** they paste a block starting `REEL SETUP (answers for
+Claude)` followed by JSON: `brand` (`keep` | `update` | `none`), optional
+`brand_kit` (the pasted kit JSON; save it as `work/clips/brand-kit.json`),
+`drive_link`, `brief`, `length` ("30-45" etc., overrides the 15-30 s default),
+`feel` (style key), `fonts` (a `font_pair` key, or `{"title", "captions",
+"key_words"}` font names → `display_font`, `font`, `key_font`), `colours` (theme
+key), `highlight` (a name from the highlight sheet → its hex, or "match colours"
+= theme default), `music` (a mood → a library track in that mood, "none", or "you
+choose"), `extras` (`storyboard`, `sfx`, `hide_faces` → `"blur_faces": "others"`,
+`repurpose` → do step 6 without asking). `brand: keep` with no
+`work/clips/brand-kit.json` → say you couldn't find their saved kit and offer the
+Brand Kit page, or carry on with "you choose".
+
+### 1b-fallback. One question at a time in chat
+
+If the page can't be used (no Artifact tool, or they'd rather answer in chat),
+ask in chat **one question per message**, each with numbered options so a single
+number is a full answer. If decision cards (`request_decision`, up to 4 options)
+are available, use one for each question that has 4 or fewer options (brand
+check, music, length). Start with the brand check:
+
+> **Do you need to update your brand information?** 1 No, use my saved brand kit ·
+> 2 Yes, I want to change something · 3 I don't have one yet
+
+then feel, fonts, colours, music, extras, one message each. The full option lists:
+
+> **1. What feel do you want?**
+> 1 Clean: simple and easy to read · 2 Editorial: polished, magazine-like ·
+> 3 Lo-fi: raw, warm and cosy · 4 Creator: big bold words, talking-to-camera ·
+> 5 Bold: high energy, bright and punchy
+>
+> **2. Which font combination?** (title font + caption font)
+> 1 Classic · 2 Elegant · 3 Creator mix · 4 Playful · 5 Handmade · 6 Headline ·
+> 7 Serif mix · 8 Classic serif · 9 Magazine (7-9 show key words in a fancy serif)
+> Or make your own mix from the numbered font sheet: tell me a font for the
+> **title**, the **captions** and the **key words** (e.g. "title 14, captions 2,
+> key words 19"). You can also use your own font: put the .ttf/.otf file in your Drive folder.
+>
+> **3. Which colours?** 1 Forest · 2 Sunshine · 3 Ocean · 4 Blush · 5 Terracotta ·
+> 6 Mono · 7 Pop · 8 Vintage · 9 Butter, or tell me your brand colour.
+> Want a different colour for the highlighted key words? Pick one from the
+> highlight sheet (1 Yellow ... 12 White) or name any colour (e.g. "highlight: coral").
+>
+> **4. Do you want music?** Yes (tell me a mood: chill, happy, funny, inspiring,
+> energetic, or Christmas) or No (keep just your voice and the real sound).
+>
+**Wait for their answers.** Don't pick for them unless they say "you choose";
+if they only answer some questions, choose the rest yourself and say what you chose.
+Turn the answers into the plan's `look` (`style`, `font_pair`, `theme` or `colors`;
+a custom font mix sets `display_font`, `font` and `key_font` from the font sheet
+numbers, printed by font_samples.py; a highlight choice sets `colors.highlight` from
+the numbers printed by look_samples.py, or the hex code for a named colour)
+and `music` (`{"track": "<a library track for that mood>"}`, or leave `music` out for
+"No"). For "you choose", pick what fits the brief: Clean for simple tips, Editorial
+for polished creator content, Lo-fi for cosy or behind-the-scenes, Creator for
+talking to camera, Bold for high energy; music on, in a mood that fits.
+
+**Brand kit:** if `work/clips/brand-kit.json` exists, they've saved their look
+before. Still ask the brand check first ("Do you need to update your brand
+information?"). If they keep it, the setup page skips fonts and colours. Use it with
+`"look": {"brand": "work/clips/brand-kit.json"}`. If the kit has several looks (a
+lookbook), list them by name and use the one they pick (`"lookbook": "Playful"`).
+If they update it, the new pasted kit replaces the old file (offer to save it to
+their Drive folder too).
+
+**Pasted brand kit:** if their message contains a block starting
+`BRAND KIT (save as brand-kit.json)` (copied from the Brand Kit page), save the JSON
+after that line as `work/clips/brand-kit.json`, skip questions 2 and 3 (fonts and
+colours come from the kit), and ask only about feel and music. Use it with
+`"look": {"brand": "work/clips/brand-kit.json"}` (add `"style"` from their feel
+answer). The kit's `colors` map: `light` = background, `primary` = ink, `highlight`
+= pop (key words); `soft`, `second` and `accent` are extra brand colours for cards
+and overlays. Offer to save it in their Drive folder (Google Drive connector
+`create_file`) so future reels pick it up automatically.
+
+**Autopilot:** if the brand kit has `"autopilot": true`, they've already said "don't
+ask me". Ask only the brand check (one tap: keep / update), then skip the other
+questions and the storyboard: rough cut, plan in their default look and saved
+music setting (copy the kit's `"music"` into the plan; `false` means none), render,
+and deliver the reel with the coaching report and the Reel Editor. Only ask more if
+there's no brief and the clips don't make the topic obvious.
+
+### Get the clips
+
+- **Google Drive link (preferred):** `python3 scripts/fetch_drive.py "<link>" work/clips`.
+  If it fails, tell them in plain words: "Open the folder in Drive, tap Share,
+  set General access to *Anyone with the link*, and send me the link again."
+- **Uploaded in chat:** copy them into `work/clips`.
+- **Adobe Creative Cloud Files:** find them with the Adobe connector
+  `asset_search` (entityScope CCAsset). Clips inside an Adobe *Express* project
+  are not reachable; ask for Drive instead.
+
+If there is no brief, ask for it in the same opening message: "What's this reel for,
+and who's watching? One sentence is plenty."
+
+## 1b. Show the options on their own video
+
+Make the picker sheets from a frame where the person is in shot:
+
+```
+python3 scripts/look_samples.py work/clips/<clip> work/looks --time <t> --title <a key word from the brief>
+```
+
+This writes `styles.jpg` (the 5 feels), `font-pairs.jpg` (the 9 font combinations),
+`colours.png` (the 9 colour themes) and `highlights.jpg` (12 key-word colours),
+numbered to match the opening questions. Also make the font sheet for build-your-own
+mixes (add `--custom work/clips/<font file>` for each font file they put in Drive):
+`python3 scripts/font_samples.py work/clips/<clip> work/fonts.jpg --time <t>`
+Send all five together (styles, font pairs, fonts, colours, highlights).
+
+**Custom font mix example:** "title 14, captions 2, key words 19" becomes
+`"look": {"display_font": "Abril Fatface", "font": "Poppins", "key_font": "Playfair Display Italic"}`
+(use the names font_samples.py prints for each number). Any font can go in any slot.
+
+| Style | Feel | What it sets |
+|---|---|---|
+| Clean | Simple, readable | White captions with yellow key words, flat titles |
+| Editorial (Hi-fi) | Polished creator look | Serif captions in a coloured box, big 3D serif titles, slight grade |
+| Lo-fi | Raw, warm, cosy | Hand-written lower-case captions, film grain, vintage colour |
+| Creator | Talking-head creator look | One or two big words at a time, key words in a yellow italic serif, hand-written headlines |
+| Bold | High energy | Chunky captions, bright 3D titles, punch-in zoom on every other shot |
+
+| Font combination | Title font + caption font | Feel |
+|---|---|---|
+| Classic | Archivo Black + Poppins | Clean and confident |
+| Elegant | DM Serif Display + Instrument Serif | Polished, magazine-like |
+| Creator mix | Instrument Serif + Poppins | Modern with a hand-written touch |
+| Playful | Luckiest Guy + Lilita One | Fun and friendly |
+| Handmade | Permanent Marker + Permanent Marker | Cosy, like a notebook |
+| Headline | Anton + Bebas Neue | Loud and punchy |
+| Serif mix | Abril Fatface + Poppins, key words Playfair Display Italic | Clean words, fancy key words |
+| Classic serif | Gloock + Young Serif, key words DM Serif Display Italic | Warm, bookish, timeless |
+| Magazine | Playfair Display + Archivo Black, key words Instrument Serif Italic | Bold headlines, elegant italics |
+
+A style comes with its own fonts; `font_pair` swaps them for the chosen
+combination (hand-written headlines always use Caveat Brush). A single `font`
+still overrides just the caption font.
+
+**Two-font captions:** `"key_font"` puts the key words (highlight words, numbers,
+or the auto-picked word) in a second font, in the highlight colour, while the rest
+of the caption stays in the main font. Pairs 7-9 set it; any style can add it, e.g.
+`"look": {"style": "clean", "font": "Poppins", "key_font": "Playfair Display Italic"}`.
+It can be any font name below or their own .ttf/.otf path. Works with `words`,
+`punch` and boxed captions (karaoke keeps one font so the moving box lines up).
+
+Serif fonts available: Instrument Serif (+ Italic), DM Serif Display (+ Italic),
+Playfair Display (+ Italic), Abril Fatface, Gloock, Young Serif.
+
+Caption modes (any style): `"caption_mode": "words"` (default, a few words at a
+time), `"karaoke"` (a highlight box jumps from word to word as it's said) or
+`"punch"` (one or two big words, key words in italic serif).
+
+**3 versions, pick your favourite:** when they can't decide, or say "you choose" to
+everything with an open brief, render three short openings in different looks or
+hooks and let them choose:
+`python3 scripts/versions.py work/plan.json work/versions --analysis work/analysis/analysis.json --looks creator,editorial,bold --hooks "..." "..." "..."`
+Send `versions.mp4` (all three side by side, numbered) and ask "1, 2 or 3?".
+
+In the plan: `"look": {"style": "editorial", "font_pair": "elegant", "theme": "ocean"}`.
+Single colours can be overridden with `"colors": {"primary": "#...", "light": "#...",
+"highlight": "#..."}` (primary = boxes and title depth, light = text on boxes and
+title faces, highlight = key words). Any style key in `scripts/looks.py` can be
+overridden too (for example `"caption_box": true`).
+
+**Their own fonts (free or bought):** any `.ttf` or `.otf` file in their Drive
+folder downloads with the clips. Set `look.font` (captions) and/or
+`look.display_font` (titles) to the file's path. Remind them to check the font
+licence covers social media video. Adobe Fonts can't be used this way, because
+Adobe doesn't let you download the font files.
+
+**Save it for next time:** after they're happy with a reel, offer to save their
+look and music choice: `python3 scripts/brand.py work/plan.json work/brand-kit.json --name <a name they like, e.g. Butter> --handle <their handle>`.
+Each saved name becomes a look in their **lookbook**; run it again with another
+name to add more (`--default` picks the one used automatically). Then offer
+autopilot ("Want me to edit your next reels in this style without asking
+questions?"); if yes, add `--autopilot on`. Put `brand-kit.json` in their Drive
+clips folder (Google Drive connector `create_file` if available, otherwise give
+them the file to add), so every future reel matches automatically.
+
+## 2. Analyse and rough cut
+
+```
+python3 scripts/analyze.py work/clips work/analysis
+python3 scripts/roughcut.py work/analysis/analysis.json work/roughcut.json
+```
+
+`analysis.json` holds per-clip metadata, a 0–1 score for every second, the best
+3-second windows, problem flags (`too_dark`, `blurry`, `hard_cut_or_shake`) and a
+word-timed transcript. One contact sheet per clip goes in `work/analysis/sheets/`.
+**Look at every contact sheet**, because the scores only measure technical
+quality. You judge what is actually interesting: faces, reactions, reveals, the
+product, the "money shot".
+
+`roughcut.py` removes ums, pauses longer than 0.45 s and earlier takes of a line
+that gets repeated (the last take wins). It writes plan-ready segments of the
+clean talk plus a numbered transcript (`roughcut.md`). For talking videos, build
+the plan from these segments and pick the best lines; don't hand-trim pauses.
+
+**Cut by word:** if the person wants a word or phrase gone ("cut 'basically'",
+"drop the bit where I say 'you know'"), add it to `"cut_words"` (everywhere) or a
+segment's `"cut"` list. `render.py` splits the segment around it.
+
+Before rendering, fix words Whisper mishears (brand names, local slang such as
+"Woolies") directly in `analysis.json`. If transcription fails, carry on and use
+`captions_manual` for on-screen text.
+
+## 3. Plan the edit, built for reach
+
+Write `work/plan.json` (format at the top of `scripts/render.py`; overlays are
+documented at the top of `scripts/graphics.py`). Follow this playbook unless the
+brief says otherwise:
+
+| Rule | Why |
+|---|---|
+| 15–30 s total (7–12 s for a simple show-off); follow the person's length if they give one | Completion rate drives reach |
+| **Hook in the first 1 s**: open on the most striking moment, plus a hook title that creates curiosity ("Watch what happens when…", "POV: …", "3 things nobody tells you about…") | Most viewers decide in the first second |
+| Cuts every 1–2 s; nothing static longer than 3 s unless someone is talking | Keeps attention |
+| Re-hook in the middle (a new angle, a reveal, a big title, a speed change); mark that segment `"rehook": true` | Stops the mid-video drop-off |
+| Captions on whenever someone speaks, with 1–2 key words per sentence in `highlight_words` (numbers are automatic) | Most people watch on mute |
+| Payoff near the end, then a call to action ("Comment X", "Follow for part 2", "Save this") | Comments, saves and follows boost reach |
+| Make the last shot flow back into the first | Loops count as rewatches |
+| Upright clips use `fill`; landscape clips use `fit-blur`, or `fill` with `focus_x` | No black bars |
+| Skip seconds flagged `too_dark`, `blurry` or `hard_cut_or_shake` unless it's the only shot of something important | Quality signals |
+| Use `speed` 1.1 for talking, 1.25–2 for slow process shots | Pace |
+
+**Overlays** (`"overlays": [...]`, reel times in seconds). Use them to make the
+key moments land, roughly one every 4–8 seconds, never two at once, kept in the
+top half so captions stay clear:
+
+| Moment | Overlay |
+|---|---|
+| Hook, list items, the twist | `title` (big keyword; 3D in Editorial and Bold; `"behind": true` tucks it behind the person) or `headline` (bold plus hand-written lines) |
+| Numbers, quick facts | `badge` ("#1 Zucchini · 50 days") |
+| A do/don't or tip | `card` (title plus lines, emoji fine) |
+| A reaction or emphasis | `sticker` (an emoji that pops in with burst lines, or their own GIF/PNG from the Drive folder). Place it with `"side": "left"`, `"centre"` or `"right"` (default right); mixing sides keeps it lively. Keep a centre sticker clear of any title or headline on screen at the same time, and off the face |
+| "Comment X" call to action | `comment_box` (types the word), then `dm_reply` ("Sending it over!"), or `comments` (a stack of comments pouring in) |
+| "Follow for more" | `follow` (Follow card that taps to Following) |
+| Showing another clip, before/after | `pip` (video in a titled card) |
+| "I filmed for hours", process | `fan` (fanned thumbnails with timestamps) |
+| Comparing options or looks | `styles` (up to 3 labelled cards) |
+
+With overlays, drop the plain `hook` and `end_text` and use a `title` and a
+call-to-action overlay instead.
+
+**Privacy:** if kids or bystanders appear and the person wants them hidden, set
+`"blur_faces": "others"` (keeps the biggest face, usually the speaker) or `"all"`.
+To blur only certain people, make the face sheet first
+(`python3 scripts/privacy.py work/clips/<clip> work/faces`), send `faces.jpg`
+("Which faces should I cover? Face 1, Face 2...") and set
+`"blur_faces": {"faces": [2], "sheet": "work/faces/faces.json"}`. Ask once if you
+see children in the contact sheets.
+
+**Sound:** set `"sfx": true` for pops, whooshes, typing clicks and a ding synced to
+the overlays (made on the fly, no licence needed). Music only if they said yes in
+step 1 (or "you choose"). For music, use their own track (an mp3 in their Drive folder,
+`"path"`), or pick a track in the mood they asked for from the library in `scripts/audio.py`
+(`"music": {"track": "Carefree", "volume": 0.12}`; moods: chill, happy, funny,
+inspiring, energetic, Christmas). Library tracks are Kevin MacLeod, CC BY 4.0: put
+the credit line `render.py` prints into the posting tips so they add it to the
+caption. Loudness is always levelled to -14 LUFS (the social media standard).
+
+Don't license paid Adobe Stock music without asking, because it costs money.
+Without music, keep the original sound. If music is used, keep `duck: true` so
+speech stays clear and the volume low (0.1–0.15) under talking. Tell them that on
+Instagram or TikTok they can swap in a trending sound in the app before posting,
+which often helps reach.
+
+### Storyboard first (standard)
+
+Always show a storyboard **before** rendering (unless they unticked "Show me the
+plan before you make it" on the setup page), so they can see and change the
+plan. The storyboard is the **editable storyboard page**, never a read-only table
+in chat or a doc they can only look at. Make it with the editor script, without a
+reel:
+
+`python3 scripts/editor.py work/plan.json work/editor.html --analysis work/analysis/analysis.json --name "<short reel name>" --stage storyboard`
+
+Publish `work/editor.html` with the Artifact tool (icon "video"). It shows one
+card per shot in play order (picture, time, the words said in an editable box,
+tick boxes **Remove this shot** and **Show words big in the middle**, arrows to
+move it), one card per title or pop-up (edit the words or remove it), dropdowns for
+feel, fonts, colours and music, key words to highlight and an "Anything else?" box.
+Send the link with: "Change anything you like, then tap **Copy my changes**, come
+back here, press and hold in the message box, tap **Paste** and send. Happy with
+it? Tap **Build it as is** and send that." Keep the same file path so the same
+link becomes the Reel Editor after rendering (step 5b).
+
+If the Artifact tool isn't available, fall back to a Claude Doc storyboard (shot
+pictures, a shot list table and a look table they can edit), then re-read it.
+
+**Centre lines:** in the shot list, mark 2-4 punchy lines as centre lines
+(hooks, numbers, the payoff, e.g. "every upgrade free"). Each one appears big in
+the middle of the screen, key words in the key-word font and highlight colour,
+instead of in the normal caption spot. When they tick **Show words big in the middle** (or
+write "centre: <words>"), add the exact spoken words to
+`"center_lines": ["...", "..."]` in the plan. On-screen text that isn't spoken can
+be centred with `"center": true` on a `captions_manual` entry.
+
+Wait for "Looks good, build my reel!" or a `REEL CHANGES` block (apply it as in
+step 5b), update `plan.json` to match, and render. If they asked you to go ahead
+without checking, skip the wait.
+
+## 4. Render and check
+
+`python3 scripts/render.py work/plan.json --analysis work/analysis/analysis.json`
+
+Then pull 4–6 frames (`ffmpeg -ss <t> -i reel.mp4 -frames:v 1 f.png`), including
+one during each overlay, and look at them: is the text readable, is the subject
+in frame, do overlays and captions stay clear of each other and of the face? Fix
+the plan and re-render if not.
+
+### 4b. Effect pack (optional, after render or polish)
+
+Four extra effects, run as one more pass over the finished video:
+`python3 scripts/fx_pack.py fx.json reel.mp4 reel-fx.mp4` (needs `pip install ai-edge-litert`).
+Working example: `/mnt/project-files/reels/effects-pack/fx-sample.json`. Every effect has
+`type`, `start`, `end` (seconds on the reel timeline). Use at most one effect per beat.
+
+- `orbit` (good for a list of things, or "here's everything I did"): `images` (5-6 b-roll
+  stills, `ffmpeg -ss <t> -i clip -frames:v 1`), `cx, cy, rx, ry` (fractions of the screen;
+  keep `cy + ry` BELOW the face, e.g. cy .36 / ry .19 for a seated person, so front cards
+  pass the chest, not the face), `card_w` 270, `speed` 0.16 turns/s.
+- `glass` (good for numbers in the hook): `widgets` list, each `kind` number|bars|ring|progress,
+  `x, y` (centre), `w, h` px, `label`, `delay` (s; time it to the spoken word), plus
+  number: `value` ("$1.40" counts up), `sub`; bars: `values` 0-1; ring: `centre`, `value`, `sub`;
+  progress: `title`, `value`. Put widgets above and beside the head; they sit behind the person.
+- `mono` (good for one dramatic word): black and white + a giant glowing `title` behind
+  the head (`y` ~ head top), `title_at` = when the word is said, optional `sub` in front at `sub_y`.
+- `comment` (the CTA): Instagram-style comments panel behind the head (`y` .165, `h` 520),
+  `others` ([[handle, text]] x2), `word` typed in at `type_at` (when they say "comment"),
+  then posted with a red heart; big `cta` lines in front at `cta_y` .60.
+
+Check frames as in step 4: faces must stay clear.
+
+## 5. Deliver
+
+Give them the MP4, and with it a **coaching report** in friendly, plain language:
+
+1. **What's working:** 2–3 specific things ("The close-up of the pour at 0:04 is a great hook").
+2. **What held this reel back:** the top 2–3 issues you saw in the flags and
+   contact sheets, each with a one-line fix (dark → "face a window or film
+   before sunset"; shaky → "hold the phone with both hands, elbows tucked in,
+   or lean on something"; horizontal → "turn your phone upright"; far away →
+   "step closer, fill the frame with the subject"; long static shots → "move the
+   camera slowly, or change angle every few seconds").
+3. **Shots to get next time:** a numbered list of 4–6 concrete shots tailored to
+   the brief and missing from this footage, for example a tight close-up
+   opener, a reaction face, a before/after, a POV shot, a 3-second
+   "reveal", or a shot of the person talking straight to camera for the hook.
+4. **Posting tips:** best caption idea, 3–5 hashtags, the cover frame to choose,
+   and a reminder to add a trending sound in the app.
+
+Keep the report short enough to read on a phone.
+
+### 5b. Show the Reel Editor and ask for changes (always)
+
+Right after delivering, make the Reel Editor page and ask if they want changes:
+
+`python3 scripts/editor.py work/plan.json work/editor.html --analysis work/analysis/analysis.json --reel <reel.mp4> --name "<short reel name>"`
+
+Republish it to the **same link** as the storyboard. It shows the finished reel
+**playable at the top of the page**, so they can watch it inside Claude without
+downloading anything (a phone-sized copy, under ~9 MB; the full-quality MP4 is
+attached to the chat message to save). Then one card per shot
+(picture, the words said in an editable box, tick boxes **Remove this shot** and
+**Show words big in the middle**, up/down arrows to reorder), one card per title
+or pop-up (edit words or remove), dropdowns for feel, fonts, colours and music, key
+words to highlight, and an "Anything else?" box. Publish `work/editor.html` with the
+Artifact tool (republish the same file after each new render so the link stays
+the same) and send:
+
+> Your reel is ready! Tap here to watch it: <link>. Change anything
+> you like. Then tap **Copy my changes**, come back here, press and hold in the
+> message box, tap **Paste** and send. If you're happy, tap **No changes**
+> (or just say "no changes").
+
+If decision cards are available, also post one: "Do you want to change anything
+in your reel?" with options "No, it's perfect" / "Yes, I'll use the editor" /
+"Make it shorter" / "Try a different look".
+
+**Applying changes:** they paste a block starting `REEL CHANGES (<name>)` with
+JSON: `new_order` (shot numbers in the new order, removed shots left out),
+`shots` (`remove`, `words_now` vs `words_were`: a fixed word means fix the
+transcript in `analysis.json`; words deleted mean `cut` them from that segment;
+`big_in_middle` true/false adds/removes the spoken line in `center_lines`),
+`overlays` (`remove`, or new text for `text`/`sub`/`title`/`reply`/`comment`, or
+`lines` with one line per row), `look` (style/font_pair/theme keys, `music` a mood
+or "none"), `highlight_words`, and `notes` (free text, do what it says). Shot
+numbers match `plan.json` segments in their original order. Update `plan.json`,
+render again, check frames, republish the editor and ask again. Stop when they say
+no changes; then offer to save the look (brand kit) and the extras in step 6.
+
+## 6. Repurpose (offer after delivery)
+
+Offer: "Want a carousel, a story and 3 trial reels from this too?" If yes, add
+`"cta"`, three `"trial_hooks"` (different angles on the same idea) and,
+optionally, `"points"` (one carousel slide each) to the plan, then:
+
+`python3 scripts/repurpose.py work/plan.json reel.mp4 work/repurposed --analysis work/analysis/analysis.json`
+
+This makes `carousel/slide_NN.png` (4:5 slides: hook, one per point, call to
+action), `story.mp4` (first 12 s with a "New reel" sticker) and three trial reels:
+`trial-new-hook` (same edit, new hook), `trial-short` (about 20 s) and
+`trial-twist-first` (the re-hook moment moved to the start). Explain that
+Instagram's trial reels are shown to non-followers first, so they can test which
+hook works best before sharing to their main feed.
