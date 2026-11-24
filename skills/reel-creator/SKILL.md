@@ -28,15 +28,16 @@ editing engine (scripts, fonts, models) is in `../reel-edit/`.
 
 ## How to run it (the order a new person expects)
 
-1. **Brand first, once.** Find their saved kit first, using the search order in
-   `reel-brand` (project files, memory, repository, Drive), then ask "Do you need to
-   update your brand information?" naming the kit you found. Only if there's none (or
-   they want changes), run `reel-brand`: publish their own Brand Kit page and wait for
-   the pasted BRAND KIT, then save it in every place `reel-brand` lists, so it is never
-   asked for again. Save the Brand Kit page link to memory too.
+1. **Brand first, once per brand.** Gather every saved brand first, using the search
+   order in `reel-brand` (project files, memory, repository, Drive). The first question
+   is "Which brand is this reel for?", listing them by name, plus change one / add a new
+   one. Only for a change or a new brand, run `reel-brand`: publish their own Brand Kit
+   page and wait for the pasted BRAND KIT, then save it in every place `reel-brand`
+   lists, so it is never asked for again. Save the Brand Kit page link to memory too.
 2. **Reel Setup page, every reel.** Publish `../reel-edit/pages/reel-setup.html` with
    the Artifact tool (icon "clipboard"), after replacing `BRAND_KIT_LINK` in it with THEIR
-   Brand Kit link (never someone else's private link). Keep the same file path so the
+   Brand Kit link (never someone else's private link) and filling `SAVED_BRANDS` with
+   the names of their saved brands (republish when a brand is added). Keep the same file path so the
    link stays the same. It asks: brand keep/change, **How do you want to start?**
    (`search` = find a winning idea · `idea` = I have an idea · `script` = I have my
    script and clips), topic, length, feel, music, extras (incl. special effects).

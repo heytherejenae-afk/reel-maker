@@ -120,6 +120,7 @@ pre#out { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; backg
 
 <script>
 const BRAND_KIT_PAGE = "BRAND_KIT_LINK"; // Claude: replace with THIS person's own Brand Kit page link before publishing
+const SAVED_BRANDS = []; // Claude: fill with the brand_name of every saved kit, e.g. ["Hey There Jenae", "Hey There Jenae AI"]
 const FEELS = [
   ["clean", "Clean", "Simple and easy to read. White captions, key words in colour."],
   ["editorial", "Editorial", "Polished and magazine-like. Captions in a coloured box, big 3D titles."],
@@ -156,7 +157,7 @@ const FAMILY = n => n.replace(" Italic", "");
 const ITAL = n => n.includes("Italic") ? "italic" : "normal";
 
 let A = {
-  brand: null, kit: "", start: null, link: "", brief: "", length: "30-45", feel: null,
+  brand: null, brand_name: null, kit: "", start: null, link: "", brief: "", length: "30-45", feel: null,
   fonts: null, title_font: "Abril Fatface", caption_font: "Poppins", key_font: "Playfair Display Italic",
   theme: null, highlight: "theme", music: null, mood: "happy",
   extras: { storyboard: true, effects: true, sfx: true, hide_faces: false, repurpose: false }
@@ -191,15 +192,22 @@ const YOU = (g, what) => opt(g, "you choose", "You choose for me", `Claude picks
 
 const R = {
   brand: () => `
-    <h1>Do you need to update your brand information?</h1>
+    ${SAVED_BRANDS.length ? `<h1>Which brand is this reel for?</h1>
+    <p class="help">Your saved brands are below. Tap one to use its colours and fonts. You don't need to paste anything.</p>
+    <div class="opts" role="radiogroup">
+      ${SAVED_BRANDS.map(n => opt("brand_name", esc(n), esc(n), "Use my saved colours and fonts.")).join("")}
+      ${opt("brand", "update", "Change one of my brands", "New colours, fonts, name or handle for a brand above.")}
+      ${opt("brand", "none", "Add a new brand", "Make a brand kit for another account.")}
+    </div>` : `<h1>Do you need to update your brand information?</h1>
     <p class="help">Your brand kit is your saved colours, fonts and name. Claude uses it so every reel looks like you.</p>
     <div class="opts" role="radiogroup">
       ${opt("brand", "keep", "No, use my saved brand kit", "Nothing has changed. Use my colours and fonts from last time.")}
       ${opt("brand", "update", "Yes, I want to change something", "New colours, fonts, name or handle.")}
       ${opt("brand", "none", "I don't have a brand kit yet", "I'll make one now, or pick a look on the next screens.")}
-    </div>
+    </div>`}
     ${A.brand === "update" || A.brand === "none" ? `<div class="sub">
-      <h2>${A.brand === "update" ? "Update your brand kit" : "Make a brand kit (optional)"}</h2>
+      <h2>${A.brand === "update" ? "Update your brand kit" : SAVED_BRANDS.length ? "Make your new brand kit" : "Make a brand kit (optional)"}</h2>
+      ${A.brand === "update" && SAVED_BRANDS.length ? `<p class="note">Keep the brand name the same on the Brand Kit page, so Claude replaces the right brand.</p>` : ""}
       <ol class="steps">
         <li>Tap <b>Open the Brand Kit page</b> below. It opens in a new tab.</li>
         <li>Change your colours, fonts and name. The phone picture shows how it will look.</li>
@@ -317,7 +325,7 @@ const R = {
 
   review: () => {
     const rows = [
-      ["brand", "Brand info", { keep: "Use my saved brand kit", update: kitGiven() ? "Updated brand kit pasted" : "Update it (no kit pasted yet)", none: kitGiven() ? "New brand kit pasted" : "No brand kit" }[A.brand] || "Not answered"],
+      ["brand", "Brand info", { keep: A.brand_name ? `Use my saved ${A.brand_name} brand` : "Use my saved brand kit", update: kitGiven() ? "Updated brand kit pasted" : "Update it (no kit pasted yet)", none: kitGiven() ? "New brand kit pasted" : "No brand kit" }[A.brand] || "Not answered"],
       ["start", "Start", { search: "Find me a winning idea", idea: "I have an idea, help me script it", script: "I have my script and clips" }[A.start] || "Not answered"],
       ...(A.start === "script" ? [["clips", "Clips", A.link || "Link already in the chat"]] : []),
       ["brief", "About the reel", (A.brief || "Not written") + ` · ${A.length} seconds`],
@@ -348,6 +356,7 @@ function label(list, v) { if (v === "you choose") return "You choose"; const f =
 
 function answers() {
   const o = { brand: A.brand || "not answered" };
+  if (A.brand === "keep" && A.brand_name) o.brand_name = A.brand_name;
   if (kitGiven() && A.brand !== "keep") {
     const raw = A.kit.replace(/^[\s\S]*?BRAND KIT \(save as brand-kit\.json\)\s*/, "");
     try { o.brand_kit = JSON.parse(raw); } catch (e) { o.brand_kit_text = A.kit.trim(); }
@@ -385,6 +394,8 @@ function wire(id) {
   document.querySelectorAll("[data-g]").forEach(b => b.addEventListener("click", () => {
     const g = b.dataset.g, val = b.dataset.v;
     if (g === "extras") A.extras[val] = !A.extras[val]; else A[g] = val;
+    if (g === "brand_name") A.brand = "keep";
+    if (g === "brand" && val !== "keep") A.brand_name = null;
     const y = window.scrollY; render(); window.scrollTo(0, y);
   }));
   document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => {

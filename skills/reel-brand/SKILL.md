@@ -1,27 +1,37 @@
 ---
 name: reel-brand
-description: Stage 4 of the reel creator - set up or update the person's brand kit (colours with jobs, title/caption/key-word fonts, caption style) with the Brand Kit page, and save it as brand-kit.json for every reel. Use when someone has no brand kit, wants to change their brand, or pastes a BRAND KIT block.
+description: Stage 4 of the reel creator - set up or update the person's brand kit (colours with jobs, title/caption/key-word fonts, caption style) with the Brand Kit page, and save each brand as brand-kit-<name>.json for every reel (several brands allowed). Use when someone has no brand kit, wants to change or add a brand, or pastes a BRAND KIT block.
 ---
 
 # Stage 4: Brand kit
 
-Always ask first: **"Do you need to update your brand information?"**
-Keep my saved brand kit / Yes, change something / I don't have one yet.
-Find their saved kit BEFORE asking, so you can name it in the question
-("Keep my saved Hey There Jenae kit"). A person should only ever paste their kit once.
-Look in this order and stop at the first one you find (see "Where the kit lives" below),
-then copy it to `work/brand-kit.json`, which every later stage reads:
-1. `work/brand-kit.json` (this thread already has it)
-2. `/mnt/project-files/brand/brand-kit.json` (the project's shared files, kept forever)
-3. `brand-kit.json` at the top of their repository
-4. Project memory: a memory named `brand-kit` holding the kit's JSON
-5. `brand-kit.json` in their Google Drive clips folder
-6. A `BRAND KIT` block earlier in this chat
+A person can have several brands (for example a gardening account and an AI account),
+and should only ever paste each brand kit once. Each brand is one file,
+`brand-kit-<slug>.json`, where the slug is the `brand_name` in lower case with words
+joined by `-` (e.g. `brand-kit-hey-there-jenae-ai.json`).
 
-- **Keep:** use the kit you found. Never ask them to paste it again.
-- **Change / don't have one:** use the Brand Kit page.
-- **Found nothing but they said Keep:** say you couldn't find it, send the Brand Kit
-  page, and tell them this is the last time they'll need it.
+**Before asking anything, gather every saved brand** from all of these places, keyed by
+`brand_name` (if a brand turns up twice, the first place in this list wins):
+1. `work/brand-kit-*.json`
+2. `/mnt/project-files/brand/brand-kit-*.json` (the project's shared files, kept forever;
+   an older single `brand-kit.json` there counts too)
+3. `brand-kit-*.json` / `brand-kit.json` at the top of their repository
+4. Project memory: memories named `brand-kit-<slug>` (or an older `brand-kit`)
+5. `brand-kit*.json` in their Google Drive clips folder
+6. `BRAND KIT` blocks earlier in this chat
+
+Then ask: **"Which brand is this reel for?"** with one option per saved brand by name,
+plus **Change one of my brands** and **Add a new brand**. With no saved brands, ask
+"Do you have a brand kit yet?" instead. (The Reel Setup page asks this for you: fill its
+`SAVED_BRANDS` list before publishing, see `reel-creator`.)
+
+- **A saved brand:** copy that kit to `work/brand-kit.json`, which every later stage
+  reads, and say its name once ("Using your Hey There Jenae AI brand."). Never ask them
+  to paste it again.
+- **Change one / Add a new brand:** use the Brand Kit page. A changed kit keeps its
+  `brand_name`, so it replaces that brand's file and leaves the others alone.
+- **Found nothing for the brand they named:** say so, send the Brand Kit page, and tell
+  them this is the last time they'll need it for that brand.
 
 ## The Brand Kit page
 
@@ -45,22 +55,22 @@ Their message contains `BRAND KIT (save as brand-kit.json)` + JSON. Save it
 everywhere below, straight away, without asking (`work/` is wiped when the thread ends,
 so saving only there is why people got asked to paste their kit again):
 
-1. `work/brand-kit.json` for this reel.
-2. `/mnt/project-files/brand/brand-kit.json` if `/mnt/project-files/` exists. Every
-   future thread in their project can read it.
-3. Project memory: one file named `brand-kit` (type `project`) with the brand name,
-   the date, and the whole JSON. Replace an older one rather than adding a second.
+1. `work/brand-kit.json` for this reel, and `work/brand-kit-<slug>.json`.
+2. `/mnt/project-files/brand/brand-kit-<slug>.json` if `/mnt/project-files/` exists.
+   Every future thread in their project can read it. Other brands' files stay as they are.
+3. Project memory: one file per brand, named `brand-kit-<slug>` (type `project`), with
+   the brand name, the date, and the whole JSON. Replace only that brand's memory.
 4. If neither 2 nor 3 is possible (for example a plain Claude Code folder), save
-   `brand-kit.json` at the top of their project folder instead.
+   `brand-kit-<slug>.json` at the top of their project folder instead.
 
-Then tell them in one line: "Saved your brand kit. I'll use it for every reel, so you
-won't need to paste it again. Say 'change my brand' any time to update it."
+Then tell them in one line: "Saved your <brand name> brand. Next time I'll list it with
+your other brands, so you won't need to paste it again."
 
-### Where the kit lives
+### Where the kits live
 
 These places outlive a single chat: the project's shared files, project memory, the
 repository and their Drive folder. `work/` does not. Never tell them to pin or star a
-chat to keep the kit: a new chat can't read an old one.
+chat to keep a kit: a new chat can't read an old one.
 
 The kit's `colors`: `light` = background/cards, `primary` = ink, `highlight` = key
 words, `soft`/`second`/`accent` = extra. Fonts: `display_font` (titles), `font`
