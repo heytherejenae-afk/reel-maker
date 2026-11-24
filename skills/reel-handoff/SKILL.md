@@ -46,10 +46,10 @@ Don't send videos through the Google Drive connector: it refuses anything over a
 `layers-for-computer/` (see-through .mov). No phone needed.
 
 **Edits, or CapCut on a phone:** Edits is a phone app (Edits for Mac needs an Apple
-silicon Mac). Give the "Move the files to your phone" part of `edits-steps.md`: on the
-computer, open drive.google.com in Chrome, **+ New** > **File upload**, pick the
-files from **Downloads**; then on the phone, open the **Google Drive** app and
-download them. (Uploading in the Drive website has no 3 MB limit; only the connector does.)
+silicon Mac). Tell them to open the same chat in the **Claude** phone app, tap each
+file, then **Download** (Step 1 of `edits-steps.md`). Tested on Android 2026-11-24:
+downloading attachments straight to the phone works; saving them to Google Drive from
+the phone did not. Don't route videos through Drive.
 Effects already replaced the cards on their beats, so list only the cards left.
 
 ## CapCut steps

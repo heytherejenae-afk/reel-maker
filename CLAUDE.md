@@ -31,6 +31,8 @@ one click (no size limit like the Google Drive connector's ~3 MB). So:
 1. **Inside a Claude project** (`/mnt/project-files/` exists): save deliverables
    under `/mnt/project-files/reels/<slug>/` and attach them to your reply.
 2. Tell them how to download on a computer: "Click the file under my message, then
-   click **Download**. It saves to your **Downloads** folder."
+   click **Download**. It saves to your **Downloads** folder." For Edits (phone):
+   open the same chat in the Claude phone app, tap the file, tap **Download**
+   (tested on Android 2026-11-24; going via Google Drive did not work).
 3. Pictures to choose from and pages to fill in: publish with the Artifact tool and
    keep the same file path so the link stays the same.

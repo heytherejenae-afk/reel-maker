@@ -1,4 +1,4 @@
-# Finish your reel in Edits (download on your computer, finish on your phone)
+# Finish your reel in Edits (on your phone)
 
 Status: checked on an Android phone on 23 Nov 2026 (see-through card pictures work as overlays). Menu names change between Edits versions; if a button isn't there, look for one with a similar name in the same spot.
 
@@ -14,18 +14,13 @@ You only need this if you want to change something in Edits. The finished reel (
 3. Tap **Audio** at the bottom to add a trending sound. Turn the sound's volume down so your voice stays clear.
 4. Tap **Export** (top right).
 
-## Step 1: Move the files from your computer to your phone
+## Step 1: Get the files onto your phone
 
-**On your computer:**
-1. In the Claude chat, click each file under Claude's message, then click **Download**. The files save to your **Downloads** folder.
-2. Open **Chrome** and go to **drive.google.com**. You'll see your Google Drive.
-3. Click **+ New** (top left), then **New folder**. Type the reel's name and click **Create**. Double-click the new folder to open it.
-4. Click **+ New** again, then **File upload**. Click **Downloads** on the left, click the first file, hold **Ctrl** (Windows) or **Command** (Mac) and click each of the others, then click **Open**. A box at the bottom right shows the upload. Wait until every file has a green tick.
+Tested on Android 24 Nov 2026: downloading straight from the Claude app works. Saving to Google Drive from the phone did not.
 
-**On your phone:**
-5. Open the **Google Drive** app. Tap **Files** at the bottom, then tap the folder with the reel's name.
-6. Press and hold the first file until a tick appears. Then tap each of the other files once, so they all have ticks.
-7. Tap the **three dots ⋮** at the top right, then tap **Download**. The files save to your phone, and Edits can see them.
+1. On your phone, open the **Claude** app and go to the chat where Claude sent your reel.
+2. Tap the first file under Claude's message. When it opens, tap **Download** (or the three dots, then **Download**). It saves to your phone's **Downloads** and Edits can see it.
+3. Do the same for each of the other files.
 
 ## Step 2: Start with your video
 1. Open **Edits** and tap **+**.

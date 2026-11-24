@@ -132,9 +132,7 @@ Setup is finished. You never need to do Parts 1 to 4 again.
 
 **Getting your finished reel:** in the chat, click each file under Claude's message, then click **Download**. It saves to your computer's **Downloads** folder, ready to post or open in CapCut on your computer.
 
-**Finishing in Edits (a phone app)?** Move the files to your phone through Google Drive:
-1. On your computer, go to **drive.google.com** in Chrome. Click **+ New**, then **File upload**, pick the files from **Downloads** and click **Open**. Wait for the green ticks.
-2. On your phone, open the **Google Drive** app, find the files, press and hold one, tick the others, tap **⋮**, then **Download**.
+**Finishing in Edits (a phone app)?** On your phone, open the **Claude** app, go to the same chat, tap each file under Claude's message, then tap **Download**. The files save to your phone and Edits can use them.
 Claude's Edits steps walk you through the rest.
 
 ---
