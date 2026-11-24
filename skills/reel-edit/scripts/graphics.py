@@ -17,8 +17,8 @@ Overlay types (times are in reel seconds; every type takes start, end and option
   card       {"lines": ["✅ Seedlings", "❌ Seeds"], "title": "Tomatoes"} tip card
   comments   {"text": "CHRISTMAS", "count": 8}        stack of comment bubbles popping in
   comment_box {"text": "CHRISTMAS"}                   "Add a comment..." box typing a word
-  dm_reply   {"comment": "CHRISTMAS", "reply": "Sending it over!", "handle": "jenae"}
-  follow     {"handle": "heytherejenae", "avatar": "/path/face.jpg"}   Follow card that taps
+  dm_reply   {"comment": "CHRISTMAS", "reply": "Sending it over!", "handle": "yourname"}
+  follow     {"handle": "yourhandle", "avatar": "/path/face.jpg"}   Follow card that taps
   pip        {"clip": "/path.mp4", "clip_start": 12.0, "title": "BEFORE"}  video in a card
   fan        {"clip": "/path.mp4", "times": [5, 9, 15, 20, 27]}   fanned thumbnails + timestamps
   styles     {"cards": [{"label": "LOFI", "clip": "/a.mp4", "t": 3}, ...]}  up to 3 compare cards

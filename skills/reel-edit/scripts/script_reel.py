@@ -11,7 +11,7 @@ the edit lives in one editable file, reel.json, so any part can be changed and r
 
 reel.json (paths relative to "work" unless absolute):
 {
- "name": "Apple trees in pots", "work": "/tmp/work/apple", "out": "/mnt/project-files/reels/apples",
+ "name": "Apple trees in pots", "work": "work/apple", "out": "work/apple/out",
  "talk": "clips/talk.mp4",
  "broll": {"b1": "clips/b1.mp4", "b2": "clips/b2.mp4"},          # short names the page shows
  "overlays": ["ov/p1.png", "ov/p2.png"],                          # 1080x1920 transparent pages, numbered from 1
@@ -48,8 +48,18 @@ W, H, FPS = 1080, 1920, 30
 VF = f'scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},format=yuv420p,setsar=1'
 
 
+def font_path(f):
+    """'<skill>/fonts/X.ttf' -> this plugin's fonts folder; a path that doesn't exist on this
+    computer (e.g. copied from someone else's example) falls back to the bundled font of that name."""
+    f = f.replace('<skill>', SKILL)
+    if not os.path.exists(f) and os.path.exists(os.path.join(SKILL, 'fonts', os.path.basename(f))):
+        f = os.path.join(SKILL, 'fonts', os.path.basename(f))
+    return f
+
+
 def load(p):
     r = json.load(open(p)); r['_path'] = os.path.abspath(p)
+    r['fonts'] = {k: font_path(v) if isinstance(v, str) else v for k, v in r.get('fonts', {}).items()}
     return r
 
 

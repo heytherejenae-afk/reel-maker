@@ -50,7 +50,7 @@ editing engine (scripts, fonts, models) is in `../reel-edit/`.
    "Happy with this? Tap **Next** to go on to <next stage>, or tell me what to change."
 4. Keep everything for one reel in one project file, `work/<reel-slug>/reel-project.json`:
    ```json
-   {"niche": "beginner gardening, Australia", "audience": "...", "idea": "...",
+   {"niche": "<their niche>", "audience": "...", "idea": "...",
     "research": [{"url": "...", "views": 0, "outlier": 0, "hook": "...", "transcript": "...", "why": "..."}],
     "script": "work/<slug>/script.json", "script_page": "<artifact link>",
     "brand": "work/brand-kit.json", "overlays": {"style": "tag", "canva_design": "...", "pngs": ["ov/p1.png"]},
