@@ -5,15 +5,17 @@ description: Stage 5 of the reel creator - make one on-screen overlay page per s
 
 # Stage 5: Overlays
 
-One overlay page per script beat, using that beat's `on_screen` lines from
+One overlay page per script beat **without a special effect** (an effect replaces the card), using that beat's `on_screen` lines from
 `script.json`. Pages are 1080x1920 with a see-through background; the edit places
 them below the face, in front of the video.
 
 ## 1. Pick a style
 
 Send `overlay-styles.jpg` (in this folder; remake it in their brand with
-`python3 overlay_pages.py --sheet work/<slug>/styles.jpg --brand work/brand-kit.json`)
-and ask: "Which overlay style? 1 Price tag · 2 Taped note · 3 Numbered card ·
+`python3 overlay_pages.py --sheet work/<slug>/styles.jpg --brand work/brand-kit.json --script work/<slug>/script.json`,
+so the samples show their own words, not a stranger's)
+and ask with a **decision card** if available (4 options max: the 3 styles that best fit
+the script + "Mix, you pick per beat"; say they can reply with any other number), else ask: "Which overlay style? 1 Price tag · 2 Taped note · 3 Numbered card ·
 4 Clean pills · 5 Sticker card · 6 Bold banner · or **mix** (I'll pick per beat)".
 
 Good defaults per beat when mixing: hook with a price or number → Price tag; tips →

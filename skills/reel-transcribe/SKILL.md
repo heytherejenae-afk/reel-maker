@@ -27,8 +27,15 @@ text burned into the video), which matters because many reels carry the hook on 
 2. Wait the `suggested_first_poll_after_seconds` it gives, then
    `gettranscribe_get_transcription_job` until `completed` (don't busy-loop).
 3. `gettranscribe_get_transcription` with the `transcription_id`.
+Its free plan is only 2 videos in total; on "free plan limit" stop and say so once.
 It gives spoken words only, no on-screen text. If the reel is text-only (music, no
 talking), say so and use its caption instead.
+
+## 2b. When both are locked
+
+Don't download YouTube videos yourself: YouTube blocks Claude's cloud ("confirm you're
+not a bot"). Instagram reels do download with `yt-dlp` and can be transcribed with
+faster-whisper. Otherwise skip this stage: the titles are the hooks. Never stall here.
 
 ## 3. Break each one down
 

@@ -39,6 +39,15 @@ b-roll clips (no talking).
 4. Overlay page N goes on beat N. Overlays sit in front, below the face
    (`overlay_place` y 0.735, scale 0.85); a page with no box of its own gets
    `"backing"`. Title behind the head only where there's clear sky above the head.
+4b. **Special effects** (the `effect` each beat got on the script page): add them as
+   reel.json `"fx"` entries (`type`, `beat`, optional `to_beat`, plus the fx_pack fields in
+   `reference.md` 4b). They're drawn onto the video before captions and overlays, so the
+   reel and all layers include them. An effect **replaces** that beat's overlay card (they
+   collide). `behind` = the reel's `title` on that beat; if there's no clear space above the
+   head, set `"behind": false` and put the title lower, in front, and tell them why.
+   Light or thin key-word font over a light background: add `"key_stroke": ["<ink hex>", 7]`
+   to `captions`.
+   **Screen recordings:** look for emails, names or notifications and never use those seconds.
 5. `python3 scripts/script_reel.py build reel.json` (about 6 min for 70 s). Check a
    contact sheet of the result (`ffmpeg -i reel.mp4 -vf fps=1/1.5,scale=270:-2,tile=6x4 sheet.jpg`):
    words readable, overlays not over the face, the right b-roll for each beat.

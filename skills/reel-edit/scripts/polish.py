@@ -36,7 +36,7 @@ def shadowed(img, blur=14, alpha=.45, dy=5):
     out.alpha_composite(img, (pad, pad))
     return out
 
-def text_img(parts, gap=0.22, sh=(14, .45, 5)):
+def text_img(parts, gap=0.22, sh=(14, .45, 5), stroke=None):
     """parts: list of (text, fontkey, size, colour) laid out on one line."""
     fs = [font(k, s) for _, k, s, _ in parts]
     asc = max(f.getmetrics()[0] for f in fs); desc = max(f.getmetrics()[1] for f in fs)
@@ -46,7 +46,8 @@ def text_img(parts, gap=0.22, sh=(14, .45, 5)):
     img = Image.new('RGBA', (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(img); x = 20
     for i, ((t, k, s, c), f) in enumerate(zip(parts, fs)):
         if i: x += sp[i]
-        d.text((x, 20 + asc), t, font=f, fill=rgb(c) + (255,), anchor='ls')
+        if stroke: d.text((x, 20 + asc), t, font=f, fill=rgb(c) + (255,), anchor='ls', stroke_width=stroke[1], stroke_fill=rgb(stroke[0]) + (255,))
+        else: d.text((x, 20 + asc), t, font=f, fill=rgb(c) + (255,), anchor='ls')
         x += widths[i]
     return shadowed(img, *sh)
 
@@ -91,7 +92,7 @@ _wc = {}
 def word_img(c):
     k = (c['t'], c['key'])
     if k not in _wc:
-        if c['key']: _wc[k] = shadowed(text_img([(c['t'], 'key', cap['key_size'], B['key'])], sh=(9, .8, 3)), 26, .35, 6)
+        if c['key']: _wc[k] = shadowed(text_img([(c['t'], 'key', cap['key_size'], B['key'])], sh=(9, .8, 3), stroke=cap.get('key_stroke')), 26, .35, 6)  # key_stroke: ["#hex", px] for light backgrounds
         else: _wc[k] = text_img([(c['t'], 'word', cap['size'], B['text'])], sh=(11, .6, 4))
     return _wc[k]
 
@@ -99,9 +100,10 @@ def word_img(c):
 def title_img(lines, max_w=1010):
     ims = []
     for t, k, s, c, _ in lines:  # shrink a long line until it fits the screen
-        im = text_img([(t, k, s, c)])
+        st = cap.get('key_stroke') if k == 'key' else None  # same outline as key-word captions
+        im = text_img([(t, k, s, c)], stroke=st)
         while im.width > max_w and s > 40:
-            s = int(s * .93); im = text_img([(t, k, s, c)])
+            s = int(s * .93); im = text_img([(t, k, s, c)], stroke=st)
         ims.append(im)
     return ims
 

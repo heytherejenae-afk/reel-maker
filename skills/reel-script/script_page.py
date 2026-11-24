@@ -11,7 +11,7 @@ script.json:
  "glance": [["45-50 s", "reel length, about 140 words"], ["Comment", "PLANT for the weekly email"]],   # up to 4
  "fill_in": ["[pot size] The size of the pots you used ..."],          # things to check before filming (optional)
  "research": [{"label": "@creator · 2.4M views · 8x their usual", "hook": "first line they said", "url": "https://..."}],  # optional, from reel-ideas
- "beats": [{"name": "Hook", "time": "0-3 s", "say": "Apples are $1.40 each...", "on_screen": ["Apples $1.40 each?", "Growing my own"], "kind": "hook"},
+ "beats": [{"name": "Hook", "time": "0-3 s", "say": "Apples are $1.40 each...", "on_screen": ["Apples $1.40 each?", "Growing my own"], "kind": "hook", "effect": "glass"},
            {"name": "Soft sell", "time": "43-49 s", "say": "...comment PLANT...", "on_screen": ["Comment PLANT"], "kind": "cta"}],
  "canva_link": "https://www.canva.com/d/...",   "overlay_tip": "One page per beat ...",   # optional, added after reel-overlays
  "shots": [{"what": "Voiceover of the whole script, one take.", "note": "Phone close to your mouth."}],
@@ -22,9 +22,31 @@ script.json:
 }
 Words in [square brackets] inside "say" are highlighted as fill-ins.
 The page lets the person edit any Say / On screen text and tap "Copy my changes", which copies
-a block starting "SCRIPT CHANGES" (JSON: {"title", "beats": [{"name","time","say","on_screen"}]}).
+a block starting "SCRIPT CHANGES" (JSON: {"title", "beats": [{"name","time","say","on_screen","effect"}]}).
+Each beat has a tap-to-pick "Special effect" (EFFECTS below); its id goes in "effect" and the edit
+stage (reel-edit, fx_pack.py / title behind head) adds it to that beat. At most one per beat.
 """
 import html, json, re, sys
+
+EFFECTS = [("none", "No effect"), ("behind", "Title behind my head"), ("orbit", "Orbit cards: photos circle around me"),
+           ("glass", "Glass panels: numbers pop up around my head"), ("mono", "Black and white with a big glowing word"),
+           ("comment", "Comment box: the word types itself in (good for 'comment X')"),
+           ("glasstype", "Glass word: a giant see-through word behind me"),
+           ("phone", "Phone pop-up: a phone showing a photo beside me"),
+           ("checklist", "Checklist: a list above my head ticks itself off"),
+           ("doodle", "Doodles: wobbly hand-drawn outline, hearts and notes"),
+           ("background", "Green screen: new background behind me"),
+           ("papercut", "Paper cut-out: me on cream paper with sticky notes"),
+           ("stickies", "Sticky notes: labels slap on around me"),
+           ("framebreak", "Frame break: my head pops out of a photo frame"),
+           ("vertigo", "Vertigo: I grow while the background pulls back"),
+           ("cover", "Magazine cover: big title behind my head"),
+           ("chart", "Chart: bars grow behind my head"),
+           ("polaroids", "Photo wall: polaroids pinned behind me"),
+           ("prompt", "App panel: a sentence types itself above me"),
+           ("zoom", "Punch-in zoom (black and white option)"),
+           ("zoomcut", "Zoom-through jump to the next clip"),
+           ("pullback", "Pull-back: video shrinks into a grid of my clips")]
 
 DEFAULT = dict(light="#F7F1E3", primary="#2F4A35", highlight="#C0643A", soft="#9CAF88")
 
@@ -72,8 +94,11 @@ def main():
     for b in s['beats']:
         k = b.get('kind', '')
         ost = '<br>'.join(esc(x) for x in b.get('on_screen', []))
+        fx = b.get('effect', 'none')
+        opts = ''.join(f'<option value="{v}"{" selected" if v == fx else ""}>{esc(t)}</option>' for v, t in EFFECTS)
         beats += (f'<div class="beat {esc(k)}"><div class="t"><b>{esc(b["name"])}</b>{esc(b.get("time", ""))}</div>'
-                  f'<p class="say" contenteditable="true">{marks(b["say"])}</p><p class="ost" contenteditable="true">{ost}</p></div>')
+                  f'<p class="say" contenteditable="true">{marks(b["say"])}</p><div><p class="ost" contenteditable="true">{ost}</p>'
+                  f'<label class="fx">Special effect<select>{opts}</select></label></div></div>')
     canva = ''
     if s.get('canva_link'):
         canva = f'<div class="row"><a class="btn-link" href="{esc(s["canva_link"])}" target="_blank" rel="noopener">Open Canva overlays</a></div>'
@@ -121,6 +146,7 @@ mark{background:var(--terra-soft);color:var(--terracotta);font-weight:600;paddin
 .beat .say{font-family:var(--font-display);font-size:17px;line-height:1.5;color:var(--ink);border-radius:6px;outline:none}.beat .say:focus,.beat .ost:focus{box-shadow:0 0 0 2px var(--terracotta)}
 .beat .ost{font-size:13px;color:var(--forest);background:var(--sage-soft);border-radius:8px;padding:8px 10px;align-self:start;outline:none}
 .beat .ost::before{content:"On screen";display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.fx{display:block;margin-top:8px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}.fx select{display:block;width:100%;margin-top:3px;font:500 14px/1.3 inherit;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:9px 8px}
 .beat.hook{background:var(--sage-soft)}.beat.hook .ost{background:var(--paper)}@media(max-width:620px){.beat{grid-template-columns:minmax(0,1fr);gap:8px}}
 .shots{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:shot}
 .shots li{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px 12px 50px;position:relative;counter-increment:shot}
@@ -159,9 +185,9 @@ footer{font-size:12px;color:var(--muted);text-align:center}
 function copy(text,msg){var box=document.getElementById('fallback');function fb(){box.hidden=false;box.value=text;box.focus();box.select();msg.textContent='Press and hold the text in the box, then tap Copy.';}
 if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){msg.textContent='Copied';box.hidden=true;},fb);}else{fb();}}
 function beats(){return Array.prototype.map.call(document.querySelectorAll('.beat'),function(b){return{name:b.querySelector('.t b').textContent,time:b.querySelector('.t').lastChild.textContent.trim(),
-say:b.querySelector('.say').innerText.trim(),on_screen:b.querySelector('.ost').innerText.split('\n').map(function(x){return x.trim();}).filter(Boolean)};});}
+say:b.querySelector('.say').innerText.trim(),on_screen:b.querySelector('.ost').innerText.split('\n').map(function(x){return x.trim();}).filter(Boolean),effect:b.querySelector('.fx select').value};});}
 document.getElementById('copyCaption').addEventListener('click',function(){copy(document.getElementById('caption').textContent,document.getElementById('captionMsg'));});
-document.getElementById('copyScript').addEventListener('click',function(){copy(beats().map(function(b){return b.name.toUpperCase()+' ('+b.time+')\nSay: '+b.say+'\nOn screen: '+b.on_screen.join(' / ');}).join('\n\n'),document.getElementById('scriptMsg'));});
+document.getElementById('copyScript').addEventListener('click',function(){copy(beats().map(function(b){return b.name.toUpperCase()+' ('+b.time+')\nSay: '+b.say+'\nOn screen: '+b.on_screen.join(' / ')+(b.effect!=='none'?'\nEffect: '+b.effect:'');}).join('\n\n'),document.getElementById('scriptMsg'));});
 document.getElementById('copyChanges').addEventListener('click',function(){copy('SCRIPT CHANGES (for Claude)\n'+JSON.stringify({title:document.querySelector('h1').textContent,beats:beats()},null,1),document.getElementById('scriptMsg'));});
 })();
 </script></body></html>'''

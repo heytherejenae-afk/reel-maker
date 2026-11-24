@@ -32,7 +32,13 @@ Ask: "Which app do you finish reels in? CapCut / Edits / I'll just post it".
 Attach the MP4 and the right layer folder's files, plus the steps file below,
 filled in with this reel's name and layer names.
 
-**Getting files onto their phone:** attachments in the Claude phone app can be hard
+**Tested 2026-11-24:** the Google Drive connector refuses any file over about **3.1 MB**,
+so only cards, pink caption/title layers and card-times go to Drive. Videos: make phone
+versions under 10 MB (2-pass x264, 1500k video + 96k audio, still sharp), attach them to the
+reply, and tell them to tap the video, then the three dots / download arrow, then **Download**.
+Effects already replaced the cards on their beats, so list only the cards left.
+
+**Getting files onto their phone (older notes):** attachments in the Claude phone app can be hard
 to save. Small files (cards, captions layers, test clips under about 3 MB) also go
 into a Google Drive folder named after the reel (Google Drive connector
 `create_file`, uploaded from the scratchpad folder). Videos over 3 MB can't go

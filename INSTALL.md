@@ -20,10 +20,10 @@ After that you can make reels from your phone.
 | **Canva connector** | Makes your overlay pages (stage 5) | Free Canva works. Canva Pro (about US$15 a month) adds your own brand kit and fonts. *Optional:* the tool has 6 built-in overlay styles too |
 | **vidIQ connector** | Finds reels doing far better than usual in your niche (stage 1) | Free plan: 150 credits a month. One search uses 5 credits, so about 30 searches a month. Boost: US$19 a month for 2,000 credits |
 | **Eden connector** | Reads the words and on-screen text of those reels (stage 2) | Needs **Eden Discover**, US$5 a month. *Optional:* the free Get Transcript connector is the backup |
-| **Get Transcript connector** | Backup for stage 2 (spoken words only) | Free to start. Paid plans from about US$5 a month if you use it a lot |
+| **Get Transcript connector** | Backup for stage 2 (spoken words only) | Only **2 free videos in total**, then a paid plan (from about US$5 a month). *Optional:* without it, ideas still work from the reels' titles |
 | **CapCut** or **Edits** app | Final polish on your phone (stage 7) | Free |
 
-**Cheapest setup that does everything:** Claude Pro + free Canva + free vidIQ + Get Transcript = **US$20 a month.**
+**Cheapest setup:** Claude Pro + free Canva + free vidIQ = **US$20 a month.** If vidIQ runs out of credits, Claude uses a free YouTube Shorts search instead (no transcripts).
 **Full setup:** add Eden Discover = **US$25 a month.**
 
 Prices are in US dollars and were checked in November 2026. Your local price shows when you sign up.
@@ -151,6 +151,8 @@ Then say **make a reel**. You still need the connectors from Part 3.
 |---|---|
 | "vidIQ isn't connected" | Do Part 3 for vidIQ. Or paste 3-5 reel links you've seen doing well, and Claude carries on |
 | "Eden needs Discover" | Nothing. Claude uses Get Transcript instead. Upgrade Eden only if you want on-screen text too |
+| "vidIQ has no credits" | Nothing. Claude searches YouTube Shorts for free instead. Credits refill each month |
+| "Get Transcript free plan limit" | Nothing. Claude writes ideas from the reels' titles. Or paste the words of a reel you like into the chat |
 | "I can't download your Drive folder" | In Drive, set the folder to **Anyone with the link** (Part 5, steps 3 to 5) |
 | A download is blocked | Check the 8 allowed domains in Part 4C, then start a **new** chat (old chats keep old settings) |
 | Can't save a file from the Claude app to your phone | Ask Claude to put it in your Google Drive, then download it from the Drive app |

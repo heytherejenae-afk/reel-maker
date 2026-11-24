@@ -24,17 +24,23 @@ Never ask them about codecs, settings or file formats.
 Sibling skills live next to this folder: `../reel-ideas/SKILL.md` and so on. The
 editing engine (scripts, fonts, models) is in `../reel-edit/`.
 
-## How to run it
+## How to run it (the order a new person expects)
 
-1. **Find where they are.** Ask one question with tap-to-pick options (a decision
-   card if available, else numbered options in one message):
-   "Where are you starting from? 1 I need an idea · 2 I have an idea, need a script ·
-   3 I have a script and clips, make the reel · 4 I have a finished reel, put it in CapCut/Edits".
-   Jump straight to that stage. Never make them redo earlier stages.
-2. **Brand check before anything visual** (stage 3 onwards): "Do you need to update
-   your brand information?" Keep / Change / I don't have one yet. If no
-   `brand-kit.json` exists, run `reel-brand` first (2 minutes) or say "you choose".
-3. Run each stage's skill. At the end of each stage, show the result and ask
+1. **Brand first, once.** "Do you need to update your brand information?" If there's
+   no `brand-kit.json` (or they want changes), run `reel-brand`: publish their own Brand
+   Kit page and wait for the pasted BRAND KIT. Save its link to memory.
+2. **Reel Setup page, every reel.** Publish `../reel-edit/pages/reel-setup.html` with
+   the Artifact tool (icon "clipboard"), after replacing `BRAND_KIT_LINK` in it with THEIR
+   Brand Kit link (never someone else's private link). Keep the same file path so the
+   link stays the same. It asks: brand keep/change, **How do you want to start?**
+   (`search` = find a winning idea · `idea` = I have an idea · `script` = I have my
+   script and clips), topic, length, feel, music, extras (incl. special effects).
+   Wait for the pasted REEL SETUP block, then jump by `start`:
+   `search` -> `reel-ideas` (+ `reel-transcribe`) -> `reel-script`;
+   `idea` -> `reel-script`; `script` -> `reel-overlays` or straight to `reel-edit`.
+   Never make them redo earlier stages.
+3. Then: script page (with a Special effect per beat) -> overlays -> film + Drive
+   folder -> edit -> hand-off. At the end of each stage, show the result and ask
    "Happy with this? Tap **Next** to go on to <next stage>, or tell me what to change."
 4. Keep everything for one reel in one project file, `work/<reel-slug>/reel-project.json`:
    ```json

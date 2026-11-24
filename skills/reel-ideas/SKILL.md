@@ -28,8 +28,16 @@ Use `vidiq_instagram_tiktok_outlier_search`:
 - Leave the date at the default (last 30 days). Widen to 90 days only if you get fewer than 4.
 
 Do at most 2 searches without asking (10 credits). Before a third, ask.
-If vidIQ isn't connected, ask them to paste 3-5 reel links they've seen doing well,
-and skip to step 3.
+Check `vidiq_balance` first (free). If it's 0, or vidIQ isn't connected, use the free
+backup below and tell them in one line (credits refill monthly; Boost is US$19/mo).
+
+### Free backup: YouTube Shorts outliers
+
+`python3 youtube_outliers.py "topic | topic variant | topic variant" 40 > work/<slug>/outliers.json`
+(this folder; needs `pip install yt-dlp`). It searches YouTube Shorts (under 90 s) and
+scores each one against the creator's own last 30 Shorts (median views). Drop brand
+or company accounts (Google, CapCut, Apple, VEED, ...): their views are paid ads. Say it
+covers YouTube Shorts only, not Instagram or TikTok. They can also paste reel links.
 
 ## 3. Show what's working
 
@@ -39,6 +47,8 @@ first line or caption hook. Then name the **patterns** across them, only when 2 
 more outliers share one: hook type (price shock, "stop doing X", POV, number list,
 myth bust, before/after), format (talking head + b-roll, voiceover over process,
 text-on-screen only), length, call to action.
+
+Without transcripts (stage 2 locked), use the titles as the hooks and say so.
 
 ## 4. Offer 3 ideas
 
