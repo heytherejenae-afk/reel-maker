@@ -5,7 +5,7 @@ Reel Creator takes you from "I need an idea" to a finished reel, in 7 stages:
 You can start at any stage.
 
 Do Parts 1 to 4 **once, on a computer**, in the **Chrome** browser. It takes about 30 minutes.
-After that you can make reels from your phone.
+You also make your reels **on the computer** (claude.ai in Chrome). You only need your phone to film your clips and, if you use Edits, for the last step.
 
 ---
 
@@ -16,14 +16,14 @@ After that you can make reels from your phone.
 | **Claude Pro** (or Max) | Runs the whole tool | US$20 a month (US$17 a month if you pay yearly) |
 | **GitHub** account | Holds your copy of the tool | Free |
 | **Google Drive** | Where you put your video clips | Free |
-| **Google Drive connector** | Lets Claude save files to your Drive, so you can get them onto your phone | Free |
+| **Google Drive connector** | Lets Claude save your brand kit and small files to your Drive | Free |
 | **Canva connector** | Makes your overlay pages (stage 5) | Free Canva works. Canva Pro (about US$15 a month) adds your own brand kit and fonts. *Optional:* the tool has 6 built-in overlay styles too |
 | **vidIQ connector** | Finds reels doing far better than usual in your niche (stage 1) | Free plan: 150 credits a month. One search uses 5 credits, so about 30 searches a month. Boost: US$19 a month for 2,000 credits |
 | **Eden connector** | Reads the words and on-screen text of those reels (stage 2) | Needs **Eden Discover**, US$5 a month. *Optional:* the free Get Transcript connector is the backup |
-| **Get Transcript connector** | Backup for stage 2 (spoken words only) | Free to start. Paid plans from about US$5 a month if you use it a lot |
-| **CapCut** or **Edits** app | Final polish on your phone (stage 7) | Free |
+| **Get Transcript connector** | Backup for stage 2 (spoken words only) | Only **2 free videos in total**, then a paid plan (from about US$5 a month). *Optional:* without it, ideas still work from the reels' titles |
+| **CapCut** (computer or phone) or **Edits** (phone) | Final polish (stage 7) | Free |
 
-**Cheapest setup that does everything:** Claude Pro + free Canva + free vidIQ + Get Transcript = **US$20 a month.**
+**Cheapest setup:** Claude Pro + free Canva + free vidIQ = **US$20 a month.** If vidIQ runs out of credits, Claude uses a free YouTube Shorts search instead (no transcripts).
 **Full setup:** add Eden Discover = **US$25 a month.**
 
 Prices are in US dollars and were checked in November 2026. Your local price shows when you sign up.
@@ -116,21 +116,24 @@ Setup is finished. You never need to do Parts 1 to 4 again.
 
 ---
 
-## Part 5. Make a reel (your phone is fine)
+## Part 5. Make a reel (on your computer)
 
-1. Open the **Claude** app (or claude.ai in Chrome). Under the typing box, tap **Project ⌄**, then tap **Reel creator**.
+1. On your computer, open **Chrome** and go to **claude.ai**. Click **Projects** on the left, then click **Reel creator**.
 2. Type **Make a reel** and send it.
 3. Claude asks where you're starting from: **I need an idea**, **I have an idea**, **I have a script and clips** or **I have a finished reel**. Tap one.
 4. Answer each question by tapping a box, or say **you choose**.
 
-**For the first edit (stage 6),** put your clips in a Google Drive folder and share it:
+**For the first edit (stage 6),** put your clips in a Google Drive folder and share it (do this on your phone, where your clips are):
 1. Open the **Google Drive** app. Tap **+ New**, then **Folder**. Name it and tap **Create**.
 2. Open the folder. Tap **+ New**, then **Upload**, and pick your clips. Wait for them to finish.
 3. Go back one screen. Tap the **three dots ⋮** next to the folder, then **Share**.
 4. Tap **Restricted** and change it to **Anyone with the link**. Leave it on **Viewer**.
 5. Tap **Copy link**. Paste the link into Claude and send.
 
-**Getting finished files onto your phone:** Claude puts small files (like overlay cards) in your Google Drive: in the **Drive** app, open the folder, press and hold a file, tap **⋮**, then **Download**. For big videos, Claude gives you a link: tap it, it opens in **Chrome**, and the video downloads to your phone.
+**Getting your finished reel:** in the chat, click each file under Claude's message, then click **Download**. It saves to your computer's **Downloads** folder, ready to post or open in CapCut on your computer.
+
+**Finishing in Edits (a phone app)?** On your phone, open the **Claude** app, go to the same chat, tap each file under Claude's message, then tap **Download**. The files save to your phone and Edits can use them.
+Claude's Edits steps walk you through the rest.
 
 ---
 
@@ -151,6 +154,8 @@ Then say **make a reel**. You still need the connectors from Part 3.
 |---|---|
 | "vidIQ isn't connected" | Do Part 3 for vidIQ. Or paste 3-5 reel links you've seen doing well, and Claude carries on |
 | "Eden needs Discover" | Nothing. Claude uses Get Transcript instead. Upgrade Eden only if you want on-screen text too |
+| "vidIQ has no credits" | Nothing. Claude searches YouTube Shorts for free instead. Credits refill each month |
+| "Get Transcript free plan limit" | Nothing. Claude writes ideas from the reels' titles. Or paste the words of a reel you like into the chat |
 | "I can't download your Drive folder" | In Drive, set the folder to **Anyone with the link** (Part 5, steps 3 to 5) |
 | A download is blocked | Check the 8 allowed domains in Part 4C, then start a **new** chat (old chats keep old settings) |
-| Can't save a file from the Claude app to your phone | Ask Claude to put it in your Google Drive, then download it from the Drive app |
+| Can't save a file in the Claude phone app | Use a computer: open claude.ai in Chrome, click the file, then **Download** |

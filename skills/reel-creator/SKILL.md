@@ -5,8 +5,10 @@ description: Start here for making an Instagram/TikTok reel end to end - idea an
 
 # Reel creator: the whole journey
 
-The person is probably a beginner on a phone. Every instruction you give them is
-tap by tap, naming every button, menu and box, and saying what they will see next.
+The person is probably a beginner, using this tool **on a computer** (claude.ai in
+Chrome). They film on their phone; only stage 7's Edits / phone CapCut steps happen on
+the phone. Every instruction you give them is click by click, naming every button,
+menu and box, and saying what they will see next.
 Never ask them about codecs, settings or file formats.
 
 ## The 7 stages (each is its own skill in this plugin)
@@ -19,22 +21,28 @@ Never ask them about codecs, settings or file formats.
 | 4 | Brand | `reel-brand` | nothing extra | `brand-kit.json` (colours, fonts, caption style), saved for every reel |
 | 5 | Overlays | `reel-overlays` | Canva connector (optional) | One overlay page per beat, in one of 6 styles, as transparent PNGs |
 | 6 | First edit | `reel-edit` | Google Drive folder of clips | The finished reel MP4 + an editor page to ask for changes |
-| 7 | Hand-off | `reel-handoff` | CapCut or Edits app on their phone | MP4 + separate layers + tap-by-tap stacking steps |
+| 7 | Hand-off | `reel-handoff` | CapCut (computer or phone) or Edits (phone) | MP4 + separate layers, downloaded on the computer, + step-by-step stacking steps |
 
 Sibling skills live next to this folder: `../reel-ideas/SKILL.md` and so on. The
 editing engine (scripts, fonts, models) is in `../reel-edit/`.
 
-## How to run it
+## How to run it (the order a new person expects)
 
-1. **Find where they are.** Ask one question with tap-to-pick options (a decision
-   card if available, else numbered options in one message):
-   "Where are you starting from? 1 I need an idea · 2 I have an idea, need a script ·
-   3 I have a script and clips, make the reel · 4 I have a finished reel, put it in CapCut/Edits".
-   Jump straight to that stage. Never make them redo earlier stages.
-2. **Brand check before anything visual** (stage 3 onwards): "Do you need to update
-   your brand information?" Keep / Change / I don't have one yet. If no
-   `brand-kit.json` exists, run `reel-brand` first (2 minutes) or say "you choose".
-3. Run each stage's skill. At the end of each stage, show the result and ask
+1. **Brand first, once.** "Do you need to update your brand information?" If there's
+   no `brand-kit.json` (or they want changes), run `reel-brand`: publish their own Brand
+   Kit page and wait for the pasted BRAND KIT. Save its link to memory.
+2. **Reel Setup page, every reel.** Publish `../reel-edit/pages/reel-setup.html` with
+   the Artifact tool (icon "clipboard"), after replacing `BRAND_KIT_LINK` in it with THEIR
+   Brand Kit link (never someone else's private link). Keep the same file path so the
+   link stays the same. It asks: brand keep/change, **How do you want to start?**
+   (`search` = find a winning idea · `idea` = I have an idea · `script` = I have my
+   script and clips), topic, length, feel, music, extras (incl. special effects).
+   Wait for the pasted REEL SETUP block, then jump by `start`:
+   `search` -> `reel-ideas` (+ `reel-transcribe`) -> `reel-script`;
+   `idea` -> `reel-script`; `script` -> `reel-overlays` or straight to `reel-edit`.
+   Never make them redo earlier stages.
+3. Then: script page (with a Special effect per beat) -> overlays -> film + Drive
+   folder -> edit -> hand-off. At the end of each stage, show the result and ask
    "Happy with this? Tap **Next** to go on to <next stage>, or tell me what to change."
 4. Keep everything for one reel in one project file, `work/<reel-slug>/reel-project.json`:
    ```json

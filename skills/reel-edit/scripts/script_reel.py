@@ -40,7 +40,7 @@ layers-for-edits/ (Instagram Edits has no colour key, tested 2026-11-23): 1-vide
 Set "edits": false to skip it.
 Rules learnt: never reuse the same b-roll moment twice; put overlays in front, below the face.
 """
-import base64, html, json, os, subprocess, sys
+import base64, html, json, os, re, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKILL = os.path.dirname(HERE)
@@ -95,7 +95,7 @@ def fix_durs(b):
 def cut(r):
     parts = P(r, 'parts'); os.makedirs(parts, exist_ok=True)
     talk = P(r, r['talk']); vs, as_, edl, talk_on, ovs = [], [], [], [], []
-    o = 0.0; k = 0
+    o = 0.0; k = 0; frames = 0; talk_n = 0
     for bi, b in enumerate(r['beats']):
         fix_durs(b)
         a0, a1 = b['say']; d = a1 - a0
@@ -106,14 +106,22 @@ def cut(r):
         rel = 0.0
         for sh in b['shots']:
             v = f'{parts}/v{k:03d}.mp4'; k += 1
+            # exact frame count, counted from the start of the reel, so picture never drifts from
+            # the sound (screen recordings are variable-frame-rate and come up short otherwise)
+            n = round((o + rel + sh['dur']) * FPS) - frames; frames += n
+            pad = ',tpad=stop_mode=clone:stop_duration=2'
+            zoom = ''
+            if sh['show'] == 'talk' and r.get('punch_in') and talk_n % 2 == 1:  # every 2nd talking shot slightly closer: hides jump cuts
+                z = r['punch_in']; zoom = f',scale=iw*{z}:ih*{z},crop={W}:{H}'
             if sh['show'] == 'talk':
-                run('ffmpeg', '-v', 'error', '-y', '-ss', f'{a0 + rel:.3f}', '-i', talk, '-t', f"{sh['dur']:.3f}", '-vf', VF, '-an',
-                    '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', v)
+                talk_n += 1
+                run('ffmpeg', '-v', 'error', '-y', '-ss', f'{a0 + rel:.3f}', '-i', talk, '-vf', VF + zoom + pad, '-an',
+                    '-frames:v', str(n), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', v)
                 talk_on.append([o + rel, o + rel + sh['dur']])
             else:
                 sp = sh.get('speed', 1)
-                run('ffmpeg', '-v', 'error', '-y', '-ss', str(sh['at']), '-i', P(r, r['broll'][sh['show']]), '-t', f"{sh['dur'] * sp:.3f}",
-                    '-vf', f'setpts=PTS/{sp},{VF}', '-an', '-frames:v', str(round(sh['dur'] * FPS)),
+                run('ffmpeg', '-v', 'error', '-y', '-ss', str(sh['at']), '-i', P(r, r['broll'][sh['show']]),  # no -t: screen recordings have gaps; -frames:v stops it
+                    '-vf', f'setpts=PTS/{sp},{VF}{pad}', '-an', '-frames:v', str(n),
                     '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', v)
             vs.append(v); rel += sh['dur']
         if b.get('overlay'):
@@ -125,11 +133,110 @@ def cut(r):
     run('ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', f'{parts}/v.txt', '-c', 'copy', P(r, 'v.mp4'))
     run('ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', f'{parts}/a.txt', '-af', 'loudnorm=I=-14:TP=-1.5:LRA=11', '-ar', '48000', P(r, 'a.wav'))
     run('ffmpeg', '-v', 'error', '-y', '-i', P(r, 'v.mp4'), '-i', P(r, 'a.wav'), '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', P(r, 'base.mp4'))
-    return edl, talk_on, ovs, o
+    hold = r.get('end_hold', 0)  # seconds to hold the last picture at the end (silent), e.g. so the CTA stays up
+    if hold:
+        run('ffmpeg', '-v', 'error', '-y', '-i', P(r, 'base.mp4'), '-vf', f'tpad=stop_mode=clone:stop_duration={hold}',
+            '-af', f'apad=pad_dur={hold}', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', '-c:a', 'aac', '-b:a', '192k',
+            '-movflags', '+faststart', P(r, 'base-hold.mp4'))
+        os.replace(P(r, 'base-hold.mp4'), P(r, 'base.mp4'))
+        edl[-1]['hold'] = hold
+        if ovs and ovs[-1]['end'] >= o - 0.01: ovs[-1]['end'] = o + hold
+        if talk_on and talk_on[-1][1] >= o - 0.01: talk_on[-1][1] = o + hold
+    return edl, talk_on, ovs, o + hold
+
+
+def effects(r, edl):
+    """Special effects picked per beat on the script page (fx_pack.py), drawn onto base.mp4 before
+    captions and overlays, so every output (reel, CapCut layers, Edits video) has them.
+    reel.json "fx": [{"type": "glass"|"orbit"|"mono"|"comment", "beat": N, "to_beat": M, ...fx_pack fields}]
+    "beat"/"to_beat" (indexes in "beats") set start/end; "type_at"/"title_at"/"cta_at" stay relative to the start."""
+    fx = []
+    for f in r['fx']:
+        f = dict(f); i0 = f.pop('beat'); i1 = f.pop('to_beat', i0); b0, b1 = edl[i0], edl[i1]
+        f.setdefault('start', round(b0['out'], 3)); f.setdefault('end', round(b1['out'] + b1['dur'] + b1.get('hold', 0), 3))
+        if 'images' in f: f['images'] = [P(r, x) for x in f['images']]
+        fx.append(f)
+    fonts = r.get('fx_fonts') or {'black': f'{SKILL}/fonts/InterDisplay-Black.otf', 'semi': f'{SKILL}/fonts/InterDisplay-SemiBold.ttf',
+                                   'serif': r['fonts']['key']}
+    plan = dict(seg_model=f'{SKILL}/models/selfie_segmenter.tflite', fonts=fonts, fx=fx,
+                brand=r.get('fx_brand') or {'accent': r['brand']['key'], 'accent2': r['brand']['key'], 'green': r['brand']['card_label'], 'cream': r['brand']['card']})
+    json.dump(plan, open(P(r, 'fx.json'), 'w'), indent=1)
+    run(sys.executable, f'{HERE}/fx_pack.py', P(r, 'fx.json'), P(r, 'base.mp4'), P(r, 'base-fx.mp4'))
+    run('ffmpeg', '-v', 'error', '-y', '-i', P(r, 'base-fx.mp4'), '-i', P(r, 'base.mp4'), '-map', '0:v', '-map', '1:a', '-c', 'copy', P(r, 'base-with-fx.mp4'))
+    os.replace(P(r, 'base-with-fx.mp4'), P(r, 'base.mp4'))
+
+
+def cover_looking_away(r):
+    """Only show the talking head while they look straight at the camera. "only_facing": true in
+    reel.json; facing.py measures head turn (YuNet face landmarks) and every talking stretch where
+    |yaw| >= "facing_max" (0.25) for 0.4 s or more is covered with b-roll from "cover_pool"
+    ([{"show": "s3", "from": 1, "to": 35}, ...], used in order, never twice).
+    Beats whose shots are all b-roll already are left as they are."""
+    fj = P(r, 'facing.json')
+    if not os.path.exists(fj):
+        run(sys.executable, f'{HERE}/facing.py', P(r, r['talk']), f'{SKILL}/models/face_yunet.onnx', fj)
+    yaw = json.load(open(fj)); lim = r.get('facing_max', 0.25)
+    def away(t):
+        near = [y for tt, y in yaw if abs(tt - t) < 0.06]
+        return not near or near[0] is None or abs(near[0]) >= lim
+    pool = [dict(x) for x in r.get('cover_pool', [])]
+    def take(d):
+        for p in pool:
+            if p['to'] - p['from'] >= d:
+                at = p['from']; p['from'] += d; return p['show'], at
+        return None, None
+    MIN_B, MIN_T = r.get('cover_min', 0.8), r.get('talk_min', 1.2)  # shortest b-roll cover / shortest talking bit kept (no flashes)
+    for b in r['beats']:
+        a0 = b['say'][0]; rel = 0.0; out = []
+        for sh in b['shots']:
+            if sh['show'] != 'talk':
+                out.append(sh); rel += sh['dur']; continue
+            n = max(1, round(sh['dur'] / 0.1)); segs = [away(a0 + rel + i * 0.1) for i in range(n)]
+            runs = []  # [away?, length in steps]
+            for x in segs:
+                if runs and runs[-1][0] == x: runs[-1][1] += 1
+                else: runs.append([x, 1])
+            runs = [[x and k >= 2, k] for x, k in runs]  # a single 0.1 s look-away is noise
+            fused = []
+            for x, k in runs:
+                if fused and fused[-1][0] == x: fused[-1][1] += k
+                else: fused.append([x, k])
+            runs = fused
+            need_b = round(MIN_B / 0.1); need_t = round(MIN_T / 0.1)
+            for i in range(len(runs)):  # grow short covers to MIN_B by taking from the talking bits beside them
+                if runs[i][0] and runs[i][1] < need_b:
+                    for j in (i - 1, i + 1):
+                        if 0 <= j < len(runs) and not runs[j][0] and runs[i][1] < need_b:
+                            give = min(need_b - runs[i][1], runs[j][1])
+                            runs[j][1] -= give; runs[i][1] += give
+            runs = [x for x in runs if x[1] > 0]
+            fused = []
+            for x, k in runs:  # talking bits now too short to show become cover too
+                if not x and k < need_t and len(runs) > 1: x = True
+                if fused and fused[-1][0] == x: fused[-1][1] += k
+                else: fused.append([x, k])
+            runs = fused
+            t = 0.0
+            for i, (x, k) in enumerate(runs):
+                d = round(sh['dur'] - t if i == len(runs) - 1 else k * 0.1, 3); t += d
+                show, at = take(d) if x else (None, None)
+                out.append(dict(show=show, at=round(at, 2), dur=d) if show else dict(show='talk', dur=d))
+            rel += sh['dur']
+        merged = []
+        for sh in out:
+            if merged and sh['show'] == 'talk' and merged[-1]['show'] == 'talk':
+                merged[-1]['dur'] = round(merged[-1]['dur'] + sh['dur'], 3)
+            else: merged.append(sh)
+        b['shots'] = merged
 
 
 def build(r):
+    if r.get('only_facing'):
+        cover_looking_away(r)
+        json.dump({k: v for k, v in r.items() if k != '_path'}, open(r['_path'], 'w'), indent=1)  # so the editor page shows the real shots
     edl, talk_on, ovs, total = cut(r)
+    if r.get('fx'):
+        effects(r, edl)
     words = json.load(open(P(r, 'words.json'))); out = []
     for w in words:
         for p in edl:
@@ -142,10 +249,10 @@ def build(r):
         else: merged.append(w)
     json.dump(merged, open(P(r, 'words_out.json'), 'w'))
     titles = []
-    t = r.get('title')
-    if t and t.get('lines'):
-        b0 = edl[t.get('beat', 0)]
-        titles.append(dict(start=b0['out'] + 0.05, end=b0['out'] + b0['dur'], behind=True,
+    for t in (r.get('titles') or ([r['title']] if r.get('title') else [])):  # "titles": a list, one per beat
+        if not t.get('lines'): continue
+        b0 = edl[t.get('beat', 0)]; b1 = edl[t.get('to_beat', t.get('beat', 0))]
+        titles.append(dict(start=b0['out'] + 0.05, end=b1['out'] + b1['dur'] + b1.get('hold', 0), behind=t.get('behind', True),
                            lines=[[l[0], l[1], l[2], r['brand']['key'] if l[3] == 'key' else l[3], l[4]] for l in t['lines']]))
     plan = dict(brand=r['brand'], fonts=r['fonts'], words=P(r, 'words_out.json'), seg_model=f'{SKILL}/models/selfie_segmenter.tflite',
                 key_words=[k.lower() for k in r['key_words']], fixes=r.get('fixes', {}), captions=r['captions'],
@@ -154,7 +261,7 @@ def build(r):
     lay = P(r, 'render'); os.makedirs(lay, exist_ok=True)
     run(sys.executable, f'{HERE}/polish.py', P(r, 'polish-plan.json'), P(r, 'base.mp4'), lay)
     out_dir = r['out']; os.makedirs(f'{out_dir}/layers-for-phone', exist_ok=True); os.makedirs(f'{out_dir}/layers-for-computer', exist_ok=True)
-    slug = r['name'].lower().replace(' ', '-')
+    slug = re.sub(r'[^a-z0-9]+', '-', r['name'].lower()).strip('-')  # no apostrophes in file names
     run('ffmpeg', '-v', 'error', '-y', '-i', f'{lay}/final.mp4', '-c:v', 'libx264', '-crf', '21', '-preset', 'slow', '-c:a', 'copy', '-movflags', '+faststart', f'{out_dir}/{slug}.mp4')
     for d_ in ('layers-for-phone', 'layers-for-computer'):
         run('cp', P(r, 'base.mp4'), f'{out_dir}/{d_}/1-video.mp4')
@@ -183,6 +290,8 @@ def edits_pack(r, ovs, lay, out_dir):
     full-screen see-through PNG, placed exactly where it sits in the reel."""
     from PIL import Image, ImageDraw
     d_ = f'{out_dir}/layers-for-edits'; os.makedirs(d_, exist_ok=True)
+    for old in os.listdir(d_):  # cards from an earlier build would have the wrong times
+        if old.startswith('card-'): os.remove(f'{d_}/{old}')
     ins, fc, last = ['-i', P(r, 'base.mp4')], '', '0:v'
     for i, n in enumerate(('2-title-behind-you', '3-captions')):
         if os.path.exists(f'{lay}/{n}.mov'):
@@ -233,7 +342,7 @@ def editor(r):
         beats.append(dict(b, words=ws))
     prev = P(r, 'preview.mp4')
     data = dict(name=r['name'], beats=beats, strips=strips, talk=img(f'{tmp}/talk.jpg'), overlays=ovs,
-                key_words=r['key_words'], fixes=r.get('fixes', {}), title=r.get('title'),
+                key_words=r['key_words'], fixes=r.get('fixes', {}), title=r.get('title'), titles=r.get('titles'),
                 video=('data:video/mp4;base64,' + base64.b64encode(open(prev, 'rb').read()).decode()) if os.path.exists(prev) and os.path.getsize(prev) < 11e6 else None)
     page = open(f'{HERE}/script_editor_template.html').read().replace('/*DATA*/null', json.dumps(data)).replace('{{NAME}}', html.escape(r['name']))
     out = f"{r['out']}/editor.html"; open(out, 'w').write(page); print(out, f'{os.path.getsize(out) / 1e6:.1f} MB')
@@ -242,8 +351,9 @@ def editor(r):
 def apply(r, changes_path):
     txt = open(changes_path).read(); txt = txt[txt.index('{'):txt.rindex('}') + 1]
     ch = json.loads(txt)
-    for k in ('beats', 'key_words', 'fixes', 'title'):
+    for k in ('beats', 'key_words', 'fixes', 'title', 'titles'):
         if k in ch: r[k] = ch[k]
+    if 'titles' in ch: r.pop('title', None)  # the editor now sends every title as a list
     r['beats'] = [b for b in r['beats'] if not b.get('remove')]
     for b in r['beats']:
         for k in ('words',): b.pop(k, None)

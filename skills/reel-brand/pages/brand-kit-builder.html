@@ -156,12 +156,12 @@ pre.kit { background: var(--paper); border: 1px solid var(--rule); border-radius
   <main>
     <section class="cover" id="cover">
       <div class="chap"><div class="eyebrow">Brand handbook</div><div class="num">01 / 06</div></div>
-      <div class="bigname" id="bigName">Grow with Jenae<span class="trade">.</span></div>
-      <p class="lede" id="bigLine">Gardening for total beginners: warm, practical, and always in season.</p>
+      <div class="bigname" id="bigName">Your brand<span class="trade">.</span></div>
+      <p class="lede" id="bigLine">One line about what you make and who it is for.</p>
       <div class="grid2">
-        <label class="f">Brand name<input type="text" id="name" value="Grow with Jenae" maxlength="40"></label>
-        <label class="f">Instagram handle<input type="text" id="handle" value="@heytherejenae" maxlength="40"></label>
-        <label class="f" style="grid-column:1/-1">One line about you<input type="text" id="line" value="Gardening for total beginners: warm, practical, and always in season." maxlength="120"></label>
+        <label class="f">Brand name<input type="text" id="name" value="" placeholder="e.g. Sunny Kitchen" maxlength="40"></label>
+        <label class="f">Instagram handle<input type="text" id="handle" value="" placeholder="e.g. @sunnykitchen" maxlength="40"></label>
+        <label class="f" style="grid-column:1/-1">One line about you<input type="text" id="line" value="" placeholder="e.g. Easy dinners for busy parents" maxlength="120"></label>
       </div>
       <p class="eyebrow" style="margin:22px 0 10px">Mood</p>
       <div class="chips" id="moods"></div>
@@ -207,8 +207,8 @@ pre.kit { background: var(--paper); border: 1px solid var(--rule); border-radius
           <option value="3" selected>3 words</option>
           <option value="4">4 words</option>
         </select></label>
-        <label class="f" style="grid-column:1/-1">Try a line (key word in *stars*)<input type="text" id="sample" value="this is your *harvest* weekend"></label>
-        <label class="f" style="grid-column:1/-1">Big centre line<input type="text" id="centreText" value="every seedling *counts*"></label>
+        <label class="f" style="grid-column:1/-1">Try a line (key word in *stars*)<input type="text" id="sample" value="this is your *best* week yet"></label>
+        <label class="f" style="grid-column:1/-1">Big centre line<input type="text" id="centreText" value="every step *counts*"></label>
       </div>
       <div class="toggle" style="margin-top:16px"><input type="checkbox" id="showCentre" checked><label for="showCentre">Show a big centre line in the preview (for hooks and punchlines)</label></div>
     </section>
@@ -233,7 +233,7 @@ pre.kit { background: var(--paper); border: 1px solid var(--rule); border-radius
       <div class="ttl" id="pvTitle">harvest weekend</div>
       <div class="centre" id="pvCentre"></div>
       <div class="cap" id="pvCap"></div>
-      <div class="card" id="pvCard"><i id="pvAvatar"></i><span id="pvHandle">@heytherejenae</span></div>
+      <div class="card" id="pvCard"><i id="pvAvatar"></i><span id="pvHandle">@you</span></div>
       <div class="ui"><span></span><span></span><span></span></div>
     </div>
     <div>
@@ -289,13 +289,13 @@ const PALETTES = {
 };
 const MOODS = ["warm", "calm", "playful", "bold", "editorial", "cosy", "high energy", "minimal"];
 const DEFAULT = {
-  name: "Grow with Jenae", handle: "@heytherejenae", line: "Gardening for total beginners: warm, practical, and always in season.",
-  moods: ["warm", "editorial"], north: "A friend over the garden fence: warm, sure, and calm.",
+  name: "", handle: "", line: "",
+  moods: ["warm", "editorial"], north: "A friend who knows their stuff: warm, sure, and calm.",
   p1: "One idea on screen at a time.", p2: "A serif for the big words, with one italic word that carries the feeling.",
   p3: "The pop colour is the spice: the key word, never a wash.",
   colors: { ...PALETTES["Kitchen table"] },
   display_font: "Instrument Serif", font: "Inter Display", key_font: "Instrument Serif Italic",
-  caption_case: "lower", caption_words: 3, sample: "this is your *harvest* weekend", centreText: "every seedling *counts*", showCentre: true,
+  caption_case: "lower", caption_words: 3, sample: "this is your *best* week yet", centreText: "every step *counts*", showCentre: true,
 };
 let S = load() || structuredClone(DEFAULT);
 let photo = null;
@@ -339,7 +339,7 @@ function render() {
   applyFont($("bigName"), S.display_font);
   $("bigName").querySelector(".trade").style.color = c.highlight;
   $("railName").textContent = S.name || "Your brand";
-  $("bigLine").textContent = S.line;
+  $("bigLine").textContent = S.line || "One line about what you make and who it is for.";
   document.querySelectorAll("[data-mood]").forEach((b) => b.setAttribute("aria-pressed", S.moods.includes(b.dataset.mood)));
   ROLES.forEach(([k]) => {
     const sw = $("sw-" + k); sw.style.background = c[k]; sw.style.color = onColour(c[k]);

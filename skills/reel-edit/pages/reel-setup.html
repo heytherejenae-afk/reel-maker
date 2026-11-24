@@ -119,7 +119,7 @@ pre#out { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; backg
 </div></div>
 
 <script>
-const BRAND_KIT_PAGE = "https://claude.ai/artifact/MX9eeexJmLrPg2Suhj4Rfs";
+const BRAND_KIT_PAGE = "BRAND_KIT_LINK"; // Claude: replace with THIS person's own Brand Kit page link before publishing
 const FEELS = [
   ["clean", "Clean", "Simple and easy to read. White captions, key words in colour."],
   ["editorial", "Editorial", "Polished and magazine-like. Captions in a coloured box, big 3D titles."],
@@ -156,10 +156,10 @@ const FAMILY = n => n.replace(" Italic", "");
 const ITAL = n => n.includes("Italic") ? "italic" : "normal";
 
 let A = {
-  brand: null, kit: "", link: "", brief: "", length: "30-45", feel: null,
+  brand: null, kit: "", start: null, link: "", brief: "", length: "30-45", feel: null,
   fonts: null, title_font: "Abril Fatface", caption_font: "Poppins", key_font: "Playfair Display Italic",
   theme: null, highlight: "theme", music: null, mood: "happy",
-  extras: { storyboard: true, sfx: true, hide_faces: false, repurpose: false }
+  extras: { storyboard: true, effects: true, sfx: true, hide_faces: false, repurpose: false }
 };
 try { const s = JSON.parse(localStorage.getItem("reel-setup") || "null"); if (s) A = Object.assign(A, s); } catch (e) {}
 const save = () => { try { localStorage.setItem("reel-setup", JSON.stringify(A)); } catch (e) {} };
@@ -167,7 +167,8 @@ const save = () => { try { localStorage.setItem("reel-setup", JSON.stringify(A))
 const kitGiven = () => A.brand === "keep" || ((A.brand === "update" || A.brand === "none") && A.kit.trim().length > 20);
 const STEPS = [
   { id: "brand", show: () => true },
-  { id: "clips", show: () => true },
+  { id: "start", show: () => true },
+  { id: "clips", show: () => A.start === "script" },
   { id: "brief", show: () => true },
   { id: "feel", show: () => true },
   { id: "fonts", show: () => !kitGiven() },
@@ -212,6 +213,17 @@ const R = {
     </div>` : ""}
     ${A.brand === "keep" ? `<p class="note">Claude will use the brand-kit.json file in your Google Drive folder. If it can't find one, it will ask you.</p>` : ""}`,
 
+  start: () => `
+    <h1>How do you want to start?</h1>
+    <p class="help">Pick one. You can still change the script before anything is filmed or made.</p>
+    <div class="opts" role="radiogroup">
+      ${opt("start", "search", "Find me a winning idea", "Claude searches reels doing far better than usual in your topic, shows you their hooks, and gives you 3 ideas to pick from.")}
+      ${opt("start", "idea", "I have an idea, help me script it", "Tell Claude your idea on the next screen. Claude writes the script with you.")}
+      ${opt("start", "script", "I have my script and clips, make the reel", "Skip the planning. Claude edits your clips.")}
+    </div>
+    ${A.start === "search" ? `<p class="note">The search uses the vidIQ connector (free plan: about 30 searches a month). If it's not connected or out of credits, Claude will tell you and you can paste reel links you've noticed instead.</p>` : ""}
+    ${A.start && A.start !== "script" ? `<p class="note">You'll film and add your clips after the script is ready, so there's no clip link to add yet.</p>` : ""}`,
+
   clips: () => `
     <h1>Where are your clips?</h1>
     <p class="help">Paste the link to the Google Drive folder that has your videos in it.</p>
@@ -230,10 +242,10 @@ const R = {
     <p class="note">You can leave this empty if you've already sent Claude the link in the chat.</p>`,
 
   brief: () => `
-    <h1>What's this reel about?</h1>
+    <h1>${A.start === "search" ? "What topic should Claude search?" : "What's this reel about?"}</h1>
     <p class="help">One or two sentences is plenty. Say who it's for if you can.</p>
     <label class="f" for="brief">About the reel
-      <textarea id="brief" placeholder="Example: How to plant raspberries in a pot, for beginners who've never grown fruit.">${esc(A.brief)}</textarea></label>
+      <textarea id="brief" placeholder="${A.start === "search" ? "Example: quick dinners for busy parents" : "Example: 3 easy dinners you can make in 15 minutes, for busy parents."}">${esc(A.brief)}</textarea></label>
     <div class="sub"><h2>How long?</h2>
       <div class="opts" role="radiogroup">
         ${opt("length", "15-30", "Short: 15 to 30 seconds", "Best for a quick tip or a show-off.")}
@@ -254,8 +266,8 @@ const R = {
     <p class="help">The big font is for titles. The smaller line shows the captions, with a <b>key word</b> picked out.</p>
     <div class="opts" role="radiogroup">
       ${PAIRS.map((p, n) => opt("fonts", p[0], p[1], "", `<div class="sample">
-        <div class="t" style="font-family:'${FAMILY(p[2])}',serif;font-weight:${p[2] === "Playfair Display" ? 700 : 400}">Grow raspberries</div>
-        <div class="c" style="font-family:'${FAMILY(p[3])}',sans-serif;font-weight:${p[3] === "Poppins" ? 800 : 400}">in a pot on your <span style="color:#FFD60A;font-family:'${FAMILY(p[4] || p[3])}',serif;font-style:${ITAL(p[4] || "")};font-weight:${(p[4] || p[3]) === "Poppins" ? 800 : 400}">balcony</span></div></div>`, false, n + 1)).join("")}
+        <div class="t" style="font-family:'${FAMILY(p[2])}',serif;font-weight:${p[2] === "Playfair Display" ? 700 : 400}">Your big title</div>
+        <div class="c" style="font-family:'${FAMILY(p[3])}',sans-serif;font-weight:${p[3] === "Poppins" ? 800 : 400}">the words you <span style="color:#FFD60A;font-family:'${FAMILY(p[4] || p[3])}',serif;font-style:${ITAL(p[4] || "")};font-weight:${(p[4] || p[3]) === "Poppins" ? 800 : 400}">say</span></div></div>`, false, n + 1)).join("")}
       ${opt("fonts", "custom", "Make my own mix", "Pick a font for the title, the captions and the key words.")}
       ${YOU("fonts", "fonts")}
     </div>
@@ -298,20 +310,23 @@ const R = {
       ${opt("extras", "storyboard", "Show me the plan before you make it", "A storyboard with every shot and its words, so I can change things first.", "", true)}
       ${opt("extras", "sfx", "Add sound effects", "Little pops, whooshes and dings when words appear.", "", true)}
       ${opt("extras", "hide_faces", "Hide other people's faces", "Blur kids or anyone else in the background. Your face stays.", "", true)}
+      ${opt("extras", "effects", "Add special effects", "Photos orbiting around you, glass number panels, a big glowing word, or a comment box. You pick which beat gets which on your script page.", "", true)}
+      ${opt("extras", "layers", "I'll finish it in CapCut or Edits", "You also get the reel in layers, with tap-by-tap steps for your app.", "", true)}
       ${opt("extras", "repurpose", "Also make a carousel, a story and 3 trial reels", "Made from the same video after the reel is done.", "", true)}
     </div>`,
 
   review: () => {
     const rows = [
       ["brand", "Brand info", { keep: "Use my saved brand kit", update: kitGiven() ? "Updated brand kit pasted" : "Update it (no kit pasted yet)", none: kitGiven() ? "New brand kit pasted" : "No brand kit" }[A.brand] || "Not answered"],
-      ["clips", "Clips", A.link || "Link already in the chat"],
+      ["start", "Start", { search: "Find me a winning idea", idea: "I have an idea, help me script it", script: "I have my script and clips" }[A.start] || "Not answered"],
+      ...(A.start === "script" ? [["clips", "Clips", A.link || "Link already in the chat"]] : []),
       ["brief", "About the reel", (A.brief || "Not written") + ` · ${A.length} seconds`],
       ["feel", "Feel", label(FEELS, A.feel)],
       ...(kitGiven() ? [] : [
         ["fonts", "Fonts", A.fonts === "custom" ? `Title ${A.title_font}, captions ${A.caption_font}, key words ${A.key_font}` : label(PAIRS, A.fonts)],
         ["colours", "Colours", label(THEMES, A.theme) + ` · key words: ${A.highlight === "theme" ? "match colours" : A.highlight}`]]),
       ["music", "Music", A.music === "yes" ? `Yes, ${A.mood}` : A.music === "no" ? "No music" : A.music === "you choose" ? "You choose" : "Not answered"],
-      ["extras", "Extras", Object.entries(A.extras).filter(e => e[1]).map(e => ({ storyboard: "plan first", sfx: "sound effects", hide_faces: "hide faces", repurpose: "carousel + story + trials" }[e[0]])).join(", ") || "None"]
+      ["extras", "Extras", Object.entries(A.extras).filter(e => e[1]).map(e => ({ storyboard: "plan first", effects: "special effects", layers: "CapCut/Edits layers", sfx: "sound effects", hide_faces: "hide faces", repurpose: "carousel + story + trials" }[e[0]])).join(", ") || "None"]
     ];
     return `<h1>All done! Check your answers</h1>
       <p class="help">Tap <b>Change</b> to fix anything.</p>
@@ -337,7 +352,8 @@ function answers() {
     const raw = A.kit.replace(/^[\s\S]*?BRAND KIT \(save as brand-kit\.json\)\s*/, "");
     try { o.brand_kit = JSON.parse(raw); } catch (e) { o.brand_kit_text = A.kit.trim(); }
   }
-  if (A.link) o.drive_link = A.link.trim();
+  o.start = A.start || "not answered";
+  if (A.link && A.start === "script") o.drive_link = A.link.trim();
   if (A.brief) o.brief = A.brief.trim();
   o.length = A.length;
   o.feel = A.feel || "you choose";
@@ -393,8 +409,8 @@ function checkLink() { const el = $("link"), w = $("linkwarn"); if (el && w) w.h
 function toggleNext() {}
 function mix() {
   const m = $("mix"); if (!m) return;
-  m.innerHTML = `<div class="t" style="font-family:'${FAMILY(A.title_font)}',serif;font-style:${ITAL(A.title_font)}">Grow raspberries</div>
-    <div class="c" style="font-family:'${FAMILY(A.caption_font)}',sans-serif;font-style:${ITAL(A.caption_font)};font-weight:${A.caption_font === "Poppins" ? 800 : 400}">in a pot on your <span style="color:#FFD60A;font-family:'${FAMILY(A.key_font)}',serif;font-style:${ITAL(A.key_font)}">balcony</span></div>`;
+  m.innerHTML = `<div class="t" style="font-family:'${FAMILY(A.title_font)}',serif;font-style:${ITAL(A.title_font)}">Your big title</div>
+    <div class="c" style="font-family:'${FAMILY(A.caption_font)}',sans-serif;font-style:${ITAL(A.caption_font)};font-weight:${A.caption_font === "Poppins" ? 800 : 400}">the words you <span style="color:#FFD60A;font-family:'${FAMILY(A.key_font)}',serif;font-style:${ITAL(A.key_font)}">say</span></div>`;
 }
 $("next").addEventListener("click", () => { i = Math.min(i + 1, visible().length - 1); render(); window.scrollTo(0, 0); });
 $("back").addEventListener("click", () => { i = Math.max(i - 1, 0); render(); window.scrollTo(0, 0); });

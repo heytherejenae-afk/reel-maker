@@ -1,4 +1,4 @@
-# Finish your reel in Edits (Android phone)
+# Finish your reel in Edits (on your phone)
 
 Status: checked on an Android phone on 23 Nov 2026 (see-through card pictures work as overlays). Menu names change between Edits versions; if a button isn't there, look for one with a similar name in the same spot.
 
@@ -9,15 +9,18 @@ You only need this if you want to change something in Edits. The finished reel (
 - One picture per overlay card (`card-1-from-0m03s-to-0m09s.png` and so on). The name says when each card shows. The pictures are see-through around the card, so your video shows through.
 
 ## Just add a sound and post
-1. Save the finished reel to your phone (Step 1 below).
+1. Move the finished reel to your phone (Step 1 below).
 2. Open **Edits** and tap **+**. Tap your reel, then tap **Next**.
 3. Tap **Audio** at the bottom to add a trending sound. Turn the sound's volume down so your voice stays clear.
 4. Tap **Export** (top right).
 
 ## Step 1: Get the files onto your phone
-1. Open the **Google Drive** app. Tap **Files**, then open the folder Claude named.
-2. Press and hold the first file. Then tap each of the other files once, so they all have ticks.
-3. Tap the **three dots ⋮** at the top right, then tap **Download**.
+
+Tested on Android 24 Nov 2026: downloading straight from the Claude app works. Saving to Google Drive from the phone did not.
+
+1. On your phone, open the **Claude** app and go to the chat where Claude sent your reel.
+2. Tap the first file under Claude's message. When it opens, tap **Download** (or the three dots, then **Download**). It saves to your phone's **Downloads** and Edits can see it.
+3. Do the same for each of the other files.
 
 ## Step 2: Start with your video
 1. Open **Edits** and tap **+**.

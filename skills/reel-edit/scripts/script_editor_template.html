@@ -64,14 +64,13 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
   <header style="display:flex;flex-direction:column;gap:6px">
     <h3>Reel editor</h3>
     <h1 id="name"></h1>
-    <p class="lede">Change anything below, then tap <b>Copy my changes</b> and paste it into the chat. Tap a word to make it a key word (orange italic) or a plain word.</p>
+    <p class="lede">Change anything below, then tap <b>Copy my changes</b> and paste it into the chat. Tap a word to make it a key word (your key-word colour and font) or a plain word.</p>
   </header>
   <video id="vid" controls playsinline hidden></video>
   <div class="box" id="titlebox">
-    <h2>Title behind your head</h2>
-    <p class="lede">Shown during the first part. Leave both lines empty for no title.</p>
-    <input type="text" id="t1" aria-label="Title line 1">
-    <input type="text" id="t2" aria-label="Title line 2 (key-word style)">
+    <h2>Big titles</h2>
+    <p class="lede">Each title shows during the part named above it. Clear both lines to remove a title.</p>
+    <div id="titles"></div>
   </div>
   <div id="beats" style="display:flex;flex-direction:column;gap:18px"></div>
   <div class="box">
@@ -97,9 +96,15 @@ const thumbFor = sh => { if (sh.show === 'talk') return D.talk; const st = D.str
 const label = sh => sh.show === 'talk' ? 'Me talking' : `${sh.show} from ${fmt(sh.at)}`;
 document.getElementById('name').textContent = D.name;
 if (D.video) { const v = document.getElementById('vid'); v.src = D.video; v.hidden = false; }
-const tl = (S.title && S.title.lines) || [];
-document.getElementById('t1').value = tl[0] ? tl[0][0] : '';
-document.getElementById('t2').value = tl[1] ? tl[1][0] : '';
+const TT = JSON.parse(JSON.stringify(S.titles || (S.title ? [S.title] : [{ beat: 0, lines: [] }])));
+TT.forEach((t, i) => {
+  if (!t.lines || t.lines.length < 2) t.lines = [['', 'word', 104, '#FFFFFF', 1290], ['', 'key', 150, 'key', 1450]];
+  const b = S.beats[t.beat || 0]; const w = document.createElement('div');
+  w.innerHTML = `<p class="lede"><b>${(b && b.name) || 'Start'}</b>${t.behind === false ? '' : ' (behind your head)'}</p>
+    <input type="text" id="t${i}a" aria-label="Title line 1"><input type="text" id="t${i}b" aria-label="Title line 2 (key-word style)">`;
+  document.getElementById('titles').appendChild(w);
+  document.getElementById(`t${i}a`).value = t.lines[0][0]; document.getElementById(`t${i}b`).value = t.lines[1][0];
+});
 document.getElementById('fixes').value = Object.entries(S.fixes || {}).map(([a, b]) => `${a} = ${b}`).join('\n');
 let openPicker = null;  // [beatIndex, shotIndex]
 
@@ -169,12 +174,11 @@ function picker(b, sh) {
 render();
 document.getElementById('copy').onclick = () => {
   const fixes = {}; document.getElementById('fixes').value.split('\n').forEach(l => { const m = l.split('='); if (m.length === 2 && m[0].trim()) fixes[m[0].trim()] = m[1].trim(); });
-  const t1 = document.getElementById('t1').value.trim(), t2 = document.getElementById('t2').value.trim();
-  let title = S.title ? JSON.parse(JSON.stringify(S.title)) : { beat: 0, lines: [['', 'word', 104, '#FFFFFF', 175], ['', 'key', 170, 'key', 330]] };
-  if (!title.lines || title.lines.length < 2) title.lines = [['', 'word', 104, '#FFFFFF', 175], ['', 'key', 170, 'key', 330]];
-  title.lines[0][0] = t1; title.lines[1][0] = t2; title.lines = title.lines.filter(l => l[0]);
+  const titles = TT.map((t, i) => { const c = JSON.parse(JSON.stringify(t));
+    c.lines[0][0] = document.getElementById(`t${i}a`).value.trim(); c.lines[1][0] = document.getElementById(`t${i}b`).value.trim();
+    c.lines = c.lines.filter(l => l[0]); return c; }).filter(t => t.lines.length);
   const beats = S.beats.map(b => { const c = JSON.parse(JSON.stringify(b)); delete c.words; return c; });
-  const out = 'REEL CHANGES (for Claude)\n' + JSON.stringify({ beats, key_words: [...keyset], fixes, title, note: document.getElementById('note').value.trim() });
+  const out = 'REEL CHANGES (for Claude)\n' + JSON.stringify({ beats, key_words: [...keyset], fixes, titles, note: document.getElementById('note').value.trim() });
   const msg = document.getElementById('msg'), box = document.getElementById('out');
   const fallback = () => { box.hidden = false; box.value = out; box.focus(); box.select(); msg.textContent = 'Select all the text in the box above and copy it.'; };
   try { navigator.clipboard.writeText(out).then(() => { msg.textContent = 'Copied. Paste it into the chat.'; box.hidden = true; }, fallback); } catch (e) { fallback(); }

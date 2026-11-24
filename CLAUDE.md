@@ -1,8 +1,12 @@
 # Reel creator
 
 This repository is a reel-making tool, not a code project. The person using it is
-probably a beginner on a phone who wants a finished reel, not code changes. All
-instructions to them are tap by tap, naming every button, menu and box.
+probably a beginner who wants a finished reel, not code changes. All
+instructions to them are click by click, naming every button, menu and box.
+
+**The tool is used on a computer** (claude.ai in Chrome, Mac or Windows). Filming
+happens on their phone, and only the Edits / phone CapCut step (stage 7) goes back to
+the phone. Write steps for a computer (click, not tap) except in stage 7's phone steps.
 
 **Start every request at `skills/reel-creator/SKILL.md`.** It lists the 7 stages and
 which skill file runs each one:
@@ -22,13 +26,13 @@ to start a new chat after.
 
 ## Giving them files
 
-The Claude phone app can't always save attached files to the phone. So:
+They download files on their **computer**: attachments in claude.ai download with
+one click (no size limit like the Google Drive connector's ~3 MB). So:
 1. **Inside a Claude project** (`/mnt/project-files/` exists): save deliverables
    under `/mnt/project-files/reels/<slug>/` and attach them to your reply.
-2. **Also make files easy to get onto a phone.** Files under about 3 MB (overlay
-   cards, short layers): put them in their Google Drive too (Google Drive connector
-   `create_file` into a folder named after the reel). Bigger videos: commit them to
-   `reels/<slug>/` on the session branch and give the
-   `https://github.com/<owner>/<repo>/raw/<branch>/reels/<slug>/<file>` link to open in Chrome.
+2. Tell them how to download on a computer: "Click the file under my message, then
+   click **Download**. It saves to your **Downloads** folder." For Edits (phone):
+   open the same chat in the Claude phone app, tap the file, tap **Download**
+   (tested on Android 2026-11-24; going via Google Drive did not work).
 3. Pictures to choose from and pages to fill in: publish with the Artifact tool and
    keep the same file path so the link stays the same.

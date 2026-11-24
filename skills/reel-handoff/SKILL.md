@@ -1,6 +1,6 @@
 ---
 name: reel-handoff
-description: Stage 7 of the reel creator - hand the finished reel over for polishing in CapCut or Instagram Edits - the finished MP4 plus full-length layers (video, title behind head, captions, overlays) and tap-by-tap Android steps to stack them. Use when someone wants to finish a reel in CapCut or Edits, or asks for the layers.
+description: Stage 7 of the reel creator - hand the finished reel over for polishing in CapCut or Instagram Edits - the finished MP4 plus full-length layers (video, title behind head, captions, overlays) and step-by-step stacking steps (computer download, then phone steps for Edits). Use when someone wants to finish a reel in CapCut or Edits, or asks for the layers.
 ---
 
 # Stage 7: Hand-off to CapCut or Edits
@@ -32,19 +32,31 @@ Ask: "Which app do you finish reels in? CapCut / Edits / I'll just post it".
 Attach the MP4 and the right layer folder's files, plus the steps file below,
 filled in with this reel's name and layer names.
 
-**Getting files onto their phone:** attachments in the Claude phone app can be hard
-to save. Small files (cards, captions layers, test clips under about 3 MB) also go
-into a Google Drive folder named after the reel (Google Drive connector
-`create_file`, uploaded from the scratchpad folder). Videos over 3 MB can't go
-through the connector: commit them to `reels/<slug>/` on the session branch and give
-the `https://github.com/<owner>/<repo>/raw/<branch>/reels/<slug>/<file>` link ("open
-it in Chrome, the video downloads to your phone"), or point them to the file in the
-project's Library.
+## Getting the files to them (computer first, decided 2026-11-24)
+
+The tool is used on a **computer**. Attach the MP4, the layer files and the steps file
+to the reply (from `/mnt/project-files/reels/<slug>/`). Tell them: "Click each file
+under my message, then click **Download**. They save to your **Downloads** folder."
+Full-size files are fine: there's no size limit on downloading attachments.
+
+Don't send videos through the Google Drive connector: it refuses anything over about
+**3.1 MB** (tested 2026-11-24).
+
+**CapCut on a computer** (works on Intel and Apple Macs and Windows): use
+`layers-for-computer/` (see-through .mov). No phone needed.
+
+**Edits, or CapCut on a phone:** Edits is a phone app (Edits for Mac needs an Apple
+silicon Mac). Tell them to open the same chat in the **Claude** phone app, tap each
+file, then **Download** (Step 1 of `edits-steps.md`). Tested on Android 2026-11-24:
+downloading attachments straight to the phone works; saving them to Google Drive from
+the phone did not. Don't route videos through Drive.
+Effects already replaced the cards on their beats, so list only the cards left.
 
 ## CapCut steps
 
-Use `capcut-steps-example.md` (in this folder) as the template: save files to the
-phone, New project with `1-video`, then for each layer **Overlay** > **Add overlay**
+On a computer: import `layers-for-computer/` .mov files and stack them from 0:00 (no
+colour removal). On a phone: use `capcut-steps-example.md` (in this folder) as the
+template: move files to the phone (as in `edits-steps.md`), New project with `1-video`, then for each layer **Overlay** > **Add overlay**
 > pick it > spread to full screen > drag the strip to 0:00 > **Remove BG** >
 **Chroma key** > drag the circle onto the pink > **Intensity** about 20-40 > tick.
 Then **1080P**, 30 fps, **Export**. Include the "On a computer instead" part.
