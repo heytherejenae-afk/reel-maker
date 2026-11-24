@@ -126,11 +126,11 @@ TEMPLATE = r'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{GF}}&display=swap">
 <style>
-:root{--cream:{{CREAM}};--paper:{{PAPER}};--forest:{{FOREST}};--terracotta:{{TERRA}};--sage:{{SAGE}};--ink:{{FOREST}};--muted:{{MUTED}};
---line:{{LINE}};--sage-soft:{{SAGESOFT}};--terra-soft:{{TERRASOFT}};--on-accent:{{PAPER}};
---font-display:"{{DISP}}",Georgia,serif;--font-body:"{{BODY}}",system-ui,-apple-system,sans-serif;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cream:#1B231D;--paper:#232D25;--forest:#D6E2C8;--terracotta:#E89A72;--sage:#8FA67B;--ink:#ECE6D6;--muted:#A9B3A6;--line:#36443A;--sage-soft:#2C3A2E;--terra-soft:#3E2C22;--on-accent:#1B231D;color-scheme:dark}}
-:root[data-theme="dark"]{--cream:#1B231D;--paper:#232D25;--forest:#D6E2C8;--terracotta:#E89A72;--sage:#8FA67B;--ink:#ECE6D6;--muted:#A9B3A6;--line:#36443A;--sage-soft:#2C3A2E;--terra-soft:#3E2C22;--on-accent:#1B231D;color-scheme:dark}
+:root{--cream:#FFFFFF;--paper:#FFFFFF;--forest:#000000;--terracotta:#000000;--sage:#555555;--ink:#000000;--muted:#555555;
+--line:#D9D9D9;--sage-soft:#EEEEEE;--terra-soft:#EEEEEE;--on-accent:#FFFFFF;
+--font-display:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;--font-body:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cream: #000000;--paper: #000000;--forest: #FFFFFF;--terracotta: #FFFFFF;--sage: #AAAAAA;--ink: #FFFFFF;--muted: #AAAAAA;--line: #333333;--sage-soft: #222222;--terra-soft: #222222;--on-accent: #000000;color-scheme:dark}}
+:root[data-theme="dark"]{--cream: #000000;--paper: #000000;--forest: #FFFFFF;--terracotta: #FFFFFF;--sage: #AAAAAA;--ink: #FFFFFF;--muted: #AAAAAA;--line: #333333;--sage-soft: #222222;--terra-soft: #222222;--on-accent: #000000;color-scheme:dark}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6}
 .wrap{max-width:780px;margin:0 auto;padding:32px 16px 64px;display:flex;flex-direction:column;gap:34px}
 h1,h2,h3{font-family:var(--font-display);font-weight:600;color:var(--forest);margin:0;text-wrap:balance}h1{font-size:clamp(30px,6.4vw,44px);line-height:1.1}h2{font-size:23px}h3{font-size:17px}p{margin:0}

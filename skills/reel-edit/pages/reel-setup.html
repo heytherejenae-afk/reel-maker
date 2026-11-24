@@ -6,26 +6,26 @@
 <style>
 /* Layout: one question per screen, like a phone quiz. Progress bar on top, big tap cards, Back/Next pinned to the bottom. */
 :root {
-  --bg: #F6F7F2;
+  --bg: #FFFFFF;
   --card: #FFFFFF;
-  --ink: #18221C;
-  --muted: #5E6B62;
-  --line: #DCE2DA;
-  --berry: #B4235A;
-  --berry-soft: #FBE7EF;
-  --leaf: #2F6B45;
-  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
-  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ink: #000000;
+  --muted: #555555;
+  --line: #D9D9D9;
+  --berry: #000000;
+  --berry-soft: #EEEEEE;
+  --leaf: #000000;
+  --display: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33;
-    --berry: #F06A9C; --berry-soft: #3A1D29; --leaf: #7CC795; color-scheme: dark;
+    --bg: #000000; --card: #111111; --ink: #FFFFFF; --muted: #AAAAAA; --line: #333333;
+    --berry: #FFFFFF; --berry-soft: #222222; --leaf: #FFFFFF; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33;
-  --berry: #F06A9C; --berry-soft: #3A1D29; --leaf: #7CC795; color-scheme: dark;
+  --bg: #000000; --card: #111111; --ink: #FFFFFF; --muted: #AAAAAA; --line: #333333;
+  --berry: #FFFFFF; --berry-soft: #222222; --leaf: #FFFFFF; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }

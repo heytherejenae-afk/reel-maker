@@ -36,3 +36,13 @@ one click (no size limit like the Google Drive connector's ~3 MB). So:
    (tested on Android 2026-11-24; going via Google Drive did not work).
 3. Pictures to choose from and pages to fill in: publish with the Artifact tool and
    keep the same file path so the link stays the same.
+
+## Pages look the same every time
+
+Every page the person sees (Brand Kit, Reel Setup, script page, script editor, reel
+editor) comes from a fixed file in this repo and is black and white, with one system
+font. Publish those files as they are and only fill in their data (links, brand names,
+script, shots). Never write a page from scratch, restyle one, or colour it with the
+person's brand. Brand colours and fonts belong in previews of the reel itself (the
+phone mock-up, font and colour samples), never in the page's own buttons, headings or
+backgrounds. Keep each page's file path the same so its link stays the same.
