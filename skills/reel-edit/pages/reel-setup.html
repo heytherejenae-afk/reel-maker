@@ -320,6 +320,7 @@ const R = {
       ${opt("extras", "hide_faces", "Hide other people's faces", "Blur kids or anyone else in the background. Your face stays.", "", true)}
       ${opt("extras", "effects", "Add special effects", "Photos orbiting around you, glass number panels, a big glowing word, or a comment box. You pick which beat gets which on your script page.", "", true)}
       ${opt("extras", "layers", "I'll finish it in CapCut or Edits", "You also get the reel in layers, with tap-by-tap steps for your app.", "", true)}
+      ${opt("extras", "match_style", "Match a reel I like", "Send 1 to 3 reels after this page. Claude copies how they're cut and captioned.", "", true)}
       ${opt("extras", "repurpose", "Also make a carousel, a story and 3 trial reels", "Made from the same video after the reel is done.", "", true)}
     </div>`,
 
@@ -334,7 +335,7 @@ const R = {
         ["fonts", "Fonts", A.fonts === "custom" ? `Title ${A.title_font}, captions ${A.caption_font}, key words ${A.key_font}` : label(PAIRS, A.fonts)],
         ["colours", "Colours", label(THEMES, A.theme) + ` · key words: ${A.highlight === "theme" ? "match colours" : A.highlight}`]]),
       ["music", "Music", A.music === "yes" ? `Yes, ${A.mood}` : A.music === "no" ? "No music" : A.music === "you choose" ? "You choose" : "Not answered"],
-      ["extras", "Extras", Object.entries(A.extras).filter(e => e[1]).map(e => ({ storyboard: "plan first", effects: "special effects", layers: "CapCut/Edits layers", sfx: "sound effects", hide_faces: "hide faces", repurpose: "carousel + story + trials" }[e[0]])).join(", ") || "None"]
+      ["extras", "Extras", Object.entries(A.extras).filter(e => e[1]).map(e => ({ storyboard: "plan first", effects: "special effects", layers: "CapCut/Edits layers", sfx: "sound effects", hide_faces: "hide faces", repurpose: "carousel + story + trials", match_style: "match a reel I like" }[e[0]])).join(", ") || "None"]
     ];
     return `<h1>All done! Check your answers</h1>
       <p class="help">Tap <b>Change</b> to fix anything.</p>
