@@ -5,8 +5,10 @@ description: Start here for making an Instagram/TikTok reel end to end - idea an
 
 # Reel creator: the whole journey
 
-The person is probably a beginner on a phone. Every instruction you give them is
-tap by tap, naming every button, menu and box, and saying what they will see next.
+The person is probably a beginner, using this tool **on a computer** (claude.ai in
+Chrome). They film on their phone; only stage 7's Edits / phone CapCut steps happen on
+the phone. Every instruction you give them is click by click, naming every button,
+menu and box, and saying what they will see next.
 Never ask them about codecs, settings or file formats.
 
 ## The 7 stages (each is its own skill in this plugin)
@@ -19,7 +21,7 @@ Never ask them about codecs, settings or file formats.
 | 4 | Brand | `reel-brand` | nothing extra | `brand-kit.json` (colours, fonts, caption style), saved for every reel |
 | 5 | Overlays | `reel-overlays` | Canva connector (optional) | One overlay page per beat, in one of 6 styles, as transparent PNGs |
 | 6 | First edit | `reel-edit` | Google Drive folder of clips | The finished reel MP4 + an editor page to ask for changes |
-| 7 | Hand-off | `reel-handoff` | CapCut or Edits app on their phone | MP4 + separate layers + tap-by-tap stacking steps |
+| 7 | Hand-off | `reel-handoff` | CapCut (computer or phone) or Edits (phone) | MP4 + separate layers, downloaded on the computer, + step-by-step stacking steps |
 
 Sibling skills live next to this folder: `../reel-ideas/SKILL.md` and so on. The
 editing engine (scripts, fonts, models) is in `../reel-edit/`.
