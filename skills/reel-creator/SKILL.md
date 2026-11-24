@@ -28,9 +28,12 @@ editing engine (scripts, fonts, models) is in `../reel-edit/`.
 
 ## How to run it (the order a new person expects)
 
-1. **Brand first, once.** "Do you need to update your brand information?" If there's
-   no `brand-kit.json` (or they want changes), run `reel-brand`: publish their own Brand
-   Kit page and wait for the pasted BRAND KIT. Save its link to memory.
+1. **Brand first, once.** Find their saved kit first, using the search order in
+   `reel-brand` (project files, memory, repository, Drive), then ask "Do you need to
+   update your brand information?" naming the kit you found. Only if there's none (or
+   they want changes), run `reel-brand`: publish their own Brand Kit page and wait for
+   the pasted BRAND KIT, then save it in every place `reel-brand` lists, so it is never
+   asked for again. Save the Brand Kit page link to memory too.
 2. **Reel Setup page, every reel.** Publish `../reel-edit/pages/reel-setup.html` with
    the Artifact tool (icon "clipboard"), after replacing `BRAND_KIT_LINK` in it with THEIR
    Brand Kit link (never someone else's private link). Keep the same file path so the

@@ -211,7 +211,7 @@ const R = {
         <textarea id="kit" placeholder="BRAND KIT (save as brand-kit.json) ...">${esc(A.kit)}</textarea></label>
       <p class="note">With a brand kit, you won't need to choose fonts and colours on this page.</p>
     </div>` : ""}
-    ${A.brand === "keep" ? `<p class="note">Claude will use the brand-kit.json file in your Google Drive folder. If it can't find one, it will ask you.</p>` : ""}`,
+    ${A.brand === "keep" ? `<p class="note">Claude remembers the brand kit you saved last time, so you don't need to paste it again.</p>` : ""}`,
 
   start: () => `
     <h1>How do you want to start?</h1>
