@@ -21,7 +21,7 @@ which skill file runs each one:
 
 Work in `work/` (ignored by git). Never change the tool's own files unless asked.
 If `faster_whisper` or `gdown` is missing, run `bash setup.sh` once. If a download is
-blocked by the network, name the domain to add (INSTALL.md, Part 4C) and say they need
+blocked by the network, name the domain to add (INSTALL.md, Part 4D: Full network access is the tested setting) and say they need
 to start a new chat after.
 
 ## Giving them files

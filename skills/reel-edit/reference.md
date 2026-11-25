@@ -35,14 +35,14 @@ raw.githubusercontent.com and incompetech.com.
 
 Use this when the Drive folder has a **script** (Google Doc, Claude script page, or a
 photo of a page) and/or **overlay pages** (Canva PNGs, 1080x1920, transparent), plus a
-talking-head clip and b-roll clips. This is the approved Jenae workflow (2026-11-23):
+talking-head clip and b-roll clips. This is the approved workflow (2026-11-23):
 follow the script exactly, never guess. Brand question first (step 1) still applies.
 
 1. Put clips in `work/clips/`, overlays in `work/ov/p1.png...` (Canva: `export-design`
    PNG with `transparent_background: true`, 1080x1920; a canva.com/d/ link that won't
    resolve: find it with `search-designs`). Videos with no sound are b-roll.
 2. Write `reel.json` (schema at the top of `scripts/script_reel.py`; copy
-   `/mnt/project-files/reels/apples/reel.json` as the example).
+   `example-reel.json` in this folder as the example).
 3. `script_reel.py transcribe reel.json` then `script_reel.py sheets reel.json` and LOOK at
    every contact sheet. Map each script beat to the talking-head seconds that say it
    (`say`, trim pauses and retakes; use the last good take), then pick the b-roll that
@@ -88,10 +88,8 @@ Publishing the pages: publish `pages/brand-kit-builder.html` and
 `pages/reel-setup.html` with the Artifact tool once per account (set the
 `BRAND_KIT_PAGE` constant at the top of the setup page's script to the brand kit
 page's URL first) and note both URLs in project memory or CLAUDE.md so later runs
-reuse them. In Jenae's project they are
-https://claude.ai/artifact/3gZkBKJuVYqf1mPc3vmKAq (Reel Setup) and
-https://claude.ai/artifact/MX9eeexJmLrPg2Suhj4Rfs (Brand Kit). An Artifact is
-private until its owner shares it, so each person publishes their own copy.
+reuse them. An Artifact is private until its owner shares it, so each person
+publishes their own copy: never send a link from someone else's account.
 
 As soon as they ask for a reel, send the Reel Setup link with these steps
 (adjust to their phone; say "skip the clips box" if they already sent the link):
@@ -419,7 +417,7 @@ the plan and re-render if not.
 
 Four extra effects, run as one more pass over the finished video:
 `python3 scripts/fx_pack.py fx.json reel.mp4 reel-fx.mp4` (needs `pip install ai-edge-litert`).
-Working example: `/mnt/project-files/reels/effects-pack/fx-sample.json`. Every effect has
+Every effect has
 `type`, `start`, `end` (seconds on the reel timeline). Use at most one effect per beat.
 
 - `orbit` (good for a list of things, or "here's everything I did"): `images` (5-6 b-roll

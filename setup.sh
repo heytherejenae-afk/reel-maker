@@ -8,8 +8,8 @@ command -v ffmpeg >/dev/null || (apt-get update -qq && apt-get install -y -qq ff
 fc-list | grep -qi "color emoji" || apt-get install -y -qq fonts-noto-color-emoji || true
 
 # Speech-to-text, Google Drive download, person cut-out, face blur
-pip install -q --break-system-packages faster-whisper gdown ai-edge-litert opencv-python-headless \
-  || pip install -q faster-whisper gdown ai-edge-litert opencv-python-headless || true
+pip install -q --break-system-packages faster-whisper gdown yt-dlp ai-edge-litert opencv-python-headless \
+  || pip install -q faster-whisper gdown yt-dlp ai-edge-litert opencv-python-headless || true
 
 # Browser used to draw titles and overlays (usually already there)
 node -e "require('playwright')" 2>/dev/null \

@@ -4,7 +4,7 @@ Reel Creator takes you from "I need an idea" to a finished reel, in 7 stages:
 **ideas → transcribe winning reels → script → brand → overlays → first edit → CapCut or Edits.**
 You can start at any stage.
 
-Do Parts 1 to 4 **once, on a computer**, in the **Chrome** browser. It takes about 30 minutes.
+Do Parts 1 to 4 **once, on a computer**, in the **Chrome** browser. It takes about 30 minutes. You do **not** need anyone else's files: your copy of the tool starts empty, and your brand kits are saved only in your own project.
 You also make your reels **on the computer** (claude.ai in Chrome). You only need your phone to film your clips and, if you use Edits, for the last step.
 
 ---
@@ -52,50 +52,60 @@ Prices are in US dollars and were checked in November 2026. Your local price sho
 
 ## Part 3. Connect the connectors (10 minutes)
 
-Do these steps once for **each** connector in this list:
-**Google Drive, Canva, vidIQ, Eden, Get Transcript, GitHub.**
+Do these steps once for **each** of these 5 connectors:
+**Google Drive, Canva, vidIQ, Eden, Get Transcript.** (GitHub is different: it's in Part 4B.)
 
-1. Go to **claude.ai**. In the menu on the left, click **Customise**.
-2. Click **Connectors**.
-3. Click in the **search box** and type the connector's name (for example `vidIQ`).
-4. Click it in the list, then click **Connect**.
-5. A new tab opens and asks you to sign in to that service. Sign in, or click **Sign up** if you don't have an account yet (it's free to start).
-6. Click **Allow** (or **Authorize**). The tab closes and you're back in Claude.
-7. The connector now says **Connected**.
+1. In Chrome, go to **claude.ai/customize/connectors**. You see a list called **Connectors**.
+   (Or: on claude.ai, click **Customise** in the menu on the left, then **Connectors**.)
+2. Click in the **search box** and type the connector's name (for example `vidIQ`).
+3. Click it in the list, then click **Connect**.
+4. A new tab opens and asks you to sign in to that service. Sign in, or click **Sign up** if you don't have an account yet.
+5. Click **Allow** (or **Authorize**). The tab closes and you're back in Claude.
+6. The connector now says **Connected**.
 
 Notes for some connectors:
-- **GitHub:** after **Authorize**, GitHub may show **Install Claude**. Click your username, click **Only select repositories**, pick **reel-maker** (you make it in Part 4, so come back and do this step after Part 4), then click **Install**.
 - **Eden:** connecting is free, but reading reels needs **Eden Discover**. To upgrade: go to **app.eden.so**, click **Settings** (bottom left), click **Billing**, then choose **Discover**. Skip this if you're happy with the free backup.
 - **vidIQ:** if it asks you to connect a YouTube channel, click **Skip**. Reels research doesn't need one.
+- Only **Google Drive** and **Canva** really matter for a first try. The others make the ideas stage better and can be added later.
 
-✅ **Done when:** Customise > Connectors shows all six as **Connected**.
+✅ **Done when:** the Connectors page shows the ones you chose as **Connected**.
 
 ---
 
 ## Part 4. Make your copy of the tool (15 minutes)
 
 ### 4A. Copy the tool
-1. Go to **github.com/heytherejenae-afk/reel-maker**.
-2. Click the green **Use this template** button, then click **Create a new repository**.
-3. **Repository name:** type `reel-maker`. Click **Private**.
-4. Click **Create repository**.
-5. Go back to Part 3 and finish the **GitHub** note (pick **reel-maker**, click **Install**).
+1. Go to **github.com/heytherejenae-afk/reel-maker** (sign in to GitHub first if it asks).
+2. Click the green **Use this template** button (top right, above the list of files), then click **Create a new repository**.
+3. Under **Owner**, leave your own username. **Repository name:** type `reel-maker`. Click **Private**.
+4. Click the green **Create repository** button. Wait about 10 seconds.
 
-✅ **Done when:** the address bar shows `github.com/YOUR-USERNAME/reel-maker`.
+✅ **Done when:** the address bar shows `github.com/YOUR-USERNAME/reel-maker` and you see folders called **skills** and **docs**.
 
-### 4B. Make a Claude project
-1. Go to **claude.ai**. Under the big typing box, click **Project ⌄**.
+### 4B. Let Claude open your copy
+1. In Chrome, go to **claude.ai/connect-github**.
+2. GitHub asks you to authorise Claude. Click the green **Authorize** button.
+3. If GitHub then shows **Install Claude**: click your **username**, click **Only select repositories**, click **Select repositories**, type `reel-maker` and click it, then click **Install**.
+4. You land back on claude.ai.
+
+✅ **Done when:** in the next step, **reel-maker** shows in the list of repositories.
+If it doesn't: go to **github.com/settings/installations**, click **Configure** next to **Claude**, add **reel-maker** under **Only select repositories**, and click **Save**.
+
+### 4C. Make a Claude project
+1. In Chrome, go to **claude.ai/code**. Under the big typing box, click **Project ⌄**.
 2. Click **+ New project**.
 3. **Name:** type `Reel creator`. **Goal:** type `Make reels from idea to finished video`.
-4. Next to **Context**, click **+**, click **Add repository**, then click **reel-maker**.
+4. Next to **Context**, click **+**, click **Add repository**, then click **YOUR-USERNAME/reel-maker** (your copy, not Jenae's).
 5. Click **Create project**.
 
-### 4C. Add the settings
+### 4D. Add the settings
 1. In your new project, click **⋯** (top right), then **Settings**.
 2. Click **Environment** (on the left).
 3. Next to **Cloud environment**, click **Select a cloud environment ⌄**, then **+ Add cloud environment**.
 4. **Name:** type `Reel creator`.
-5. Click **Network access**. Leave it on **Limited**. Click in the **Allowed domains** box and paste these 8 lines:
+5. Click **Network access** and choose **Full**. Click the **<** arrow (top left) to go back.
+   *Why Full:* the tool fetches your Google Drive clips, your Canva overlay downloads, fonts, music and reel links from Instagram and YouTube. Those come from many different web addresses, and the tool has only been tested with Full.
+   *Prefer Limited?* Choose **Limited**, leave **Allow package managers** ticked, and paste these lines into **Allowed domains**. Canva, Instagram and YouTube links may still be blocked; if Claude names another address, add it here and start a new chat.
    ```
    drive.google.com
    drive.usercontent.google.com
@@ -105,14 +115,27 @@ Notes for some connectors:
    incompetech.com
    storage.googleapis.com
    raw.githubusercontent.com
+   *.canva.com
+   *.instagram.com
+   *.cdninstagram.com
+   *.fbcdn.net
+   *.youtube.com
    ```
-   Leave **Allow package managers** ticked. Click the **<** arrow (top left) to go back.
-6. Click **Setup script**. Open `setup.sh` in your reel-maker repository on GitHub, click the **Copy raw file** button (two squares, top right of the file), click in the Setup script box and paste.
-7. Click **Add environment**. Check that **Cloud environment** says **Reel creator**. Click **X** to close.
+6. Click **Setup script**. In a new tab, open your copy on GitHub (`github.com/YOUR-USERNAME/reel-maker`), click **setup.sh** in the file list, then click the **Copy raw file** button (two overlapping squares, top right of the file). Go back to the settings tab, click in the **Setup script** box and press **Ctrl+V** (Windows) or **Cmd+V** (Mac) to paste.
+7. Click **Add environment**. Check that **Cloud environment** now says **Reel creator**. Click **X** to close.
 
-✅ **Done when:** your project's settings show the **reel-maker** repository and the **Reel creator** environment.
+✅ **Done when:** your project's settings show your **reel-maker** repository and the **Reel creator** environment.
+
+### 4E. Check it works (2 minutes)
+1. In your **Reel creator** project, type **Make a reel** and send it.
+2. The first time, it takes a minute or two to get ready (the setup script is running).
+3. Claude replies with a link to **your own Brand Kit page**. Click it, fill it in, click **Copy my brand kit**, come back to the chat, paste and send.
+4. Claude says it saved your brand. Next time you say **Make a reel**, it lists your brand by name and doesn't ask again.
+
+If Claude doesn't mention a Brand Kit, or says it can't find the tool, check that 4C step 4 picked **your** reel-maker, then start a new chat in the project.
 
 Setup is finished. You never need to do Parts 1 to 4 again.
+**Changed a setting or added a connector later?** Start a **new** chat. Chats that are already open keep the old settings.
 
 ---
 
@@ -157,5 +180,5 @@ Then say **make a reel**. You still need the connectors from Part 3.
 | "vidIQ has no credits" | Nothing. Claude searches YouTube Shorts for free instead. Credits refill each month |
 | "Get Transcript free plan limit" | Nothing. Claude writes ideas from the reels' titles. Or paste the words of a reel you like into the chat |
 | "I can't download your Drive folder" | In Drive, set the folder to **Anyone with the link** (Part 5, steps 3 to 5) |
-| A download is blocked | Check the 8 allowed domains in Part 4C, then start a **new** chat (old chats keep old settings) |
+| A download is blocked | In Part 4D, set **Network access** to **Full** (or add the address Claude names), then start a **new** chat (old chats keep old settings) |
 | Can't save a file in the Claude phone app | Use a computer: open claude.ai in Chrome, click the file, then **Download** |

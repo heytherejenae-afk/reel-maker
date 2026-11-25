@@ -1,7 +1,7 @@
 {
  "name": "Apple trees in pots",
- "work": "/tmp/claude-0/apple",
- "out": "/mnt/project-files/reels/apples",
+ "work": "work/apple",
+ "out": "work/apple/out",
  "talk": "clips/talk.mp4",
  "broll": {
   "b1": "clips/b1.mp4",
@@ -26,9 +26,9 @@
   "note": "#FFFFFF"
  },
  "fonts": {
-  "word": "/mnt/project-files/reel-skill/fonts/InterDisplay-SemiBold.ttf",
-  "key": "/mnt/project-files/reel-skill/fonts/DMSerifDisplay-Italic.ttf",
-  "hand": "/mnt/project-files/reel-skill/fonts/CaveatBrush-Regular.ttf"
+  "word": "<skill>/fonts/InterDisplay-SemiBold.ttf",
+  "key": "<skill>/fonts/DMSerifDisplay-Italic.ttf",
+  "hand": "<skill>/fonts/CaveatBrush-Regular.ttf"
  },
  "captions": {
   "size": 122,

@@ -10,7 +10,7 @@ The engine is this folder: `scripts/`, `fonts/`, `models/`, `assets/`.
 font pairs, colour themes, stickers, music, privacy blur, carousel/story extras):
 read the part you need when the person asks for something not covered here.
 
-Setup, once per session: `pip install faster-whisper gdown ai-edge-litert opencv-python-headless`
+Setup, once per session: `pip install faster-whisper gdown yt-dlp ai-edge-litert opencv-python-headless`
 (or `bash setup.sh` at the plugin root). ffmpeg, Node and Playwright Chromium are usually pre-installed.
 
 ## Script mode (the standard route)
