@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Reel Setup</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -6,26 +7,26 @@
 <style>
 /* Layout: one question per screen, like a phone quiz. Progress bar on top, big tap cards, Back/Next pinned to the bottom. */
 :root {
-  --bg: #F6F7F2;
+  --bg: #FFFFFF;
   --card: #FFFFFF;
-  --ink: #18221C;
-  --muted: #5E6B62;
-  --line: #DCE2DA;
-  --berry: #B4235A;
-  --berry-soft: #FBE7EF;
-  --leaf: #2F6B45;
-  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
-  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ink: #000000;
+  --muted: #555555;
+  --line: #D9D9D9;
+  --berry: #000000;
+  --berry-soft: #EEEEEE;
+  --leaf: #000000;
+  --display: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33;
-    --berry: #F06A9C; --berry-soft: #3A1D29; --leaf: #7CC795; color-scheme: dark;
+    --bg: #000000; --card: #111111; --ink: #FFFFFF; --muted: #AAAAAA; --line: #333333;
+    --berry: #FFFFFF; --berry-soft: #222222; --leaf: #FFFFFF; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33;
-  --berry: #F06A9C; --berry-soft: #3A1D29; --leaf: #7CC795; color-scheme: dark;
+  --bg: #000000; --card: #111111; --ink: #FFFFFF; --muted: #AAAAAA; --line: #333333;
+  --berry: #FFFFFF; --berry-soft: #222222; --leaf: #FFFFFF; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { min-height: 100%; }
@@ -320,6 +321,7 @@ const R = {
       ${opt("extras", "hide_faces", "Hide other people's faces", "Blur kids or anyone else in the background. Your face stays.", "", true)}
       ${opt("extras", "effects", "Add special effects", "Photos orbiting around you, glass number panels, a big glowing word, or a comment box. You pick which beat gets which on your script page.", "", true)}
       ${opt("extras", "layers", "I'll finish it in CapCut or Edits", "You also get the reel in layers, with tap-by-tap steps for your app.", "", true)}
+      ${opt("extras", "match_style", "Match a reel I like", "Send 1 to 3 reels after this page. Claude copies how they're cut and captioned.", "", true)}
       ${opt("extras", "repurpose", "Also make a carousel, a story and 3 trial reels", "Made from the same video after the reel is done.", "", true)}
     </div>`,
 
@@ -334,7 +336,7 @@ const R = {
         ["fonts", "Fonts", A.fonts === "custom" ? `Title ${A.title_font}, captions ${A.caption_font}, key words ${A.key_font}` : label(PAIRS, A.fonts)],
         ["colours", "Colours", label(THEMES, A.theme) + ` · key words: ${A.highlight === "theme" ? "match colours" : A.highlight}`]]),
       ["music", "Music", A.music === "yes" ? `Yes, ${A.mood}` : A.music === "no" ? "No music" : A.music === "you choose" ? "You choose" : "Not answered"],
-      ["extras", "Extras", Object.entries(A.extras).filter(e => e[1]).map(e => ({ storyboard: "plan first", effects: "special effects", layers: "CapCut/Edits layers", sfx: "sound effects", hide_faces: "hide faces", repurpose: "carousel + story + trials" }[e[0]])).join(", ") || "None"]
+      ["extras", "Extras", Object.entries(A.extras).filter(e => e[1]).map(e => ({ storyboard: "plan first", effects: "special effects", layers: "CapCut/Edits layers", sfx: "sound effects", hide_faces: "hide faces", repurpose: "carousel + story + trials", match_style: "match a reel I like" }[e[0]])).join(", ") || "None"]
     ];
     return `<h1>All done! Check your answers</h1>
       <p class="help">Tap <b>Change</b> to fix anything.</p>

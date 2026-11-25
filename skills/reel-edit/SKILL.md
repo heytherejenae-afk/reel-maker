@@ -15,7 +15,7 @@ Setup, once per session: `pip install faster-whisper gdown ai-edge-litert opencv
 
 ## Script mode (the standard route)
 
-Inputs: `script.json` (stage 3), overlay PNGs (stage 5), `brand-kit.json` (stage 4),
+Inputs: `script.json` (stage 3), overlay PNGs (stage 5), `brand-kit.json` (stage 4; if it has a `style` block, cut and caption to match it, see `reel-brand` "Style samples"),
 and a Google Drive folder with one talking-head clip (them saying the script) plus
 b-roll clips (no talking).
 

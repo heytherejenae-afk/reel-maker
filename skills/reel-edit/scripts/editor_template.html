@@ -1,20 +1,20 @@
+<meta charset="utf-8">
 <title>__TITLE__ Reel Editor</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: the reel on top like a phone screen, then a timeline of shot cards you tap to change, then titles and look. Copy bar pinned to the bottom. */
 :root {
-  --bg: #F6F7F2; --card: #FFFFFF; --ink: #18221C; --muted: #5E6B62; --line: #DCE2DA;
-  --berry: #B4235A; --berry-soft: #FBE7EF; --gone: #EEF0EC;
-  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
-  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bg: #FFFFFF; --card: #FFFFFF; --ink: #000000; --muted: #555555; --line: #D9D9D9;
+  --berry: #000000; --berry-soft: #EEEEEE; --gone: #F2F2F2;
+  --display: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33; --berry: #F06A9C; --berry-soft: #3A1D29; --gone: #171C18; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --bg: #000000; --card: #111111; --ink: #FFFFFF; --muted: #AAAAAA; --line: #333333; --berry: #FFFFFF; --berry-soft: #222222; --gone: #1A1A1A; color-scheme: dark; }
 }
-:root[data-theme="dark"] { --bg: #121714; --card: #1B221D; --ink: #EEF2EC; --muted: #A3B0A6; --line: #303A33; --berry: #F06A9C; --berry-soft: #3A1D29; --gone: #171C18; color-scheme: dark; }
+:root[data-theme="dark"] { --bg: #000000; --card: #111111; --ink: #FFFFFF; --muted: #AAAAAA; --line: #333333; --berry: #FFFFFF; --berry-soft: #222222; --gone: #1A1A1A; color-scheme: dark; }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); }
 .wrap { max-width: 680px; margin: 0 auto; padding-block: 18px 150px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 22px; }

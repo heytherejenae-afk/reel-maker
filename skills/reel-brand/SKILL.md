@@ -63,7 +63,7 @@ so saving only there is why people got asked to paste their kit again):
 4. If neither 2 nor 3 is possible (for example a plain Claude Code folder), save
    `brand-kit-<slug>.json` at the top of their project folder instead.
 
-Then tell them in one line: "Saved your <brand name> brand. Next time I'll list it with
+Then offer style samples (see "Style samples" below), and tell them in one line: "Saved your <brand name> brand. Next time I'll list it with
 your other brands, so you won't need to paste it again."
 
 ### Where the kits live
@@ -80,3 +80,39 @@ page, the overlay pages and the edit.
 No brand yet and they say "you choose": use cream `#F6EFDF`, forest `#2F4A35`,
 terracotta `#E8875A`, sage `#9CAF88`, DM Serif Display / Inter Display / DM Serif
 Display Italic, and tell them they can change it any time.
+
+## Style samples: learn how they edit
+
+A brand kit says how reels LOOK (fonts, colours). Style samples teach you how they're EDITED: how fast the cuts are, how many words show at once, where captions sit, punch ins, B roll, how the hook opens. It's always optional, and it's never part of the first question (that has to stay quick).
+
+**When to offer it**
+- After a new or changed brand kit is saved, ask once: "Want me to learn your editing style too? Send 1 to 3 reels you've made (or love), and every reel I make for this brand will cut and caption like them. Or say skip."
+- Every reel, it's the extra "Match a reel I like" on the Reel Setup page (`extras.match_style`). Ticking it is how they add or refresh samples any time.
+
+**How they send samples.** Attaching the video file is the reliable way. Instagram usually blocks downloads from Claude's computer, so a link is a bonus, not the plan. Send these steps word for word:
+> **Send me a sample reel**
+> *Your own reel, from your phone:* open **Instagram**, tap your **profile picture** (bottom right), tap the reel, tap the **three dots ⋯**, then **Download** (or **Save to device**). It saves to your phone's **Gallery**. Then open this same chat in the **Claude phone app**, tap **+**, tap **Photos** (or **Files**), pick the video and send. Or put it in your Google Drive reel folder and paste the folder link here.
+> *A finished video already on your computer:* drag the video file into this chat, or click **+**, **Upload a file**, pick it and send.
+> *Someone else's reel you love:* tap **Share** (the paper plane) on it, then **Copy link**, and paste the link here. If I can't download it, I'll tell you, and you can screen record it instead (Android: swipe down from the top of the screen twice, tap **Screen record**; iPhone: **Control Centre**, tap the **record** button).
+
+**Reading them**
+```
+python3 -I skills/reel-edit/scripts/style_sample.py work/style <video or link> [<video or link> ...]
+```
+It prints each sample's length, cuts and average shot length, and writes `work/style/style_measure.json` plus a contact sheet per sample (`sheet_<n>.jpg`, a frame every ~1.5 s with the time). `LINK_BLOCKED` means Instagram refused: ask for the file instead (steps above). Cut counts are rough: very similar jump cuts can be missed, so trust what you see on the sheets over the number.
+
+LOOK at every contact sheet, then write the brand's `style` block:
+```
+"style": {
+  "from": ["sample 1 name or link", "..."], "updated": "YYYY-MM-DD",
+  "length_s": 38, "avg_shot_s": 2.5,
+  "captions": {"words": 2, "case": "upper", "position": "lower third", "box": false, "highlight": "#FFD60A"},
+  "hook": "white text box at the top for the first 2 s, she's already mid sentence",
+  "punch_ins": "alternate 1.0 and 1.1 on most cuts", "broll": "none" | "some" | "lots",
+  "cta": "text box at the end: Comment WORD for ...",
+  "notes": "one or two lines on what makes these feel like her"
+}
+```
+Then tell them in plain words what you learned (3 to 5 bullet points), and ask about anything that clashes with their kit, for example: "Your reels show 2 or 3 words at a time in capitals, but your brand kit says 1 word in lower case. Which do you want?" Save the kit with the `style` block everywhere listed in "Saving it" (same file name, it replaces that brand's kit), so it's never asked again.
+
+**Using it.** When a brand has a `style` block, follow it when you write the plan unless this reel's answers say otherwise: aim for its shot length (cut more often, or use the tightener's punchier setting, if their samples are fast), its caption words and case, the punch in habit, roughly the same share of B roll, and the same kind of hook and CTA. A "Match a reel I like" sample on one reel only changes that reel, unless they say to keep it.
